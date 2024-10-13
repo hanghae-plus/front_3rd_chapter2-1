@@ -3,7 +3,7 @@ let $productSelectbox;
 let addBtn;
 let cartDisp;
 let sum;
-let stockInfo;
+let $stockInfoMessage;
 let lastSel;
 let bonusPts = 0;
 let totalAmt = 0;
@@ -29,20 +29,20 @@ function main() {
   sum = document.createElement('div');
   $productSelectbox = document.createElement('select');
   addBtn = document.createElement('button');
-  stockInfo = document.createElement('div');
+  $stockInfoMessage = document.createElement('div');
   cartDisp.id = 'cart-items';
   sum.id = 'cart-total';
   $productSelectbox.id = 'product-select';
   addBtn.id = 'add-to-cart';
 
-  stockInfo.id = 'stock-status';
+  $stockInfoMessage.id = 'stock-status';
   cont.className = 'bg-gray-100 p-8';
   wrap.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
   hTxt.className = 'text-2xl font-bold mb-4';
   sum.className = 'text-xl font-bold my-4';
   $productSelectbox.className = 'border rounded p-2 mr-2';
   addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  stockInfo.className = 'text-sm text-gray-500 mt-2';
+  $stockInfoMessage.className = 'text-sm text-gray-500 mt-2';
   hTxt.textContent = '장바구니';
   addBtn.textContent = '추가';
 
@@ -53,7 +53,7 @@ function main() {
   wrap.appendChild(sum);
   wrap.appendChild($productSelectbox);
   wrap.appendChild(addBtn);
-  wrap.appendChild(stockInfo);
+  wrap.appendChild($stockInfoMessage);
   cont.appendChild(wrap);
   root.appendChild(cont);
 
@@ -162,7 +162,7 @@ function calcCart() {
     span.textContent = `(${(discRate * 100).toFixed(1)}% 할인 적용)`;
     sum.appendChild(span);
   }
-  updateStockInfo();
+  renderStockInfoMessage();
   renderBonusPts();
 }
 
@@ -181,14 +181,12 @@ const renderBonusPts = () => {
   ptsTag.textContent = `(포인트: ${bonusPts})`;
 };
 
-function updateStockInfo() {
-  let infoMsg = '';
-  prodList.forEach(function (item) {
-    if (item.q < 5) {
-      infoMsg += `${item.name}: ${item.q > 0 ? `재고 부족 (${item.q}개 남음)` : '품절'}\n`;
-    }
-  });
-  stockInfo.textContent = infoMsg;
+function renderStockInfoMessage() {
+  $stockInfoMessage.textContent = prodList
+    .map(({ q, name }) => {
+      return `${name}: ${q > 0 ? `재고 부족 (${q}개 남음)` : '품절'}`;
+    })
+    .join('\n');
 }
 
 main();
