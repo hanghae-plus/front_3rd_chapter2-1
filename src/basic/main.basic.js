@@ -1,3 +1,6 @@
+// 상수 변수
+const LOYALTY_POINT_RATE = 0.001;
+
 let prodList;
 let $productSelectbox;
 let addBtn;
@@ -5,7 +8,7 @@ let cartDisp;
 let sum;
 let $stockInfoMessage;
 let lastSel;
-let bonusPts = 0;
+let loyaltyPoints = 0;
 let totalAmt = 0;
 let itemCnt = 0;
 
@@ -163,23 +166,37 @@ function calcCart() {
     sum.appendChild(span);
   }
   renderStockInfoMessage();
-  renderBonusPts();
+
+  // 장바구니에 담긴 상품 금액을 기준으로 포인트 업데이트
+  const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, totalAmt);
+  renderLoyaltyPoints(newLoyaltyPoints);
+  loyaltyPoints = newLoyaltyPoints;
+}
+
+/**
+ * 현재 장바구니에 담긴 상품의 총 합을 기준으로 포인트를 계산합니다
+ * @param {number} currentPoints - 현재 누적된 포인트
+ * @param {number} cartTotal - 장바구니에 담긴 상품의 총 합
+ * @returns {number} 계산된 포인트
+ */
+function calcLoyaltyPoints(currentPoints = 0, cartTotal = 0) {
+  return currentPoints + Math.floor(cartTotal * LOYALTY_POINT_RATE);
 }
 
 /**
  * 장바구니에 담긴 상품의 총 금액을 기준으로 포인트를 계산하고, 렌더링
  */
-const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
-  let ptsTag = document.getElementById('loyalty-points');
-  if (!ptsTag) {
-    ptsTag = document.createElement('span');
-    ptsTag.id = 'loyalty-points';
-    ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
+function renderLoyaltyPoints(points) {
+  let $el = document.getElementById('loyalty-points');
+  if (!$el) {
+    $el = document.createElement('span');
+    $el.id = 'loyalty-points';
+    $el.className = 'text-blue-500 ml-2';
+    sum.appendChild($el);
   }
-  ptsTag.textContent = `(포인트: ${bonusPts})`;
-};
+
+  $el.textContent = `(포인트: ${points})`;
+}
 
 function renderStockInfoMessage() {
   $stockInfoMessage.textContent = prodList
