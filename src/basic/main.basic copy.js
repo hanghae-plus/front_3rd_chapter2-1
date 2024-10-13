@@ -6,8 +6,6 @@ const productOptions = [
   { id: "p5", name: "상품5", val: 25000, q: 10 },
 ];
 
-let lastSelectedItem = null;
-
 const PRODUCT_DISCOUNT_RULES = {
   p1: {
     minQuantity: 10,
@@ -378,8 +376,8 @@ function main() {
   // 초기 장바구니 상태 렌더링
   renderCart();
 
-  luckyDiscount();
-  suggestAdditionalDiscount();
+  //TODO: 번개 세일 or 추천 상품 타이머 설정 함수 setTimeout 기반
+  // luckyDiscount();
 }
 
 function luckyDiscount() {
@@ -389,35 +387,15 @@ function luckyDiscount() {
       if (luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
-        updateSelOpts(luckyItem);
+        const updatedList = productOptions.map((item) => (item.id === luckyItem.id ? luckyItem : item));
+        const list = cartController.updateOriginal(updatedList);
+        const $select = renderProductSelect(list);
+        $wrapper.updateChildren($select);
       }
-    }, 30000);
-  };
-  setTimeout(interval, Math.random() * 10000);
-}
-
-function suggestAdditionalDiscount() {
-  const interval = () => {
-    setInterval(function () {
-      if (lastSelectedItem) {
-        const suggestItem = { ...productOptions.find((item) => item.id !== lastSelectedItem.id && item.q > 0) };
-        if (suggestItem) {
-          alert(suggestItem.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggestItem.val = Math.round(suggestItem.val * 0.95);
-          updateSelOpts(suggestItem);
-        }
-      }
-    }, 60000);
+    }, 10000);
   };
 
-  setTimeout(interval, Math.random() * 20000);
-}
-
-function updateSelOpts(updatedItem) {
-  const updatedList = productOptions.map((item) => (item.id === updatedItem.id ? updatedItem : item));
-  const list = cartController.updateOriginal(updatedList);
-  const $select = renderProductSelect(list);
-  $wrapper.updateChildren($select);
+  setTimeout(interval, 1000);
 }
 
 function renderStockStatus() {
@@ -589,7 +567,6 @@ $addBtn.el.addEventListener("click", () => {
     cartController.add(newItem);
   }
   renderCart();
-  lastSelectedItem = currentProduct;
 });
 
 $cartItems.el.addEventListener("click", (event) => {
