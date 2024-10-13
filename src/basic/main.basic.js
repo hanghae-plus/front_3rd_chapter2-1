@@ -95,20 +95,6 @@ const updateSelOpts = () => {
   });
 };
 
-const getProductBulkDiscountRate = (productId, quantity) => {
-  const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
-  const PRODUCT_BULK_DISCOUNT_RATE = {
-    p1: 0.1,
-    p2: 0.15,
-    p3: 0.2,
-    p4: 0.05,
-    p5: 0.25,
-  };
-
-  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
-  return 0;
-};
-
 const calcCart = () => {
   let totalPrice = 0;
   let discountedTotalPrice = 0;
@@ -140,6 +126,19 @@ const calcCart = () => {
   renderBonusPts(updatedTotalPrice);
 };
 
+const getProductBulkDiscountRate = (productId, quantity) => {
+  const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
+  const PRODUCT_BULK_DISCOUNT_RATE = {
+    p1: 0.1,
+    p2: 0.15,
+    p3: 0.2,
+    p4: 0.05,
+    p5: 0.25,
+  };
+
+  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
+  return 0;
+};
 const calcDiscounts = (totalPrice, discountedTotalPrice) => {
   let updatedTotalPrice = 0;
   let discRate = 0;
