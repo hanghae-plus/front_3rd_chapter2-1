@@ -46,7 +46,7 @@ function main() {
   hTxt.textContent = '장바구니';
   addBtn.textContent = '추가';
 
-  updateSelOpts();
+  renderProductSelectbox();
 
   wrap.appendChild(hTxt);
   wrap.appendChild(cartDisp);
@@ -66,7 +66,7 @@ function main() {
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
-        updateSelOpts();
+        renderProductSelectbox();
       }
     }, 30000);
   }, Math.random() * 10000);
@@ -81,7 +81,7 @@ function main() {
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           suggest.val = Math.round(suggest.val * 0.95);
-          updateSelOpts();
+          renderProductSelectbox();
         }
       }
     }, 60000);
@@ -91,14 +91,18 @@ function main() {
 /**
  * 상품 선택 셀렉트박스를 렌더링
  */
-function updateSelOpts() {
+function renderProductSelectbox() {
   $productSelectbox.innerHTML = '';
-  prodList.forEach(function (item) {
-    const opt = document.createElement('option');
-    opt.value = item.id;
 
-    opt.textContent = `${item.name} - ${item.val}원`;
-    if (item.q === 0) opt.disabled = true;
+  prodList.forEach((product) => {
+    const opt = document.createElement('option');
+
+    opt.value = product.id;
+    opt.textContent = `${product.name} - ${product.val}원`;
+
+    // 재고가 없을 경우 비활성화
+    if (product.q === 0) opt.disabled = true;
+
     $productSelectbox.appendChild(opt);
   });
 }
