@@ -6,7 +6,11 @@ export function createStore(initialStore) {
   let state = { ...initialStore };
 
   const setState = (newState) => {
-    state = { ...state, ...newState };
+    if (typeof newState === 'function') {
+      state = { ...state, ...newState(state) };
+    } else {
+      state = { ...state, ...newState };
+    }
     notify();
   };
 
