@@ -14,9 +14,7 @@ const PROD_LIST = [
 
 const main = () => {
   renderShoppingCart();
-
   calcCart();
-
   scheduleRandomSales();
 };
 
@@ -103,29 +101,27 @@ const calcCart = () => {
   const cartItems = cartItemsDisplay.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
-    (function () {
-      let curItem;
-      for (let j = 0; j < PROD_LIST.length; j++) {
-        if (PROD_LIST[j].id === cartItems[i].id) {
-          curItem = PROD_LIST[j];
-          break;
-        }
+    let curItem;
+    for (let j = 0; j < PROD_LIST.length; j++) {
+      if (PROD_LIST[j].id === cartItems[i].id) {
+        curItem = PROD_LIST[j];
+        break;
       }
+    }
 
-      const q = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
-      const itemTot = curItem.price * q;
-      let disc = 0;
-      itemCnt += q;
-      subTot += itemTot;
-      if (q >= 10) {
-        if (curItem.id === 'p1') disc = 0.1;
-        else if (curItem.id === 'p2') disc = 0.15;
-        else if (curItem.id === 'p3') disc = 0.2;
-        else if (curItem.id === 'p4') disc = 0.05;
-        else if (curItem.id === 'p5') disc = 0.25;
-      }
-      totalAmt += itemTot * (1 - disc);
-    })();
+    const q = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
+    const itemTot = curItem.price * q;
+    let disc = 0;
+    itemCnt += q;
+    subTot += itemTot;
+    if (q >= 10) {
+      if (curItem.id === 'p1') disc = 0.1;
+      else if (curItem.id === 'p2') disc = 0.15;
+      else if (curItem.id === 'p3') disc = 0.2;
+      else if (curItem.id === 'p4') disc = 0.05;
+      else if (curItem.id === 'p5') disc = 0.25;
+    }
+    totalAmt += itemTot * (1 - disc);
   }
   let discRate = 0;
   if (itemCnt >= 30) {
@@ -155,6 +151,16 @@ const calcCart = () => {
   updateStockInfo();
   renderBonusPts();
 };
+
+const updateStockInfo = () => {
+  let infoMsg = '';
+  PROD_LIST.forEach((item) => {
+    if (item.quantity < 5) {
+      infoMsg += item.name + ': ' + (item.quantity > 0 ? '재고 부족 (' + item.quantity + '개 남음)' : '품절') + '\n';
+    }
+  });
+  stockInfo.textContent = infoMsg;
+};
 const renderBonusPts = () => {
   bonusPts += Math.floor(totalAmt / 1000);
   let ptsTag = document.getElementById('loyalty-points');
@@ -167,17 +173,8 @@ const renderBonusPts = () => {
   ptsTag.textContent = '(포인트: ' + bonusPts + ')';
 };
 
-const updateStockInfo = () => {
-  let infoMsg = '';
-  PROD_LIST.forEach((item) => {
-    if (item.quantity < 5) {
-      infoMsg += item.name + ': ' + (item.quantity > 0 ? '재고 부족 (' + item.quantity + '개 남음)' : '품절') + '\n';
-    }
-  });
-  stockInfo.textContent = infoMsg;
-};
-
 main();
+
 addBtn.addEventListener('click', () => {
   const selItem = sel.value;
   const itemToAdd = PROD_LIST.find((p) => {
