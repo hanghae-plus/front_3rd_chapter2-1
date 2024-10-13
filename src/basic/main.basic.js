@@ -184,40 +184,45 @@ const handleAddToCart = () => {
 addToCartBtn.addEventListener('click', handleAddToCart);
 
 // TODO: handleAddToCart랑 중복되는 부분 합칠 수 있는 지 확인
+const removeCartItem = (targetProduct, itemElement, restoreQuantity) => {
+  targetProduct.quantity += restoreQuantity;
+  itemElement.remove();
+};
+const changeCartItemQuantity = (clickedElement, itemElement, targetProduct) => {
+  const quantityChangeAmount = parseInt(clickedElement.dataset.change);
+  const currentItemQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  const newItemQuantity = currentItemQuantity + quantityChangeAmount;
+
+  const isStockRemain = newItemQuantity <= targetProduct.quantity + currentItemQuantity;
+
+  if (!isStockRemain) {
+    alert('재고가 부족합니다.');
+  } else if (newItemQuantity > 0) {
+    itemElement.querySelector('span').textContent =
+      itemElement.querySelector('span').textContent.split('x ')[0] + 'x ' + newItemQuantity;
+    targetProduct.quantity -= quantityChangeAmount;
+  } else {
+    removeCartItem(targetProduct, itemElement, 1);
+  }
+};
 const handleCartItemsDisplay = (event) => {
-  const targetElement = event.target;
+  const clickedElement = event.target;
   const isRelatedQuantityChange =
-    targetElement.classList.contains('quantity-change') || targetElement.classList.contains('remove-item');
+    clickedElement.classList.contains('quantity-change') || clickedElement.classList.contains('remove-item');
 
   if (!isRelatedQuantityChange) return;
 
-  const productId = targetElement.dataset.productId;
+  const productId = clickedElement.dataset.productId;
   const itemElement = document.getElementById(productId);
   const targetProduct = products.find((product) => {
     return product.id === productId;
   });
 
-  if (targetElement.classList.contains('quantity-change')) {
-    const quantityChangeAmount = parseInt(targetElement.dataset.change);
+  if (clickedElement.classList.contains('quantity-change')) {
+    changeCartItemQuantity(clickedElement, itemElement, targetProduct);
+  } else if (clickedElement.classList.contains('remove-item')) {
     const currentItemQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
-    const newItemQuantity = currentItemQuantity + quantityChangeAmount;
-
-    const isStockRemain = newItemQuantity <= targetProduct.quantity + currentItemQuantity;
-
-    if (!isStockRemain) {
-      alert('재고가 부족합니다.');
-    } else if (newItemQuantity > 0) {
-      itemElement.querySelector('span').textContent =
-        itemElement.querySelector('span').textContent.split('x ')[0] + 'x ' + newItemQuantity;
-      targetProduct.quantity -= quantityChangeAmount;
-    } else {
-      itemElement.remove();
-      targetProduct.quantity++;
-    }
-  } else if (targetElement.classList.contains('remove-item')) {
-    const currentItemQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
-    targetProduct.quantity += currentItemQuantity;
-    itemElement.remove();
+    removeCartItem(targetProduct, itemElement, currentItemQuantity);
   }
 
   updateCartInfos();
