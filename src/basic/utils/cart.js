@@ -1,5 +1,5 @@
 import {
-  PROD_LIST,
+  PRODUCTS,
   PRODUCT_BULK_DISCOUNT_AMOUNT,
   PRODUCT_BULK_DISCOUNT_RATE,
   SALE_DAY,
@@ -40,6 +40,19 @@ export const calcDiscounts = (itemCnt, totalPrice, discountedTotalPrice) => {
   return { updatedTotalPrice, discRate };
 };
 
+export const updateProductOptions = () => {
+  const sel = document.getElementById('product-select');
+  sel.innerHTML = '';
+
+  PRODUCTS.forEach((item) => {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+
+    opt.textContent = item.name + ' - ' + item.price + '원';
+    if (item.quantity === 0) opt.disabled = true;
+    sel.appendChild(opt);
+  });
+};
 export const updateSumInfo = (discountedTotalPrice, discRate) => {
   const sum = document.getElementById('cart-total');
 
@@ -55,7 +68,7 @@ export const updateStockInfo = () => {
   const stockInfo = document.getElementById('stock-status');
   let infoMsg = '';
 
-  PROD_LIST.forEach((item) => {
+  PRODUCTS.forEach((item) => {
     if (item.quantity < 5) {
       infoMsg += item.name + ': ' + (item.quantity > 0 ? '재고 부족 (' + item.quantity + '개 남음)' : '품절') + '\n';
     }
