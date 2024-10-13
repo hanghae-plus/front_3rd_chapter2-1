@@ -1,11 +1,11 @@
 import {
+  products,
   calcDiscounts,
   getProductBulkDiscountRate,
   updateBonusPoints,
   updateProductsStockInfo,
   updateTotalInfo,
 } from './utils/cart';
-import { PRODUCTS } from './utils/const';
 
 let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
 let lastSel,
@@ -60,7 +60,7 @@ const renderProductOptions = () => {
   const productSelectDropdown = document.getElementById('product-select');
   productSelectDropdown.innerHTML = '';
 
-  PRODUCTS.forEach((item) => {
+  products.forEach((item) => {
     const opt = document.createElement('option');
     opt.value = item.id;
 
@@ -72,7 +72,7 @@ const renderProductOptions = () => {
 const scheduleRandomSales = () => {
   setTimeout(() => {
     setInterval(() => {
-      const luckyItem = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
+      const luckyItem = products[Math.floor(Math.random() * products.length)];
       if (Math.random() < 0.3 && luckyItem.quantity > 0) {
         luckyItem.price = Math.round(luckyItem.price * 0.8);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
@@ -84,7 +84,7 @@ const scheduleRandomSales = () => {
   setTimeout(() => {
     setInterval(() => {
       if (lastSel) {
-        const suggest = PRODUCTS.find((item) => {
+        const suggest = products.find((item) => {
           return item.id !== lastSel && item.quantity > 0;
         });
         if (suggest) {
@@ -105,9 +105,9 @@ const calcCart = () => {
   const cartItems = cartItemsDisplay.children;
   for (let i = 0; i < cartItems.length; i++) {
     let curItem;
-    for (let j = 0; j < PRODUCTS.length; j++) {
-      if (PRODUCTS[j].id === cartItems[i].id) {
-        curItem = PRODUCTS[j];
+    for (let j = 0; j < products.length; j++) {
+      if (products[j].id === cartItems[i].id) {
+        curItem = products[j];
         break;
       }
     }
@@ -132,7 +132,7 @@ main();
 
 addToCartBtn.addEventListener('click', () => {
   const selItem = productSelectDropdown.value;
-  const itemToAdd = PRODUCTS.find((p) => {
+  const itemToAdd = products.find((p) => {
     return p.id === selItem;
   });
   if (itemToAdd && itemToAdd.quantity > 0) {
@@ -177,7 +177,7 @@ cartItemsDisplay.addEventListener('click', (event) => {
   if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
     const prodId = tgt.dataset.productId;
     const itemElem = document.getElementById(prodId);
-    const prod = PRODUCTS.find((p) => {
+    const prod = products.find((p) => {
       return p.id === prodId;
     });
     if (tgt.classList.contains('quantity-change')) {
