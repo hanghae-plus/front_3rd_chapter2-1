@@ -3,12 +3,12 @@ import {
   getProductBulkDiscountRate,
   updateBonusPts,
   updateProductOptions,
-  updateStockInfo,
+  updateProductsStockInfo,
   updateSumInfo,
 } from './utils/cart';
 import { PRODUCTS } from './utils/const';
 
-let sel, addBtn, cartItemsDisplay, sum, stockInfo;
+let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
 let lastSel,
   bonusPts = 0;
 
@@ -21,39 +21,40 @@ const main = () => {
 
 const renderCartUI = () => {
   const root = document.getElementById('app');
-  let cont = document.createElement('div');
-  const wrap = document.createElement('div');
-  const title = document.createElement('h1');
+  const cartWrapper = document.createElement('div');
+  const cartContainer = document.createElement('div');
+  const cartTitle = document.createElement('h1');
   cartItemsDisplay = document.createElement('div');
-  sum = document.createElement('div');
-  sel = document.createElement('select');
-  addBtn = document.createElement('button');
-  stockInfo = document.createElement('div');
+  cartTotalInfo = document.createElement('div');
+  productSelectDropdown = document.createElement('select');
+  addToCartBtn = document.createElement('button');
+  productsStockInfo = document.createElement('div');
 
   cartItemsDisplay.id = 'cart-items';
-  sum.id = 'cart-total';
-  sel.id = 'product-select';
-  addBtn.id = 'add-to-cart';
-  stockInfo.id = 'stock-status';
+  cartTotalInfo.id = 'cart-total';
+  productSelectDropdown.id = 'product-select';
+  addToCartBtn.id = 'add-to-cart';
+  productsStockInfo.id = 'stock-status';
 
-  cont.className = 'bg-gray-100 p-8';
-  wrap.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
-  title.className = 'text-2xl font-bold mb-4';
-  sum.className = 'text-xl font-bold my-4';
-  sel.className = 'border rounded p-2 mr-2';
-  addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  stockInfo.className = 'text-sm text-gray-500 mt-2';
-  title.textContent = '장바구니';
-  addBtn.textContent = '추가';
+  cartWrapper.className = 'bg-gray-100 p-8';
+  cartContainer.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
+  cartTitle.className = 'text-2xl font-bold mb-4';
+  cartTotalInfo.className = 'text-xl font-bold my-4';
+  productSelectDropdown.className = 'border rounded p-2 mr-2';
+  addToCartBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
+  productsStockInfo.className = 'text-sm text-gray-500 mt-2';
+  cartTitle.textContent = '장바구니';
+  addToCartBtn.textContent = '추가';
 
-  wrap.appendChild(title);
-  wrap.appendChild(cartItemsDisplay);
-  wrap.appendChild(sum);
-  wrap.appendChild(sel);
-  wrap.appendChild(addBtn);
-  wrap.appendChild(stockInfo);
-  cont.appendChild(wrap);
-  root.appendChild(cont);
+  cartContainer.appendChild(cartTitle);
+  cartContainer.appendChild(cartItemsDisplay);
+  cartContainer.appendChild(cartTotalInfo);
+  cartContainer.appendChild(productSelectDropdown);
+  cartContainer.appendChild(addToCartBtn);
+  cartContainer.appendChild(productsStockInfo);
+
+  cartWrapper.appendChild(cartContainer);
+  root.appendChild(cartWrapper);
 };
 const scheduleRandomSales = () => {
   setTimeout(() => {
@@ -109,14 +110,14 @@ const calcCart = () => {
   const { updatedTotalPrice, discRate } = calcDiscounts(itemCnt, totalPrice, discountedTotalPrice);
 
   updateSumInfo(updatedTotalPrice, discRate);
-  updateStockInfo();
+  updateProductsStockInfo();
   bonusPts = updateBonusPts(bonusPts, updatedTotalPrice);
 };
 
 main();
 
-addBtn.addEventListener('click', () => {
-  const selItem = sel.value;
+addToCartBtn.addEventListener('click', () => {
+  const selItem = productSelectDropdown.value;
   const itemToAdd = PRODUCTS.find((p) => {
     return p.id === selItem;
   });

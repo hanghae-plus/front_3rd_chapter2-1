@@ -41,8 +41,8 @@ export const calcDiscounts = (itemCnt, totalPrice, discountedTotalPrice) => {
 };
 
 export const updateProductOptions = () => {
-  const sel = document.getElementById('product-select');
-  sel.innerHTML = '';
+  const productSelectDropdown = document.getElementById('product-select');
+  productSelectDropdown.innerHTML = '';
 
   PRODUCTS.forEach((item) => {
     const opt = document.createElement('option');
@@ -50,21 +50,21 @@ export const updateProductOptions = () => {
 
     opt.textContent = item.name + ' - ' + item.price + '원';
     if (item.quantity === 0) opt.disabled = true;
-    sel.appendChild(opt);
+    productSelectDropdown.appendChild(opt);
   });
 };
 export const updateSumInfo = (discountedTotalPrice, discRate) => {
-  const sum = document.getElementById('cart-total');
+  const cartTotalInfo = document.getElementById('cart-total');
 
-  sum.textContent = '총액: ' + Math.round(discountedTotalPrice) + '원';
+  cartTotalInfo.textContent = '총액: ' + Math.round(discountedTotalPrice) + '원';
   if (discRate > 0) {
     const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
-    sum.appendChild(span);
+    cartTotalInfo.appendChild(span);
   }
 };
-export const updateStockInfo = () => {
+export const updateProductsStockInfo = () => {
   const stockInfo = document.getElementById('stock-status');
   let infoMsg = '';
 
@@ -80,11 +80,11 @@ export const updateBonusPts = (bonusPts, totalPrice) => {
 
   let ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
-    const sum = document.getElementById('cart-total');
+    const cartTotalInfo = document.getElementById('cart-total');
     ptsTag = document.createElement('span');
     ptsTag.id = 'loyalty-points';
     ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
+    cartTotalInfo.appendChild(ptsTag);
   }
   ptsTag.textContent = '(포인트: ' + bonusPts + ')';
 
