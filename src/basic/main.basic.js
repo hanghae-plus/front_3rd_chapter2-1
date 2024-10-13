@@ -1,5 +1,5 @@
 let prodList;
-let sel;
+let $productSelectbox;
 let addBtn;
 let cartDisp;
 let sum;
@@ -23,12 +23,12 @@ function main() {
   const hTxt = document.createElement('h1');
   cartDisp = document.createElement('div');
   sum = document.createElement('div');
-  sel = document.createElement('select');
+  $productSelectbox = document.createElement('select');
   addBtn = document.createElement('button');
   stockInfo = document.createElement('div');
   cartDisp.id = 'cart-items';
   sum.id = 'cart-total';
-  sel.id = 'product-select';
+  $productSelectbox.id = 'product-select';
   addBtn.id = 'add-to-cart';
 
   stockInfo.id = 'stock-status';
@@ -36,7 +36,7 @@ function main() {
   wrap.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
   hTxt.className = 'text-2xl font-bold mb-4';
   sum.className = 'text-xl font-bold my-4';
-  sel.className = 'border rounded p-2 mr-2';
+  $productSelectbox.className = 'border rounded p-2 mr-2';
   addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
   stockInfo.className = 'text-sm text-gray-500 mt-2';
   hTxt.textContent = '장바구니';
@@ -45,7 +45,7 @@ function main() {
   wrap.appendChild(hTxt);
   wrap.appendChild(cartDisp);
   wrap.appendChild(sum);
-  wrap.appendChild(sel);
+  wrap.appendChild($productSelectbox);
   wrap.appendChild(addBtn);
   wrap.appendChild(stockInfo);
   cont.appendChild(wrap);
@@ -77,14 +77,14 @@ function main() {
   }, Math.random() * 20000);
 }
 function updateSelOpts() {
-  sel.innerHTML = '';
+  $productSelectbox.innerHTML = '';
   prodList.forEach(function (item) {
     const opt = document.createElement('option');
     opt.value = item.id;
 
     opt.textContent = `${item.name} - ${item.val}원`;
     if (item.q === 0) opt.disabled = true;
-    sel.appendChild(opt);
+    $productSelectbox.appendChild(opt);
   });
 }
 function calcCart() {
@@ -168,7 +168,7 @@ function updateStockInfo() {
 }
 main();
 addBtn.addEventListener('click', function () {
-  const selItem = sel.value;
+  const selItem = $productSelectbox.value;
   const itemToAdd = prodList.find(function (p) {
     return p.id === selItem;
   });
