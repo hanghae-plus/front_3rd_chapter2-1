@@ -2,7 +2,6 @@ import {
   calcDiscounts,
   getProductBulkDiscountRate,
   updateBonusPoints,
-  updateProductOptions,
   updateProductsStockInfo,
   updateTotalInfo,
 } from './utils/cart';
@@ -14,7 +13,8 @@ let lastSel,
 
 const main = () => {
   renderCartUI();
-  updateProductOptions();
+  renderProductOptions();
+
   calcCart();
   scheduleRandomSales();
 };
@@ -56,6 +56,19 @@ const renderCartUI = () => {
   cartWrapper.appendChild(cartContainer);
   root.appendChild(cartWrapper);
 };
+const renderProductOptions = () => {
+  const productSelectDropdown = document.getElementById('product-select');
+  productSelectDropdown.innerHTML = '';
+
+  PRODUCTS.forEach((item) => {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+
+    opt.textContent = item.name + ' - ' + item.price + '원';
+    if (item.quantity === 0) opt.disabled = true;
+    productSelectDropdown.appendChild(opt);
+  });
+};
 const scheduleRandomSales = () => {
   setTimeout(() => {
     setInterval(() => {
@@ -63,7 +76,7 @@ const scheduleRandomSales = () => {
       if (Math.random() < 0.3 && luckyItem.quantity > 0) {
         luckyItem.price = Math.round(luckyItem.price * 0.8);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateProductOptions();
+        renderProductOptions();
       }
     }, 30000);
   }, Math.random() * 10000);
@@ -77,7 +90,7 @@ const scheduleRandomSales = () => {
         if (suggest) {
           alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
           suggest.price = Math.round(suggest.price * 0.95);
-          updateProductOptions();
+          renderProductOptions();
         }
       }
     }, 60000);
@@ -107,6 +120,7 @@ const calcCart = () => {
     const productBulkDiscountRate = getProductBulkDiscountRate(curItem.id, quantity);
     discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
   }
+
   const { updatedTotalPrice, discRate } = calcDiscounts(itemCnt, totalPrice, discountedTotalPrice);
 
   updateTotalInfo(updatedTotalPrice, discRate);

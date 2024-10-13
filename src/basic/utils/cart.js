@@ -40,19 +40,6 @@ export const calcDiscounts = (itemCnt, totalPrice, discountedTotalPrice) => {
   return { updatedTotalPrice, discRate };
 };
 
-export const updateProductOptions = () => {
-  const productSelectDropdown = document.getElementById('product-select');
-  productSelectDropdown.innerHTML = '';
-
-  PRODUCTS.forEach((item) => {
-    const opt = document.createElement('option');
-    opt.value = item.id;
-
-    opt.textContent = item.name + ' - ' + item.price + '원';
-    if (item.quantity === 0) opt.disabled = true;
-    productSelectDropdown.appendChild(opt);
-  });
-};
 export const updateTotalInfo = (discountedTotalPrice, discRate) => {
   const cartTotalInfo = document.getElementById('cart-total');
 
