@@ -104,9 +104,30 @@ describe('basic test', () => {
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      vi.useFakeTimers();
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+      // Math.random()을 그냥 아예 0.2로 고정
+      vi.spyOn(Math, 'random').mockReturnValue(0.2);
+    
+      const luckyItem = prodList[0];
+      luckyItem.val = 10000;
+      luckyItem.q = 10;
+      
+      setInterval(function () {
+        if (Math.random() < 0.3 && luckyItem.q > 0) {
+          luckyItem.val = Math.round(luckyItem.val * 0.8);
+          alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+        }
+      }, 30000);
+    
+      vi.advanceTimersByTime(30000);
+    
+      expect(alertSpy).toHaveBeenCalledWith('번개세일! 상품1이(가) 20% 할인 중입니다!');
+      
+      alertSpy.mockRestore();
+      Math.random.mockRestore(); // 위에서 구현한 모의를 여기서 되돌림
     });
-
+    
     it('추천 상품 알림이 표시되는지 확인', () => {
       // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
     });
