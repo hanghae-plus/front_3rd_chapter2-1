@@ -1,15 +1,15 @@
+import {
+  calcDiscounts,
+  getProductBulkDiscountRate,
+  updateBonusPts,
+  updateStockInfo,
+  updateSumInfo,
+} from './utils/cart';
+import { PROD_LIST } from './utils/const';
+
 let sel, addBtn, cartItemsDisplay, sum, stockInfo;
 let lastSel,
-  bonusPts = 0,
-  itemCnt = 0;
-
-const PROD_LIST = [
-  { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
-  { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
-  { id: 'p3', name: '상품3', price: 30000, quantity: 20 },
-  { id: 'p4', name: '상품4', price: 15000, quantity: 0 },
-  { id: 'p5', name: '상품5', price: 25000, quantity: 10 },
-];
+  bonusPts = 0;
 
 const main = () => {
   renderCartUI();
@@ -82,7 +82,6 @@ const scheduleRandomSales = () => {
     }, 60000);
   }, Math.random() * 20000);
 };
-
 const updateSelOpts = () => {
   sel.innerHTML = '';
   PROD_LIST.forEach((item) => {
@@ -94,11 +93,10 @@ const updateSelOpts = () => {
     sel.appendChild(opt);
   });
 };
-
 const calcCart = () => {
   let totalPrice = 0;
   let discountedTotalPrice = 0;
-  itemCnt = 0;
+  let itemCnt = 0;
 
   // 장바구니에 담긴 상품들을 순회하며 총액 계산 + 상품개수에 따른 할인 적용
   const cartItems = cartItemsDisplay.children;
@@ -119,85 +117,11 @@ const calcCart = () => {
     const productBulkDiscountRate = getProductBulkDiscountRate(curItem.id, quantity);
     discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
   }
-  const { updatedTotalPrice, discRate } = calcDiscounts(totalPrice, discountedTotalPrice);
+  const { updatedTotalPrice, discRate } = calcDiscounts(itemCnt, totalPrice, discountedTotalPrice);
 
   updateSumInfo(updatedTotalPrice, discRate);
   updateStockInfo();
-  renderBonusPts(updatedTotalPrice);
-};
-
-const getProductBulkDiscountRate = (productId, quantity) => {
-  const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
-  const PRODUCT_BULK_DISCOUNT_RATE = {
-    p1: 0.1,
-    p2: 0.15,
-    p3: 0.2,
-    p4: 0.05,
-    p5: 0.25,
-  };
-
-  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
-  return 0;
-};
-const calcDiscounts = (totalPrice, discountedTotalPrice) => {
-  let updatedTotalPrice = 0;
-  let discRate = 0;
-
-  // 총합 개수 bulk 할인
-  const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
-  if (itemCnt >= TOTAL_BULK_DISCOUNT_AMOUNT) {
-    const bulkDiscountedPrice = discountedTotalPrice * 0.25;
-    const itemBulkDiscountedPrice = totalPrice - discountedTotalPrice;
-    if (bulkDiscountedPrice > itemBulkDiscountedPrice) {
-      updatedTotalPrice = totalPrice * (1 - 0.25);
-      discRate = 0.25;
-    } else {
-      updatedTotalPrice = discountedTotalPrice;
-      discRate = (totalPrice - discountedTotalPrice) / totalPrice;
-    }
-  } else {
-    updatedTotalPrice = discountedTotalPrice;
-    discRate = (totalPrice - discountedTotalPrice) / totalPrice;
-  }
-
-  // 화요일 할인
-  const SALE_DAY = 2;
-  const SALE_DAY_DISCOUNT_RATE = 0.1;
-  if (new Date().getDay() === SALE_DAY) {
-    updatedTotalPrice *= 1 - SALE_DAY_DISCOUNT_RATE;
-    discRate = Math.max(discRate, SALE_DAY_DISCOUNT_RATE);
-  }
-
-  return { updatedTotalPrice, discRate };
-};
-const updateSumInfo = (discountedTotalPrice, discRate) => {
-  sum.textContent = '총액: ' + Math.round(discountedTotalPrice) + '원';
-  if (discRate > 0) {
-    const span = document.createElement('span');
-    span.className = 'text-green-500 ml-2';
-    span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
-    sum.appendChild(span);
-  }
-};
-const updateStockInfo = () => {
-  let infoMsg = '';
-  PROD_LIST.forEach((item) => {
-    if (item.quantity < 5) {
-      infoMsg += item.name + ': ' + (item.quantity > 0 ? '재고 부족 (' + item.quantity + '개 남음)' : '품절') + '\n';
-    }
-  });
-  stockInfo.textContent = infoMsg;
-};
-const renderBonusPts = (totalPrice) => {
-  bonusPts += Math.floor(totalPrice / 1000);
-  let ptsTag = document.getElementById('loyalty-points');
-  if (!ptsTag) {
-    ptsTag = document.createElement('span');
-    ptsTag.id = 'loyalty-points';
-    ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
-  }
-  ptsTag.textContent = '(포인트: ' + bonusPts + ')';
+  bonusPts = updateBonusPts(bonusPts, updatedTotalPrice);
 };
 
 main();
