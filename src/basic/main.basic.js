@@ -1,7 +1,7 @@
 import {
   calcDiscounts,
   getProductBulkDiscountRate,
-  updateBonusPts,
+  updateBonusPoints,
   updateProductOptions,
   updateProductsStockInfo,
   updateTotalInfo,
@@ -10,7 +10,7 @@ import { PRODUCTS } from './utils/const';
 
 let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
 let lastSel,
-  bonusPts = 0;
+  bonusPoints = 0;
 
 const main = () => {
   renderCartUI();
@@ -111,7 +111,7 @@ const calcCart = () => {
 
   updateTotalInfo(updatedTotalPrice, discRate);
   updateProductsStockInfo();
-  bonusPts = updateBonusPts(bonusPts, updatedTotalPrice);
+  bonusPoints = updateBonusPoints(bonusPoints, updatedTotalPrice);
 };
 
 main();

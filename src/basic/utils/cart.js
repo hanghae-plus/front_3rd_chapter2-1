@@ -75,8 +75,8 @@ export const updateProductsStockInfo = () => {
   });
   stockInfo.textContent = infoMsg;
 };
-export const updateBonusPts = (bonusPts, totalPrice) => {
-  bonusPts += Math.floor(totalPrice / 1000);
+export const updateBonusPoints = (bonusPoints, totalPrice) => {
+  bonusPoints += Math.floor(totalPrice / 1000);
 
   let ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
@@ -86,7 +86,7 @@ export const updateBonusPts = (bonusPts, totalPrice) => {
     ptsTag.className = 'text-blue-500 ml-2';
     cartTotalInfo.appendChild(ptsTag);
   }
-  ptsTag.textContent = '(포인트: ' + bonusPts + ')';
+  ptsTag.textContent = '(포인트: ' + bonusPoints + ')';
 
-  return bonusPts;
+  return bonusPoints;
 };
