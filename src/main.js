@@ -3,10 +3,7 @@ import { calculateCart } from "./events/Cart/CalculateCart.js";
 import { setup } from "./setup.js";
 
 let selectEl, addToCartButton, cartDisplay, cartTotal, stockInfo;
-let lastSelectedItem,
-  bonusPoints = 0,
-  totalAmount = 0,
-  itemCount = 0;
+let lastSelectedItem;
 
 function main() {
   // const root = document.getElementById("app");
