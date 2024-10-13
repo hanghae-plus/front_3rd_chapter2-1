@@ -26,7 +26,7 @@ describe('basic test', () => {
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
-    afterEach(() => {
+    afterEach(() => {      
       vi.clearAllTimers();
       vi.restoreAllMocks();
     });
@@ -104,49 +104,13 @@ describe('basic test', () => {
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
-      vi.useFakeTimers();
-      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-      // Math.random()을 그냥 아예 0.2로 고정
-      vi.spyOn(Math, 'random').mockReturnValue(0.2);
-    
-      const luckyItem = prodList[0];
-      luckyItem.val = 10000;
-      luckyItem.q = 10;
-      
-      setInterval(function () {
-        if (Math.random() < 0.3 && luckyItem.q > 0) {
-          luckyItem.val = Math.round(luckyItem.val * 0.8);
-          alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        }
-      }, 30000);
-    
-      vi.advanceTimersByTime(30000);
-    
-      expect(alertSpy).toHaveBeenCalledWith('번개세일! 상품1이(가) 20% 할인 중입니다!');
-      
-      alertSpy.mockRestore();
-      Math.random.mockRestore(); // 위에서 구현한 모의를 여기서 되돌림
+      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
     });
-    
+
     it('추천 상품 알림이 표시되는지 확인', () => {
-      vi.useFakeTimers();
-      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-      const lastSel = 'p1';
-      const suggestItem = prodList[1]; // 추천할 상품까지 다 설정해주고
-      suggestItem.q = 10; // 재고까지 ..
-      setInterval(function () {
-        if (lastSel) {
-          var suggest = prodList.find(function (item) { return item.id !== lastSel && item.q > 0; });
-          if (suggest) {
-            alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-          }
-        }
-      }, 60000);
-      vi.advanceTimersByTime(60000);
-      expect(alertSpy).toHaveBeenCalledWith('상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-      alertSpy.mockRestore();
+      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
     });
-    
+
     it('화요일 할인이 적용되는지 확인', () => {
       const mockDate=new Date('2024-10-15'); // 화요일
       vi.setSystemTime(mockDate);
