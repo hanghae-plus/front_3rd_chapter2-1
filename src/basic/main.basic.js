@@ -1,4 +1,4 @@
-let sel, addBtn, cartItems, sum, stockInfo;
+let sel, addBtn, cartItemsDisplay, sum, stockInfo;
 let lastSel,
   bonusPts = 0,
   totalAmt = 0,
@@ -25,13 +25,13 @@ const renderShoppingCart = () => {
   let cont = document.createElement('div');
   const wrap = document.createElement('div');
   const title = document.createElement('h1');
-  cartItems = document.createElement('div');
+  cartItemsDisplay = document.createElement('div');
   sum = document.createElement('div');
   sel = document.createElement('select');
   addBtn = document.createElement('button');
   stockInfo = document.createElement('div');
 
-  cartItems.id = 'cart-items';
+  cartItemsDisplay.id = 'cart-items';
   sum.id = 'cart-total';
   sel.id = 'product-select';
   addBtn.id = 'add-to-cart';
@@ -50,7 +50,7 @@ const renderShoppingCart = () => {
   updateSelOpts();
 
   wrap.appendChild(title);
-  wrap.appendChild(cartItems);
+  wrap.appendChild(cartItemsDisplay);
   wrap.appendChild(sum);
   wrap.appendChild(sel);
   wrap.appendChild(addBtn);
@@ -100,7 +100,7 @@ const updateSelOpts = () => {
 const calcCart = () => {
   totalAmt = 0;
   itemCnt = 0;
-  const cartItems = cartItems.children;
+  const cartItems = cartItemsDisplay.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
     (function () {
@@ -212,14 +212,14 @@ addBtn.addEventListener('click', () => {
         '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
         itemToAdd.id +
         '">삭제</button></div>';
-      cartItems.appendChild(newItem);
+      cartItemsDisplay.appendChild(newItem);
       itemToAdd.quantity--;
     }
     calcCart();
     lastSel = selItem;
   }
 });
-cartItems.addEventListener('click', (event) => {
+cartItemsDisplay.addEventListener('click', (event) => {
   const tgt = event.target;
 
   if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
