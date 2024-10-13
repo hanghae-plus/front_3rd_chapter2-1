@@ -1,7 +1,6 @@
 let sel, addBtn, cartItemsDisplay, sum, stockInfo;
 let lastSel,
   bonusPts = 0,
-  totalAmt = 0,
   itemCnt = 0;
 
 const PROD_LIST = [
@@ -13,12 +12,12 @@ const PROD_LIST = [
 ];
 
 const main = () => {
-  renderShoppingCart();
+  renderCartUI();
   calcCart();
   scheduleRandomSales();
 };
 
-const renderShoppingCart = () => {
+const renderCartUI = () => {
   const root = document.getElementById('app');
   let cont = document.createElement('div');
   const wrap = document.createElement('div');
@@ -95,11 +94,28 @@ const updateSelOpts = () => {
     sel.appendChild(opt);
   });
 };
+
+const getProductBulkDiscountRate = (productId, quantity) => {
+  const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
+  const PRODUCT_BULK_DISCOUNT_RATE = {
+    p1: 0.1,
+    p2: 0.15,
+    p3: 0.2,
+    p4: 0.05,
+    p5: 0.25,
+  };
+
+  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
+  return 0;
+};
+
 const calcCart = () => {
-  totalAmt = 0;
+  let totalPrice = 0;
+  let discountedTotalPrice = 0;
   itemCnt = 0;
+
+  // 장바구니에 담긴 상품들을 순회하며 총액 계산 + 상품개수에 따른 할인 적용
   const cartItems = cartItemsDisplay.children;
-  let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
     let curItem;
     for (let j = 0; j < PROD_LIST.length; j++) {
@@ -109,49 +125,61 @@ const calcCart = () => {
       }
     }
 
-    const q = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
-    const itemTot = curItem.price * q;
-    let disc = 0;
-    itemCnt += q;
-    subTot += itemTot;
-    if (q >= 10) {
-      if (curItem.id === 'p1') disc = 0.1;
-      else if (curItem.id === 'p2') disc = 0.15;
-      else if (curItem.id === 'p3') disc = 0.2;
-      else if (curItem.id === 'p4') disc = 0.05;
-      else if (curItem.id === 'p5') disc = 0.25;
-    }
-    totalAmt += itemTot * (1 - disc);
+    const quantity = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
+    const productTotalPrice = curItem.price * quantity;
+    itemCnt += quantity;
+    totalPrice += productTotalPrice;
+
+    const productBulkDiscountRate = getProductBulkDiscountRate(curItem.id, quantity);
+    discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
   }
+  const { updatedTotalPrice, discRate } = calcDiscounts(totalPrice, discountedTotalPrice);
+
+  updateSumInfo(updatedTotalPrice, discRate);
+  updateStockInfo();
+  renderBonusPts(updatedTotalPrice);
+};
+
+const calcDiscounts = (totalPrice, discountedTotalPrice) => {
+  let updatedTotalPrice = 0;
   let discRate = 0;
-  if (itemCnt >= 30) {
-    const bulkDisc = totalAmt * 0.25;
-    const itemDisc = subTot - totalAmt;
-    if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
+
+  // 총합 개수 bulk 할인
+  const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
+  if (itemCnt >= TOTAL_BULK_DISCOUNT_AMOUNT) {
+    const bulkDiscountedPrice = discountedTotalPrice * 0.25;
+    const itemBulkDiscountedPrice = totalPrice - discountedTotalPrice;
+    if (bulkDiscountedPrice > itemBulkDiscountedPrice) {
+      updatedTotalPrice = totalPrice * (1 - 0.25);
       discRate = 0.25;
     } else {
-      discRate = (subTot - totalAmt) / subTot;
+      updatedTotalPrice = discountedTotalPrice;
+      discRate = (totalPrice - discountedTotalPrice) / totalPrice;
     }
   } else {
-    discRate = (subTot - totalAmt) / subTot;
+    updatedTotalPrice = discountedTotalPrice;
+    discRate = (totalPrice - discountedTotalPrice) / totalPrice;
   }
 
-  if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+  // 화요일 할인
+  const SALE_DAY = 2;
+  const SALE_DAY_DISCOUNT_RATE = 0.1;
+  if (new Date().getDay() === SALE_DAY) {
+    updatedTotalPrice *= 1 - SALE_DAY_DISCOUNT_RATE;
+    discRate = Math.max(discRate, SALE_DAY_DISCOUNT_RATE);
   }
-  sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
+
+  return { updatedTotalPrice, discRate };
+};
+const updateSumInfo = (discountedTotalPrice, discRate) => {
+  sum.textContent = '총액: ' + Math.round(discountedTotalPrice) + '원';
   if (discRate > 0) {
     const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
   }
-  updateStockInfo();
-  renderBonusPts();
 };
-
 const updateStockInfo = () => {
   let infoMsg = '';
   PROD_LIST.forEach((item) => {
@@ -161,8 +189,8 @@ const updateStockInfo = () => {
   });
   stockInfo.textContent = infoMsg;
 };
-const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+const renderBonusPts = (totalPrice) => {
+  bonusPts += Math.floor(totalPrice / 1000);
   let ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
     ptsTag = document.createElement('span');
