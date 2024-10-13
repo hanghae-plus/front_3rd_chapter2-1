@@ -53,7 +53,7 @@ export const updateProductOptions = () => {
     productSelectDropdown.appendChild(opt);
   });
 };
-export const updateSumInfo = (discountedTotalPrice, discRate) => {
+export const updateTotalInfo = (discountedTotalPrice, discRate) => {
   const cartTotalInfo = document.getElementById('cart-total');
 
   cartTotalInfo.textContent = '총액: ' + Math.round(discountedTotalPrice) + '원';

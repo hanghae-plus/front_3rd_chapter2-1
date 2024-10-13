@@ -4,7 +4,7 @@ import {
   updateBonusPts,
   updateProductOptions,
   updateProductsStockInfo,
-  updateSumInfo,
+  updateTotalInfo,
 } from './utils/cart';
 import { PRODUCTS } from './utils/const';
 
@@ -109,7 +109,7 @@ const calcCart = () => {
   }
   const { updatedTotalPrice, discRate } = calcDiscounts(itemCnt, totalPrice, discountedTotalPrice);
 
-  updateSumInfo(updatedTotalPrice, discRate);
+  updateTotalInfo(updatedTotalPrice, discRate);
   updateProductsStockInfo();
   bonusPts = updateBonusPts(bonusPts, updatedTotalPrice);
 };
