@@ -27,6 +27,7 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      vi.clearAllTimers();
       vi.restoreAllMocks();
     });
 
