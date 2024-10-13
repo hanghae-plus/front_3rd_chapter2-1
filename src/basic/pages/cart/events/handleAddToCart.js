@@ -20,7 +20,7 @@ function updateCart(product) {
   } else {
     setCartItemState((prevState) => {
       return {
-        cartItems: [...prevState.cartItems, { ...product, q: 1 }],
+        cartItems: [...prevState.cartItems, { ...product, selectQuantity: 1 }],
       };
     });
   }
@@ -29,26 +29,45 @@ function updateCart(product) {
 }
 
 // 새로운 수량을 설정하는 함수 - 스토어를 통해 상태를 업데이트
-function updateCartItemQuantity(productId, quantityChange) {
+export function updateCartItemQuantity(productId, quantityChange) {
   const { cartItems } = cartItemStore.getState(); // 현재 cartItems 상태 가져오기
 
   // 해당 상품 찾기
   const product = cartItems.find((item) => item.id === productId);
+  if (!product) {
+    console.error(`Product with id ${productId} not found.`);
+    return;
+  }
+
+  console.log(product.selectQuantity, 'product.selectQuantity');
 
   // 수량 업데이트
-  const newQty = product.q + quantityChange;
+  const newQty = product.selectQuantity + quantityChange;
+
+  console.log(newQty, 'newQty');
 
   // 재고가 부족한 경우 처리
-  if (newQty < 0) {
+  if (newQty > product.quantity) {
     alert('재고가 부족합니다.');
     return;
+  }
+
+  if (newQty === 0) {
+    cartItemStore.setState((prevState) => {
+      const updatedCartItems = prevState.cartItems.filter(
+        (item) => item.id !== productId
+      );
+
+      return { cartItems: updatedCartItems };
+    });
   }
 
   // 스토어의 상태 업데이트
   cartItemStore.setState((prevState) => {
     const updatedCartItems = prevState.cartItems.map((item) => {
       if (item.id === productId) {
-        return { ...item, q: newQty }; // 새로운 수량으로 업데이트
+        console.log('Updating selectQuantity:', newQty);
+        return { ...item, selectQuantity: newQty }; // 새로운 수량으로 업데이트
       }
       return item;
     });
