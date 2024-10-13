@@ -83,6 +83,7 @@ function main() {
   }, Math.random() * 20000);
 }
 
+// 상품 리스트 셀렉터에 추가
 function updateSelOpts() {
   sel.innerHTML = '';
   prodList.forEach(function (item) {
@@ -96,6 +97,7 @@ function updateSelOpts() {
 }
 
 function calcCart() {
+  console.log('언제 실행?');
   totalAmt = 0;
   itemCnt = 0;
   var cartItems = cartDisp.children;
