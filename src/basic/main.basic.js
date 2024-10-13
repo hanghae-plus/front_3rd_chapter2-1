@@ -1,10 +1,11 @@
 import {
   products,
-  calcDiscounts,
+  calcDayDiscount,
   getProductBulkDiscountRate,
   updateBonusPoints,
-  updateProductsStockInfo,
+  renderProductsStockInfo,
   updateTotalInfo,
+  calcTotalProductsBulkDiscount,
 } from './utils/cart';
 
 let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
@@ -15,7 +16,7 @@ const main = () => {
   renderCartUI();
   renderProductOptions();
 
-  calcCart();
+  updateCartInfos();
   scheduleRandomSales();
 };
 
@@ -69,6 +70,31 @@ const renderProductOptions = () => {
     productSelectDropdown.appendChild(opt);
   });
 };
+const updateCartInfos = () => {
+  let totalItems = 0;
+  let totalPrice = 0;
+  let discountedTotalPrice = 0;
+
+  const cartItems = cartItemsDisplay.children;
+  for (let cartItem of cartItems) {
+    const currentProduct = products.find((product) => product.id === cartItem.id);
+    const quantity = parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
+    const productTotalPrice = currentProduct.price * quantity;
+
+    totalItems += quantity;
+    totalPrice += productTotalPrice;
+
+    const productBulkDiscountRate = getProductBulkDiscountRate(currentProduct.id, quantity);
+    discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
+  }
+
+  const updatedTotalPriceAndDiscountRate = calcTotalProductsBulkDiscount(totalItems, totalPrice, discountedTotalPrice);
+  const { updatedTotalPrice, discountRate } = calcDayDiscount(updatedTotalPriceAndDiscountRate);
+
+  updateTotalInfo(updatedTotalPrice, discountRate);
+  bonusPoints = updateBonusPoints(bonusPoints, updatedTotalPrice);
+  renderProductsStockInfo();
+};
 const scheduleRandomSales = () => {
   setTimeout(() => {
     setInterval(() => {
@@ -95,37 +121,6 @@ const scheduleRandomSales = () => {
       }
     }, 60000);
   }, Math.random() * 20000);
-};
-const calcCart = () => {
-  let totalPrice = 0;
-  let discountedTotalPrice = 0;
-  let itemCnt = 0;
-
-  // 장바구니에 담긴 상품들을 순회하며 총액 계산 + 상품개수에 따른 할인 적용
-  const cartItems = cartItemsDisplay.children;
-  for (let i = 0; i < cartItems.length; i++) {
-    let curItem;
-    for (let j = 0; j < products.length; j++) {
-      if (products[j].id === cartItems[i].id) {
-        curItem = products[j];
-        break;
-      }
-    }
-
-    const quantity = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
-    const productTotalPrice = curItem.price * quantity;
-    itemCnt += quantity;
-    totalPrice += productTotalPrice;
-
-    const productBulkDiscountRate = getProductBulkDiscountRate(curItem.id, quantity);
-    discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
-  }
-
-  const { updatedTotalPrice, discRate } = calcDiscounts(itemCnt, totalPrice, discountedTotalPrice);
-
-  updateTotalInfo(updatedTotalPrice, discRate);
-  updateProductsStockInfo();
-  bonusPoints = updateBonusPoints(bonusPoints, updatedTotalPrice);
 };
 
 main();
@@ -167,7 +162,7 @@ addToCartBtn.addEventListener('click', () => {
       cartItemsDisplay.appendChild(newItem);
       itemToAdd.quantity--;
     }
-    calcCart();
+    updateCartInfos();
     lastSel = selItem;
   }
 });
@@ -198,6 +193,6 @@ cartItemsDisplay.addEventListener('click', (event) => {
       prod.quantity += remQty;
       itemElem.remove();
     }
-    calcCart();
+    updateCartInfos();
   }
 });
