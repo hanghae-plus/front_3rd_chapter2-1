@@ -3,7 +3,7 @@ import { addToCart, changeCartItemQuantity, removeCartItem } from './utils/cartO
 import { setSuggestDiscount, setSurpriseDiscount } from './utils/discount';
 import { products, renderProductOptions } from './utils/product';
 
-let $productSelectDropdown, $addToCartBtn, $cartItemsDisplay, $cartTotalInfo, $productsStockInfo;
+let $addToCartBtn, $cartItemsDisplay;
 let lastAddedProduct,
   bonusPoints = 0;
 
@@ -21,11 +21,11 @@ const renderCartUI = () => {
   const $cartWrapper = document.createElement('div');
   const $cartContainer = document.createElement('div');
   const $cartTitle = document.createElement('h1');
+  const $cartTotalInfo = document.createElement('div');
+  const $productSelectDropdown = document.createElement('select');
+  const $productsStockInfo = document.createElement('div');
   $cartItemsDisplay = document.createElement('div');
-  $cartTotalInfo = document.createElement('div');
-  $productSelectDropdown = document.createElement('select');
   $addToCartBtn = document.createElement('button');
-  $productsStockInfo = document.createElement('div');
 
   $cartItemsDisplay.id = 'cart-items';
   $cartTotalInfo.id = 'cart-total';
