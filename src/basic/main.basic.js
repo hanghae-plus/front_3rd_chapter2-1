@@ -1,13 +1,10 @@
+import { products, renderProductsStockInfo, updateBonusPoints, updateTotalInfo } from './utils/cart';
 import {
   calculateDayDiscount,
   calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   getProductBulkDiscountRate,
-  products,
-  renderProductsStockInfo,
-  updateBonusPoints,
-  updateTotalInfo,
-} from './utils/cart';
+} from './utils/discount';
 
 let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
 let lastAddedProduct,
