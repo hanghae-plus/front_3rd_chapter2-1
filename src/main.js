@@ -1,12 +1,18 @@
-// var -> let, const로 변경함.
-
+// * 설명
+// ! 주의
+// ? 궁금
+// TODO 할일
+// // 취소
+// var -> let, const로 변경함? 호이스팅 예방
 // 타입을 일일이 선언해 준 이유? 가독성 측면 때문에
-// 함수 표현식 화살표 함수로 처리? 호이스팅 때문에. 호이스팅? 함수 or 변수 선언을 맨 위 상단으로 끌어 올리는 현상
+// 함수 표현식 처리? 호이스팅 예방
+// 화살표 함수로 처리? 비동기처리할 때 화살표 함수로 사용하고 있는 것이 기본룰처럼 여겨져서
+// if 조건문 3개 이상이면 switch문으로 전환
 
 // ### 2) **체크리스트**
 
 // - 코드가 Prettier를 통해 일관된 포맷팅이 적용되어 있는가? O
-// - 적절한 줄바꿈과 주석을 사용하여 코드의 논리적 단위를 명확히 구분했는가?
+// - 적절한 줄바꿈과 주석을 사용하여 코드의 논리적 단위를 명확히 구분했는가? O <- 함수별, 버튼별 단위 분리. 추가로 더 나눌 부분 있는지 확인할 예정
 // - 변수명과 함수명이 그 역할을 명확히 나타내며, 일관된 네이밍 규칙을 따르는가?
 // - 매직 넘버와 문자열을 의미 있는 상수로 추출했는가?
 // - 중복 코드를 제거하고 재사용 가능한 형태로 리팩토링했는가?
@@ -27,6 +33,7 @@
 // - 코드 리뷰를 통해 다른 개발자들의 피드백을 반영하고 개선했는가?
 
 // * 전역변수
+
 let prodList = '';
 let sel = '';
 let addBtn = '';
@@ -39,20 +46,47 @@ let totalAmt = 0;
 let itemCnt = 0;
 
 // * 메인함수
+
 const main = function () {
   try {
-    prodList = [
-      { id: 'p1', name: '상품1', price: 10000, stock: 50 },
-      { id: 'p2', name: '상품2', price: 20000, stock: 30 },
-      { id: 'p3', name: '상품3', price: 30000, stock: 20 },
-      { id: 'p4', name: '상품4', price: 15000, stock: 0 },
-      { id: 'p5', name: '상품5', price: 25000, stock: 10 },
-    ];
-
+    // main으로 선언된 변수들이라 분리하여 최상단으로 올림.
     let root = document.getElementById('app');
     let cont = document.createElement('div');
     let wrap = document.createElement('div');
     let hTxt = document.createElement('h1');
+
+    prodList = [{
+        id: 'p1',
+        name: '상품1',
+        price: 10000,
+        stock: 50
+      },
+      {
+        id: 'p2',
+        name: '상품2',
+        price: 20000,
+        stock: 30
+      },
+      {
+        id: 'p3',
+        name: '상품3',
+        price: 30000,
+        stock: 20
+      },
+      {
+        id: 'p4',
+        name: '상품4',
+        price: 15000,
+        stock: 0
+      },
+      {
+        id: 'p5',
+        name: '상품5',
+        price: 25000,
+        stock: 10
+      },
+    ];
+
     cartDisp = document.createElement('div');
     sum = document.createElement('div');
     sel = document.createElement('select');
@@ -74,7 +108,7 @@ const main = function () {
     stockInfo.className = 'text-sm text-gray-500 mt-2';
     hTxt.textContent = '장바구니';
     addBtn.textContent = '추가';
-    updateSelOpts();
+    updatePrice();
     wrap.appendChild(hTxt);
     wrap.appendChild(cartDisp);
     wrap.appendChild(sum);
@@ -87,12 +121,10 @@ const main = function () {
     setTimeout(() => {
       setInterval(() => {
         var luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-        console.log(luckyItem)
-        console.log('hi')
         if (Math.random() < 0.3 && luckyItem.stock > 0) {
           luckyItem.price = Math.round(luckyItem.price * 0.8);
           alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-          updateSelOpts();
+          updatePrice();
         }
       }, 30000);
     }, Math.random() * 10000);
@@ -107,24 +139,30 @@ const main = function () {
               suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
             );
             suggest.price = Math.round(suggest.price * 0.95);
-            updateSelOpts();
+            updatePrice();
           }
         }
       }, 60000);
     }, Math.random() * 20000);
   } catch (e) {}
 };
-const updateSelOpts = () => {
+
+// * 가격정보 업데이트
+
+const updatePrice = () => {
   sel.innerHTML = '';
   prodList.forEach((item) => {
     var opt = document.createElement('option');
     opt.value = item.id;
-
     opt.textContent = item.name + ' - ' + item.price + '원';
     if (item.stock === 0) opt.disabled = true;
     sel.appendChild(opt);
   });
 };
+
+
+// * 카트계산
+
 const calcCart = () => {
   totalAmt = 0;
   itemCnt = 0;
@@ -139,20 +177,30 @@ const calcCart = () => {
           break;
         }
       }
-
-      var stock = parseInt(
-        cartItems[i].querySelector('span').textContent.split('x ')[1]
-      );
+      var stock = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
       var itemTot = curItem.price * stock;
       var disc = 0;
       itemCnt += stock;
       subTot += itemTot;
+
       if (stock >= 10) {
-        if (curItem.id === 'p1') disc = 0.1;
-        else if (curItem.id === 'p2') disc = 0.15;
-        else if (curItem.id === 'p3') disc = 0.2;
-        else if (curItem.id === 'p4') disc = 0.05;
-        else if (curItem.id === 'p5') disc = 0.25;
+        switch (curItem.id) {
+          case 'p1':
+            disc = 0.1;
+            break;
+          case 'p2':
+            disc = 0.15;
+            break;
+          case 'p3':
+            disc = 0.2;
+            break;
+          case 'p4':
+            disc = 0.05;
+            break;
+          case 'p5':
+            disc = 0.25;
+            break;
+        }
       }
       totalAmt += itemTot * (1 - disc);
     })();
@@ -175,9 +223,6 @@ const calcCart = () => {
     totalAmt *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
-  console.log(totalAmt);
-  console.log(sum);
-  console.log(discRate);
   sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
   if (discRate > 0) {
     var span = document.createElement('span');
@@ -185,9 +230,14 @@ const calcCart = () => {
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
   }
-  updateStockInfo();
+  updateStock();
   renderBonusPts();
 };
+
+
+// * 보너스포인트 계산
+
+
 const renderBonusPts = () => {
   bonusPts += Math.floor(totalAmt / 1000);
   var ptsTag = document.getElementById('loyalty-points');
@@ -200,9 +250,13 @@ const renderBonusPts = () => {
   ptsTag.textContent = '(포인트: ' + bonusPts + ')';
 };
 
-const updateStockInfo = function () {
+
+
+// * 잔고수량계산
+
+const updateStock = function () {
   var infoMsg = '';
-  prodList.forEach(function (item) {
+  prodList.forEach((item) => {
     if (item.stock < 5) {
       infoMsg +=
         item.name +
@@ -214,12 +268,15 @@ const updateStockInfo = function () {
   stockInfo.textContent = infoMsg;
 };
 
+// * 메인함수
+
 main();
+
+// * 추가버튼 클릭시 발생하는 이벤트
 
 addBtn.addEventListener('click', () => {
   var selItem = sel.value;
-  console.log(sel.value);
-  var itemToAdd = prodList.find(function (p) {
+  var itemToAdd = prodList.find((p) => {
     return p.id === selItem;
   });
   if (itemToAdd && itemToAdd.stock > 0) {
@@ -229,7 +286,7 @@ addBtn.addEventListener('click', () => {
         parseInt(item.querySelector('span').textContent.split('x ')[1]) + 1;
       if (newQty <= itemToAdd.stock) {
         item.querySelector('span').textContent =
-          itemToAdd.name + ' - ' + itemToAdd.val + '원 x ' + newQty;
+          itemToAdd.name + ' - ' + itemToAdd.price + '원 x ' + newQty;
         itemToAdd.stock--;
       } else {
         alert('재고가 부족합니다.');
@@ -260,6 +317,9 @@ addBtn.addEventListener('click', () => {
     lastSel = selItem;
   }
 });
+
+// * - + 삭제 버튼 클릭시 발생하는 이벤트
+
 cartDisp.addEventListener('click', (event) => {
   var tgt = event.target;
 
@@ -269,7 +329,7 @@ cartDisp.addEventListener('click', (event) => {
   ) {
     var prodId = tgt.dataset.productId;
     var itemElem = document.getElementById(prodId);
-    var prod = prodList.find(function (p) {
+    var prod = prodList.find((p) => {
       return p.id === prodId;
     });
     if (tgt.classList.contains('quantity-change')) {
@@ -280,8 +340,8 @@ cartDisp.addEventListener('click', (event) => {
       if (
         newQty > 0 &&
         newQty <=
-          prod.stock +
-            parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
+        prod.stock +
+        parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
       ) {
         itemElem.querySelector('span').textContent =
           itemElem.querySelector('span').textContent.split('x ')[0] +
