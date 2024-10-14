@@ -10,119 +10,162 @@ const productList = [
 // 전역 상태관리 & 변수명 변경. reactr가 생각났다.
 const state = {
   lastSelected: null,
+  cart: [],
   bonusPoints: 0,
   totalAmount: 0,
   itemCnt: 0,
 };
-//상단에 Root정의
-const root = document.getElementById('app');
+
 // El생성
-const createElementWithHandler = (tagName, { events = {}, ...options } = {}, parent = root) => {
-  const element = document.createElement(tagName);
+const createElementWithHandler = (tagName, { events = {}, ...options } = {}, parent) => {
+  const $element = document.createElement(tagName);
 
   // 속성 설정
   Object.entries(options).forEach(([key, value]) => {
-    if (value) element[key] = value;
+    if (value) $element[key] = value;
   });
 
   // 이벤트 리스너 등록
   Object.entries(events).forEach(([event, handler]) => {
-    element.addEventListener(event, handler);
+    $element.addEventListener(event, handler);
   });
 
   // 부모에 추가
-  parent.appendChild(element);
-  return element;
+  parent.appendChild($element);
+  return $element;
 };
+`<div id="cart-items">
+  <div id="p1" class="flex justify-between items-center mb-2">
+    <span>상품1 - 10000원 x 1</span>
+    <div>
+      <button 
+        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" 
+        data-product-id="p1" 
+        data-change="-1">
+        -
+      </button>
+      <button 
+        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" 
+        data-product-id="p1" 
+        data-change="1">
+        +
+      </button>
+      <button 
+        class="remove-item bg-red-500 text-white px-2 py-1 rounded" 
+        data-product-id="p1">
+        삭제
+      </button>
+    </div>
+  </div>
+</div>`;
 
-// cont
-const cont = createElementWithHandler(
-  'div',
-  {
-    className: 'bg-gray-100 p-8',
-  },
-  root
-);
-//wrap
-const wrap = createElementWithHandler(
-  'div',
-  {
-    className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
-  },
-  cont
-);
-
-const title = createElementWithHandler(
-  'h1',
-  {
-    className: 'text-2xl font-bold mb-4',
-    textContent: '장바구니',
-  },
-  wrap
-);
-
-const cart = createElementWithHandler(
-  'div',
-  {
-    id: 'cart-items',
-    events: {
-      click: ($event) => {
-        let tgt = $event.target;
-
-        if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
-          let prodId = tgt.dataset.productId;
-          let itemElem = document.getElementById(prodId);
-          let prod = productList.find(function (p) {
-            return p.id === prodId;
-          });
-          if (tgt.classList.contains('quantity-change')) {
-            let qtyChange = parseInt(tgt.dataset.change);
-            let newQty =
-              parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + qtyChange;
-            if (
-              newQty > 0 &&
-              newQty <=
-                prod.stock + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
-            ) {
-              itemElem.querySelector('span').textContent =
-                itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + newQty;
-              prod.stock -= qtyChange;
-            } else if (newQty <= 0) {
-              itemElem.remove();
-              prod.stock -= qtyChange;
-            } else {
-              alert('재고가 부족합니다.');
-            }
-          } else if (tgt.classList.contains('remove-item')) {
-            let remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
-            prod.stock += remQty;
-            itemElem.remove();
-          }
-          calcCart();
-        }
+const addToCart = () => {
+  const $cart = document.getElementById('cart-items');
+  createElementWithHandler(
+    'div',
+    {
+      id: selectedItemInfo.id,
+      className: 'flex justify-between items-center mb-2',
+      innerHTML:
+        '<span>' +
+        selectedItemInfo.name +
+        ' - ' +
+        selectedItemInfo.price +
+        '원 x 1</span><div>' +
+        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
+        selectedItemInfo.id +
+        '" data-change="-1">-</button>' +
+        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
+        selectedItemInfo.id +
+        '" data-change="1">+</button>' +
+        '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
+        selectedItemInfo.id +
+        '">삭제</button></div>',
+      events: {
+        click: (e) => {},
       },
     },
-  },
-  wrap
-);
+    $cart
+  );
+};
 
-const cartTotal = createElementWithHandler(
-  'div',
-  {
-    id: 'cart-total',
-    className: 'text-xl font-bold my-4',
-  },
-  wrap
-);
+const updateCartItem = (product) => {
+  // let product = $event.target;
 
-const productSelect = createElementWithHandler(
-  'select',
-  {
-    id: 'product-select',
-    className: 'border rounded p-2 mr-2',
-  },
-  wrap
-);
+  // if (product.classList.contains('quantity-change') || product.classList.contains('remove-item')) {
+  let prodId = product.dataset.productId;
+  let itemElem = document.getElementById(prodId);
+  let prod = productList.find(function (p) {
+    return p.id === prodId;
+  });
+  if (product.classList.contains('quantity-change')) {
+    let qtyChange = parseInt(product.dataset.change);
+    let newQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + qtyChange;
+    if (
+      newQty > 0 &&
+      newQty <= prod.stock + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
+    ) {
+      itemElem.querySelector('span').textContent =
+        itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + newQty;
+      prod.stock -= qtyChange;
+    } else if (newQty <= 0) {
+      itemElem.remove();
+      prod.stock -= qtyChange;
+    } else {
+      alert('재고가 부족합니다.');
+    }
+  } else if (product.classList.contains('remove-item')) {
+    let remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
+    prod.stock += remQty;
+    itemElem.remove();
+  }
+  calcCart();
+  // }
+};
+// const cart = createElementWithHandler(
+//   'div',
+//   {
+//     id: 'cart-items',
+//     events: {
+//       click: ($event) => {
+//         let product = $event.target;
+
+//         if (product.classList.contains('quantity-change') || product.classList.contains('remove-item')) {
+//           let prodId = product.dataset.productId;
+//           let itemElem = document.getElementById(prodId);
+//           let prod = productList.find(function (p) {
+//             return p.id === prodId;
+//           });
+//           if (product.classList.contains('quantity-change')) {
+//             let qtyChange = parseInt(product.dataset.change);
+//             let newQty =
+//               parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + qtyChange;
+//             if (
+//               newQty > 0 &&
+//               newQty <=
+//                 prod.stock + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
+//             ) {
+//               itemElem.querySelector('span').textContent =
+//                 itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + newQty;
+//               prod.stock -= qtyChange;
+//             } else if (newQty <= 0) {
+//               itemElem.remove();
+//               prod.stock -= qtyChange;
+//             } else {
+//               alert('재고가 부족합니다.');
+//             }
+//           } else if (product.classList.contains('remove-item')) {
+//             let remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
+//             prod.stock += remQty;
+//             itemElem.remove();
+//           }
+//           calcCart();
+//         }
+//       },
+//     },
+//   },
+//   wrap
+// );
 
 const addToCartBtn = createElementWithHandler(
   'button',
@@ -183,17 +226,23 @@ const addToCartBtn = createElementWithHandler(
   wrap
 );
 
-const stockStatus = createElementWithHandler(
-  'div',
-  {
-    id: 'stock-status',
-    className: 'text-sm text-gray-500 mt-2',
-  },
-  wrap
-);
-
 // element 구성
-const mounted = () => {};
+const mounted = () => {
+  //상단에 Root정의
+  const $root = document.getElementById('app');
+  $root.innerHTML = `
+  <div class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
+      <h1 class="text-2xl font-bold mb-4">장바구니</h1>
+      <div id="cart-items"></div>
+      <div id="cart-total" class="text-xl font-bold my-4"></div>
+      <select id="product-select" class="border rounded p-2 mr-2"></select>
+      <button id="add-to-cart" class="bg-blue-500 text-white px-4 py-2 rounded">추가</button>
+      <div id="stock-status" class="text-sm text-gray-500 mt-2"></div>
+    </div>
+  </div>`;
+  document.addEventListener('DOMContentLoaded', () => {});
+};
 
 const renderbonusPoints = () => {
   state.bonusPoints += Math.floor(state.totalAmount / 1000);
@@ -325,6 +374,7 @@ const callTimeSale = () => {
 };
 
 function main() {
+  mounted();
   updateSelOpts();
   calcCart();
   callTimeSale();
