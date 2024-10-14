@@ -22,6 +22,15 @@ export const createSelect = ({ id, className }) => {
   return select;
 };
 
+export const createOption = ({ val, text, disabled = false }) => {
+  const opt = document.createElement('option');
+  if (val) opt.value = val;
+  if (text) opt.textContent = text;
+  if (disabled) opt.disabled = disabled;
+
+  return opt;
+};
+
 export const createBtn = ({ id, className, text }) => {
   const button = document.createElement('button');
   if (id) button.id = id;
@@ -29,4 +38,13 @@ export const createBtn = ({ id, className, text }) => {
   if (text) button.textContent = text;
 
   return button;
+};
+
+export const createSpan = ({ id, className, text }) => {
+  const span = document.createElement('span');
+  if (id) span.id = id;
+  if (className) span.className = 'bg-blue-500 text-white px-4 py-2 rounded' + className;
+  if (text) span.textContent = text;
+
+  return span;
 };

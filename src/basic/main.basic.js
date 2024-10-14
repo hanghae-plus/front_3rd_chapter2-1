@@ -1,8 +1,9 @@
+import { createOption } from './createElements';
+import renderBonusPts from './renderBonusPts';
 import renderHome from './renderHome';
 
 let prodList, sel, addBtn, cartDisp, sum, stockInfo;
-let lastSel,
-  bonusPts = 0;
+let lastSel;
 
 function main() {
   prodList = [
@@ -59,11 +60,7 @@ function updateSelOpts(sel, prodList) {
   sel.innerHTML = '';
   prodList.forEach((item) => {
     const { id, name, val, q } = item;
-    const opt = document.createElement('option');
-
-    opt.value = id;
-    opt.textContent = `${name} - ${val}원`;
-    if (q === 0) opt.disabled = true;
+    const opt = createOption({ val: id, text: `${name} - ${val}원`, disabled: q === 0 });
 
     sel.appendChild(opt);
   });
@@ -148,20 +145,6 @@ function calcCart(sum) {
   updateStockInfo(prodList);
   renderBonusPts(totalPrice, sum);
 }
-
-const renderBonusPts = (totalPrice, sum) => {
-  bonusPts += Math.floor(totalPrice / 1000);
-
-  let ptsTag = document.getElementById('loyalty-points');
-  if (!ptsTag) {
-    ptsTag = document.createElement('span');
-    ptsTag.id = 'loyalty-points';
-    ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
-  }
-
-  ptsTag.textContent = '(포인트: ' + bonusPts + ')';
-};
 
 function updateStockInfo(prodList) {
   let infoMsg = '';
