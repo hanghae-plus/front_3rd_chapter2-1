@@ -22,6 +22,18 @@ export default [
       import: eslintPluginImport, // import 관련 규칙
       prettier: eslintPluginPrettier,
     },
+    languageOptions: {
+      ecmaVersion: 'latest', // 최신 ECMAScript 지원
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearTimeout: 'readonly',
+        clearInterval: 'readonly',
+        alert: 'readonly',
+      },
+    },
     rules: {
       // TypeScript 규칙들
       '@typescript-eslint/no-unused-vars': [
@@ -57,6 +69,7 @@ export default [
       // 기타 규칙들
       'no-console': 'warn', // console.log 사용 시 경고
       'no-debugger': 'error', // debugger 사용 금지
+      'no-undef': 'error',
     },
     settings: {
       react: {
