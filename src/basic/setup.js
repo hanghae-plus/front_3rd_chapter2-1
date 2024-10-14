@@ -1,6 +1,7 @@
 import { addCart, updateCart } from "./features/Cart";
 
-export function setup() {
+// 초기화
+export const setup = () => {
   const root = document.getElementById("app");
   const container = document.createElement("div");
   const wrap = document.createElement("div");
@@ -41,4 +42,4 @@ export function setup() {
     addCart(selectEl, cartContainer);
   });
   cartContainer.addEventListener("click", updateCart);
-}
+};

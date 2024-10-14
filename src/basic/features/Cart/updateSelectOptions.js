@@ -1,9 +1,10 @@
 import { subscribeToProductList, getProductList } from "../../stores/productListStore";
 
-export function updateSelectOptions() {
+export const updateSelectOptions = () => {
   const selectWrap = document.getElementById("product-select");
 
-  function renderOptions() {
+  // 상품 목록 렌더링
+  const renderOptions = () => {
     const productList = getProductList();
     selectWrap.innerHTML = "";
     productList.forEach(function (item) {
@@ -15,9 +16,9 @@ export function updateSelectOptions() {
       option.textContent = `${item.name} - ${item.price}원`;
       selectWrap.appendChild(option);
     });
-  }
+  };
 
   renderOptions();
 
   subscribeToProductList(renderOptions);
-}
+};

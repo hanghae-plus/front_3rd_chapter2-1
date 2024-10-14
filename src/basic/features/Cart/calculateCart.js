@@ -1,63 +1,59 @@
 import { getProductList } from "../../stores/productListStore";
 
-let totalAmount, itemCount;
+const DISCOUNT_THRESHOLDS = {
+  p1: 0.1,
+  p2: 0.15,
+  p3: 0.2,
+  p4: 0.05,
+  p5: 0.25,
+};
+
+let totalAmount, itemCount, accumulatedPoints;
 let cartTotal, cartContainer;
 
-export function calculateCart() {
+export const calculateCart = () => {
   cartContainer = document.getElementById("cart-items");
   cartTotal = document.getElementById("cart-total");
-
   itemCount = 0;
   totalAmount = 0;
 
   const cartItems = cartContainer.children;
   const productList = getProductList();
 
+  // 총액 계산
   let subTotal = 0;
-  for (let i = 0; i < cartItems.length; i++) {
-    let currentProduct;
-
-    for (let j = 0; j < productList.length; j++) {
-      if (productList[j].id === cartItems[i].id) {
-        currentProduct = productList[j];
-        break;
-      }
-    }
-
-    let quantity = parseInt(cartItems[i].querySelector("span").textContent.split("x ")[1]);
+  for (const item of cartItems) {
+    const currentProduct = productList.find((product) => product.id === item.id);
+    const quantity = parseInt(item.querySelector("span").textContent.split("x ")[1]);
     const itemTotal = currentProduct.price * quantity;
-    let disc = 0;
+
     itemCount += quantity;
     subTotal += itemTotal;
-    if (quantity >= 10) {
-      if (currentProduct.id === "p1") disc = 0.1;
-      else if (currentProduct.id === "p2") disc = 0.15;
-      else if (currentProduct.id === "p3") disc = 0.2;
-      else if (currentProduct.id === "p4") disc = 0.05;
-      else if (currentProduct.id === "p5") disc = 0.25;
-    }
+
+    const disc =
+      quantity >= 10 && currentProduct.id in DISCOUNT_THRESHOLDS
+        ? DISCOUNT_THRESHOLDS[currentProduct.id]
+        : 0;
     totalAmount += itemTotal * (1 - disc);
   }
-  let discountRate = 0;
+  let discountRate = (subTotal - totalAmount) / subTotal;
   if (itemCount >= 30) {
-    let bulkDiscount = totalAmount * 0.25;
-    let productDiscount = subTotal - totalAmount;
-    if (bulkDiscount > productDiscount) {
-      totalAmount = subTotal * (1 - 0.25);
-      discountRate = 0.25;
-    } else {
-      discountRate = (subTotal - totalAmount) / subTotal;
+    const bulkDiscount = 0.25;
+    if (bulkDiscount > discountRate) {
+      totalAmount = subTotal * (1 - bulkDiscount);
+      discountRate = bulkDiscount;
     }
-  } else {
-    discountRate = (subTotal - totalAmount) / subTotal;
   }
 
+  // 화요일 할인
   if (new Date().getDay() === 2) {
     totalAmount *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
   }
 
   cartTotal.textContent = "총액: " + Math.round(totalAmount) + "원";
+
+  // 할인 적용 표시
   if (discountRate > 0) {
     let span = document.createElement("span");
     span.className = "text-green-500 ml-2";
@@ -66,9 +62,12 @@ export function calculateCart() {
   }
   updateStockInfo();
   renderbonusPoints();
-}
+};
+
+// 포인트 적립
 const renderbonusPoints = () => {
-  const bonusPoints = Math.floor(totalAmount / 1000);
+  const newPoints = Math.floor(totalAmount / 1000);
+  accumulatedPoints = (accumulatedPoints || 0) + newPoints;
   let pointsTag = document.getElementById("loyalty-points");
 
   if (!pointsTag) {
@@ -77,22 +76,21 @@ const renderbonusPoints = () => {
     pointsTag.className = "text-blue-500 ml-2";
     cartTotal.appendChild(pointsTag);
   }
-  pointsTag.textContent = "(포인트: " + bonusPoints + ")";
+  pointsTag.textContent = "(포인트: " + accumulatedPoints + ")";
 };
 
-function updateStockInfo() {
+// 재고 표시
+const updateStockInfo = () => {
   const stockInfo = document.getElementById("stock-status");
   const productList = getProductList();
 
-  let infoMessage = "";
-  productList.forEach(function (item) {
-    if (item.quantity < 5) {
-      infoMessage +=
-        item.name +
-        ": " +
-        (item.quantity > 0 ? "재고 부족 (" + item.quantity + "개 남음)" : "품절") +
-        "\n";
-    }
-  });
+  const infoMessage = productList
+    .filter((item) => item.quantity < 5)
+    .map(
+      (item) =>
+        `${item.name}: ${item.quantity > 0 ? `재고 부족 (${item.quantity}개 남음)` : "품절"}`,
+    )
+    .join("\n");
+
   stockInfo.textContent = infoMessage;
-}
+};

@@ -2,15 +2,17 @@ import { updateSelectOptions } from "../Cart/updateSelectOptions";
 import { getLastSelectedItem } from "../../stores/lastSelectedProductStore";
 import { getProductList } from "../../stores/productListStore";
 
-export function recommendation() {
+// 추천 상품
+export const recommendation = () => {
   const delay = Math.random() * 20000;
   const interval = 60000;
   setTimeout(() => {
     setInterval(recommendationInterval, interval);
   }, delay);
-}
+};
 
-function recommendationInterval() {
+// 추천 상품 주기
+const recommendationInterval = () => {
   const lastSelectedItem = getLastSelectedItem();
   const productList = getProductList();
   let suggest = productList.find((item) => item.id !== lastSelectedItem && item.quantity > 0);
@@ -19,4 +21,4 @@ function recommendationInterval() {
     suggest.val = Math.round(suggest.price * 0.95);
     updateSelectOptions();
   }
-}
+};
