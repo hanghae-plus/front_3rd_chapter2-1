@@ -13,3 +13,8 @@ export const globalCartStore = createStore({
 export const cartItemStore = createStore({
   cartItems: [],
 });
+
+export const cartPointStore = createStore({
+  totalPrice: 0,
+  rewardPoints: 0,
+});
