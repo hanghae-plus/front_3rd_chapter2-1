@@ -14,7 +14,11 @@ export const cartItemStore = createStore({
   cartItems: [],
 });
 
-export const cartPointStore = createStore({
+export const cartTotalPriceStore = createStore({
   totalPrice: 0,
+  discountRate: 0,
+});
+
+export const cartPointStore = createStore({
   rewardPoints: 0,
 });

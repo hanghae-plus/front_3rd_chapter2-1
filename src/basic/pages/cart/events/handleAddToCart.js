@@ -1,12 +1,11 @@
 import { cartItemStore, globalCartStore } from '../store.js';
 import { updateCartItemQuantity } from '../modules/updateCartItemQuantity.js';
+import { calcCart } from '../modules/calcCart.js';
 
 export function handleAddToCart() {
   const { productList } = globalCartStore.getState();
   const selectedProduct = document.getElementById('product-select');
-  const selectedProductItem = productList.find(
-    (product) => product.id === selectedProduct.value
-  );
+  const selectedProductItem = productList.find((product) => product.id === selectedProduct.value);
 
   updateCart(selectedProductItem);
 }
@@ -14,10 +13,13 @@ export function handleAddToCart() {
 // 장바구니에 아이템 업데이트
 function updateCart(product) {
   const { cartItems } = cartItemStore.getState();
+  console.log(cartItems, 'cartItems2');
   const setCartItemState = cartItemStore.setState;
   const currentProduct = cartItems.find((item) => item.id === product.id);
 
-  if (product.quantity === 0) return;
+  if (product.quantity === 0) {
+    return;
+  }
 
   if (currentProduct) {
     updateCartItemQuantity(product.id, 1);
@@ -32,5 +34,5 @@ function updateCart(product) {
     });
   }
 
-  // calcCart(); // 장바구니 총액 계산
+  calcCart(); // 장바구니 총액 계산
 }

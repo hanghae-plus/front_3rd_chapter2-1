@@ -1,8 +1,7 @@
 import { globalCartStore } from './store.js';
 
 export const cartTemplates = () => {
-  const { productList, cartItems } = globalCartStore.getState();
-  const bonusPts = 0;
+  const { productList } = globalCartStore.getState();
 
   return `
       <div class="bg-gray-100 p-8">
@@ -15,7 +14,7 @@ export const cartTemplates = () => {
           <div id="cart-total" class="text-xl font-bold my-4">
           총액: 0원
                  <span id="loyalty-points" class="text-blue-500 ml-2">
-        (포인트: ${bonusPts})
+        (포인트: 0)
       </span>
 </div>
        <select id="product-select" class="border rounded p-2 mr-2">

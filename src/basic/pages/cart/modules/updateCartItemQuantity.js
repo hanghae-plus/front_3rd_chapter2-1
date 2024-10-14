@@ -20,9 +20,7 @@ export function updateCartItemQuantity(productId, quantityChange) {
 
   if (newSelectQuantity === 0) {
     cartItemStore.setState((prevState) => {
-      const updatedCartItems = prevState.cartItems.filter(
-        (item) => item.id !== productId
-      );
+      const updatedCartItems = prevState.cartItems.filter((item) => item.id !== productId);
 
       return { cartItems: updatedCartItems };
     });

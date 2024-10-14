@@ -1,4 +1,5 @@
 import { cartItemStore } from '../store.js';
+import { calcCart } from '../modules/calcCart.js';
 
 export function handleRemoveCartItem(event) {
   const target = event.target;
@@ -10,4 +11,6 @@ export function handleRemoveCartItem(event) {
 
     return { cartItems: updatedCartItems };
   });
+
+  calcCart(); // 장바구니 총액 계산
 }
