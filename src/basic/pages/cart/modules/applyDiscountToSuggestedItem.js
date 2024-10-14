@@ -1,15 +1,15 @@
 import { DEFAULT_PRODUCT_LIST } from '../constant/defaultProducts.js';
-import { selectedItemStore } from '../store.js';
+import { selectedProductItemState } from '../state.js';
 
 export function applyDiscountToSuggestedItem() {
-  const { selectedItem } = selectedItemStore.getState();
+  const { selectedProductItem } = selectedProductItemState.getState();
 
-  if (!selectedItem) {
+  if (!selectedProductItem) {
     return;
   }
 
   const suggest = DEFAULT_PRODUCT_LIST.find(
-    (item) => item.id !== selectedItem && item.quantity > 0
+    (item) => item.id !== selectedProductItem && item.quantity > 0
   );
   if (suggest) {
     suggest.price = Math.round(suggest.val * 0.95); // 5% 할인 적용

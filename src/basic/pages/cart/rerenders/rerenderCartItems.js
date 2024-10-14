@@ -1,4 +1,4 @@
-import { cartItemStore } from '../store.js';
+import { cartItemState } from '../state.js';
 import { rerenderStockStatus } from './rerenderStockStatus.js';
 
 const createCartItemNode = (item) => `
@@ -13,7 +13,7 @@ const createCartItemNode = (item) => `
 `;
 
 export function rerenderCartItems() {
-  const cartItems = cartItemStore.getState().cartItems;
+  const { cartItems } = cartItemState.getState();
   const $cartItemElements = document.getElementById('cart-items');
   const existingItemIds = Array.from($cartItemElements.children).map((item) => item.id);
 

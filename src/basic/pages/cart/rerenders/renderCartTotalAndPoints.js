@@ -1,7 +1,7 @@
-import { cartTotalPriceStore } from '../store.js';
+import { cartTotalPriceState } from '../state.js';
 
 export function renderCartTotalAndPoints() {
-  const { totalPrice, discountRate, rewardPoints } = cartTotalPriceStore.getState();
+  const { totalPrice, discountRate, rewardPoints } = cartTotalPriceState.getState();
   const $totalPriceElement = document.getElementById('cart-total');
   let $rewardPointElement = document.getElementById('loyalty-points');
 

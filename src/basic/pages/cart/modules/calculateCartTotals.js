@@ -1,4 +1,4 @@
-import { cartItemStore, cartTotalPriceStore } from '../store.js';
+import { cartItemState, cartTotalPriceState } from '../state.js';
 
 const DISCOUNT_RATES = {
   p1: 0.1,
@@ -43,7 +43,9 @@ function calculateRewardPoints(totalPrice) {
 }
 
 export function calculateCartTotals() {
-  const { cartItems } = cartItemStore.getState();
+  const { cartItems } = cartItemState.getState();
+  const setCartTotalPriceState = cartTotalPriceState.setState;
+
   let totalPrice = 0;
   let totalQuantity = 0;
   let subTotal = 0;
@@ -65,7 +67,7 @@ export function calculateCartTotals() {
 
   const rewardPoints = calculateRewardPoints(finalTotalPrice);
 
-  cartTotalPriceStore.setState((prevState) => {
+  setCartTotalPriceState((prevState) => {
     return {
       totalPrice: finalTotalPrice,
       discountRate: finalDiscountRate,

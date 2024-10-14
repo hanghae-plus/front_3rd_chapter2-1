@@ -1,8 +1,10 @@
-import { cartItemStore } from '../store.js';
+import { cartItemState } from '../state.js';
 import { DEFAULT_PRODUCT_LIST } from '../constant/defaultProducts.js';
 
 export function updateCartItemQuantity(productId, quantityChange) {
-  const { cartItems } = cartItemStore.getState();
+  const { cartItems } = cartItemState.getState();
+  const setCartItemState = cartItemState.setState;
+
   const prevProduct = DEFAULT_PRODUCT_LIST.find((item) => item.id === productId);
   const selectedCartItem = cartItems.find((item) => item.id === productId);
 
@@ -15,14 +17,14 @@ export function updateCartItemQuantity(productId, quantityChange) {
   }
 
   if (newSelectQuantity === 0) {
-    cartItemStore.setState((prevState) => {
+    setCartItemState((prevState) => {
       const updatedCartItems = prevState.cartItems.filter((item) => item.id !== productId);
 
       return { cartItems: updatedCartItems };
     });
   }
 
-  cartItemStore.setState((prevState) => {
+  setCartItemState((prevState) => {
     const updatedCartItems = prevState.cartItems.map((item) => {
       if (item.id === productId) {
         return {
