@@ -1,4 +1,4 @@
-import { cartItemStore } from '../store.js';
+import { cartItemStore, selectedItemStore } from '../store.js';
 import { updateCartItemQuantity } from '../modules/updateCartItemQuantity.js';
 import { calculateCartTotals } from '../modules/calculateCartTotals.js';
 import { DEFAULT_PRODUCT_LIST } from '../constant/defaultProducts.js';
@@ -29,10 +29,12 @@ function updateCart(product) {
 }
 
 export function handleAddToCart() {
+  const setSelectedItemState = selectedItemStore.setState;
   const selectedProduct = document.getElementById('product-select');
   const selectedProductItem = DEFAULT_PRODUCT_LIST.find(
     (product) => product.id === selectedProduct.value
   );
 
   updateCart(selectedProductItem);
+  setSelectedItemState({ selectedItem: selectedProductItem });
 }

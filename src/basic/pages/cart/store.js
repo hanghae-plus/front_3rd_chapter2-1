@@ -9,3 +9,7 @@ export const cartTotalPriceStore = createStore({
   discountRate: 0,
   rewardPoints: 0,
 });
+
+export const selectedItemStore = createStore({
+  selectedItem: null,
+});
