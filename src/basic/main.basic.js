@@ -9,8 +9,8 @@ let $cartTotal;
 let $stockStatus;
 let lastAddedProductId = null;
 let loyaltyPoints = 0;
-let totalAmt = 0;
-let itemCnt = 0;
+let totalPrice = 0;
+let itemCount = 0;
 
 function main() {
   // 상품 리스트 초기화
@@ -128,8 +128,8 @@ function renderProductSelect() {
 }
 
 function calcCart() {
-  totalAmt = 0;
-  itemCnt = 0;
+  totalPrice = 0;
+  itemCount = 0;
   const cartItems = $cartItems.children;
   let subTot = 0;
   for (var i = 0; i < cartItems.length; i++) {
@@ -145,7 +145,7 @@ function calcCart() {
       const q = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
       const itemTot = curItem.val * q;
       let disc = 0;
-      itemCnt += q;
+      itemCount += q;
       subTot += itemTot;
       if (q >= 10) {
         if (curItem.id === 'p1') disc = 0.1;
@@ -154,28 +154,28 @@ function calcCart() {
         else if (curItem.id === 'p4') disc = 0.05;
         else if (curItem.id === 'p5') disc = 0.25;
       }
-      totalAmt += itemTot * (1 - disc);
+      totalPrice += itemTot * (1 - disc);
     })();
   }
   let discRate = 0;
-  if (itemCnt >= 30) {
-    const bulkDisc = totalAmt * 0.25;
-    const itemDisc = subTot - totalAmt;
+  if (itemCount >= 30) {
+    const bulkDisc = totalPrice * 0.25;
+    const itemDisc = subTot - totalPrice;
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
+      totalPrice = subTot * (1 - 0.25);
       discRate = 0.25;
     } else {
-      discRate = (subTot - totalAmt) / subTot;
+      discRate = (subTot - totalPrice) / subTot;
     }
   } else {
-    discRate = (subTot - totalAmt) / subTot;
+    discRate = (subTot - totalPrice) / subTot;
   }
 
   if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
+    totalPrice *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
-  $cartTotal.textContent = `총액: ${Math.round(totalAmt)}원`;
+  $cartTotal.textContent = `총액: ${Math.round(totalPrice)}원`;
   if (discRate > 0) {
     const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
@@ -185,7 +185,7 @@ function calcCart() {
   renderStockStatus();
 
   // 장바구니에 담긴 상품 금액을 기준으로 포인트 업데이트
-  const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, totalAmt);
+  const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, totalPrice);
   renderLoyaltyPoints(newLoyaltyPoints);
   loyaltyPoints = newLoyaltyPoints;
 }
