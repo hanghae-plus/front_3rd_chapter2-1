@@ -4,6 +4,50 @@ let lastSel,
   totalAmt = 0,
   itemCnt = 0;
 
+// 메인 컴포넌트 분리
+const H1 = () => {
+  let h1 = document.createElement('h1');
+  h1.className = 'text-2xl font-bold mb-4';
+  h1.textContent = '장바구니';
+
+  return h1;
+};
+const CartItems = () => {
+  cartDisp = document.createElement('div');
+  cartDisp.id = 'cart-items';
+
+  return cartDisp;
+};
+const CartTotal = () => {
+  sum = document.createElement('div');
+  sum.id = 'cart-total';
+  sum.className = 'text-xl font-bold my-4';
+
+  return sum;
+};
+const ProductSelect = () => {
+  sel = document.createElement('select');
+  sel.id = 'product-select';
+  sel.className = 'border rounded p-2 mr-2';
+
+  return sel;
+};
+const AddToCartBtn = () => {
+  addBtn = document.createElement('button');
+  addBtn.id = 'add-to-cart';
+  addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
+  addBtn.textContent = '추가';
+
+  return addBtn;
+};
+const StockStatus = () => {
+  stockInfo = document.createElement('div');
+  stockInfo.id = 'stock-status';
+  stockInfo.className = 'text-sm text-gray-500 mt-2';
+
+  return stockInfo;
+};
+
 function main() {
   prodList = [
     { id: 'p1', name: '상품1', val: 10000, q: 50 },
@@ -16,29 +60,20 @@ function main() {
   let root = document.getElementById('app');
   let cont = document.createElement('div');
   let wrap = document.createElement('div');
-  let hTxt = document.createElement('h1');
-  cartDisp = document.createElement('div');
-  sum = document.createElement('div');
-  sel = document.createElement('select');
-  addBtn = document.createElement('button');
-  stockInfo = document.createElement('div');
-  cartDisp.id = 'cart-items';
-  sum.id = 'cart-total';
-  sel.id = 'product-select';
-  addBtn.id = 'add-to-cart';
 
-  stockInfo.id = 'stock-status';
   cont.className = 'bg-gray-100 p-8';
   wrap.className =
     'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
-  hTxt.className = 'text-2xl font-bold mb-4';
-  sum.className = 'text-xl font-bold my-4';
-  sel.className = 'border rounded p-2 mr-2';
-  addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  stockInfo.className = 'text-sm text-gray-500 mt-2';
-  hTxt.textContent = '장바구니';
-  addBtn.textContent = '추가';
+
+  const hTxt = H1();
+  cartDisp = CartItems();
+  sum = CartTotal();
+  sel = ProductSelect();
+  addBtn = AddToCartBtn();
+  stockInfo = StockStatus();
+
   updateSelOpts();
+
   wrap.appendChild(hTxt);
   wrap.appendChild(cartDisp);
   wrap.appendChild(sum);
@@ -47,7 +82,9 @@ function main() {
   wrap.appendChild(stockInfo);
   cont.appendChild(wrap);
   root.appendChild(cont);
+
   calcCart();
+
   setTimeout(function () {
     setInterval(function () {
       let luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
@@ -58,6 +95,7 @@ function main() {
       }
     }, 30000);
   }, Math.random() * 10000);
+
   setTimeout(function () {
     setInterval(function () {
       if (lastSel) {
