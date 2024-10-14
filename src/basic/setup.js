@@ -1,4 +1,4 @@
-import { addCart, updateCart } from "./events/Cart";
+import { addCart, updateCart } from "./features/Cart";
 
 export function setup() {
   const root = document.getElementById("app");
@@ -38,7 +38,6 @@ export function setup() {
   root.appendChild(container);
 
   addToCartButton.addEventListener("click", () => {
-    console.log("click");
     addCart(selectEl, cartContainer);
   });
   cartContainer.addEventListener("click", updateCart);
