@@ -5,28 +5,36 @@ describe("basic test", () => {
     { type: "origin", loadFile: () => import("../../main.js") },
     { type: "basic", loadFile: () => import("../main.basic.js") },
   ])("$type 장바구니 시나리오 테스트", ({ loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo;
+    let sel, addBtn, cartDisp, sum, stockInfo, prodList, module;
 
     beforeAll(async () => {
       // DOM 초기화
       document.body.innerHTML = '<div id="app"></div>';
-      await loadFile();
-
+      module = await loadFile();
       // 전역 변수 참조
       sel = document.getElementById("product-select");
       addBtn = document.getElementById("add-to-cart");
       cartDisp = document.getElementById("cart-items");
       sum = document.getElementById("cart-total");
       stockInfo = document.getElementById("stock-status");
+
+      prodList = [
+        { id: "p1", name: "상품1", val: 10000, q: 50 },
+        { id: "p2", name: "상품2", val: 20000, q: 30 },
+        { id: "p3", name: "상품3", val: 30000, q: 20 },
+        { id: "p4", name: "상품4", val: 15000, q: 0 },
+        { id: "p5", name: "상품5", val: 25000, q: 10 },
+      ];
     });
 
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, "alert").mockImplementation(() => {});
+      vi.setSystemTime(new Date("2024-10-14"));
     });
 
     afterEach(() => {
-      vi.clearAllTimers();
+      vi.useRealTimers();
       vi.restoreAllMocks();
     });
 
@@ -103,11 +111,62 @@ describe("basic test", () => {
     });
 
     it("번개세일 기능이 정상적으로 동작하는지 확인", () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
+      //! 또한 실제 코드에서 delay 값이 바뀔 때 어떻게??
+      // 조건 충족 - 0.3 미만 설정
+      vi.spyOn(Math, "random").mockReturnValue(0.1);
+
+      const randomDelay = 10000 * 0.1;
+      const randomInterval = 30000;
+
+      const spy = vi.spyOn(module, "luckyDiscount");
+      module.luckyDiscount();
+
+      // 초기 상품 가격 확인
+      expect(sel.textContent).toContain("상품1 - 10000원");
+
+      // 번개세일 기능 호출
+      vi.advanceTimersByTime(randomInterval + randomDelay);
+
+      // 번개세일 기능 호출 확인
+      expect(spy).toHaveBeenCalled();
+      // alert 호출 확인
+      expect(window.alert).toHaveBeenCalled();
+      // alert 메세지 확인
+      expect(window.alert).toHaveBeenCalledWith("번개세일! 상품1이(가) 20% 할인 중입니다!");
+
+      // 상품 가격 변경 확인
+      expect(sel.textContent).toContain("상품1 - 8000원");
     });
 
     it("추천 상품 알림이 표시되는지 확인", () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
+      // 조건 충족, 추가버튼을 통해 마지막으로 추가한 상품이 있어야함
+      // p1 이 마지막이면 find를 통해 만족하는 첫 번쨰 요소는 p2가 됨
+      sel.value = "p1";
+      addBtn.click();
+
+      vi.spyOn(Math, "random").mockReturnValue(0.1);
+
+      const randomDelay = 20000 * 0.1;
+      const randomInterval = 60000;
+
+      const spy = vi.spyOn(module, "suggestAdditionalDiscount");
+      module.suggestAdditionalDiscount();
+
+      // 추가 할인 기능 호출
+      vi.advanceTimersByTime(randomInterval + randomDelay);
+
+      // 추가 할인 기능 호출 확인
+      expect(spy).toHaveBeenCalled();
+      // alert 호출 확인
+      expect(window.alert).toHaveBeenCalled();
+
+      // alert 메세지 확인
+      expect(window.alert).toHaveBeenCalledWith("상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
+
+      // 상품 가격 변경 확인
+      expect(sel.textContent).toContain("상품2 - 19000원");
     });
 
     it("화요일 할인이 적용되는지 확인", () => {

@@ -46,6 +46,11 @@ function main() {
   cont.appendChild(wrap);
   root.appendChild(cont);
   calcCart();
+
+  luckyDiscount();
+  suggestAdditionalDiscount();
+}
+function luckyDiscount() {
   setTimeout(function () {
     setInterval(function () {
       var luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
@@ -56,6 +61,8 @@ function main() {
       }
     }, 30000);
   }, Math.random() * 10000);
+}
+function suggestAdditionalDiscount() {
   setTimeout(function () {
     setInterval(function () {
       if (lastSel) {
@@ -161,6 +168,7 @@ function updateStockInfo() {
   });
   stockInfo.textContent = infoMsg;
 }
+
 main();
 addBtn.addEventListener("click", function () {
   var selItem = sel.value;
@@ -233,3 +241,5 @@ cartDisp.addEventListener("click", function (event) {
     calcCart();
   }
 });
+
+export { luckyDiscount, main, suggestAdditionalDiscount };

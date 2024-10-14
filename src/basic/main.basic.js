@@ -6,7 +6,7 @@ const productOptions = [
   { id: "p5", name: "상품5", val: 25000, q: 10 },
 ];
 
-let lastSelectedItem = null;
+let lastSelectedId = null;
 
 const PRODUCT_DISCOUNT_RULES = {
   p1: {
@@ -44,7 +44,6 @@ const WEEKDAY_DISCOUNT_RATE = {
 class DiscountController {
   constructor(cartItems) {
     this._cartItems = cartItems;
-
     this._bulkRate = 0.25;
     this._bulkSize = 30;
   }
@@ -139,16 +138,6 @@ class CartController {
 
   getOriginal(itemId) {
     return this._originalItems.find((item) => item.id === itemId);
-  }
-
-  getAllOriginal() {
-    return this._originalItems;
-  }
-  getTotalPrice() {
-    if (this._cartItems.length === 0) return 0;
-    return this._cartItems.reduce((acc, curr) => {
-      return acc + curr.val * curr.q;
-    }, 0);
   }
 
   getTotalQuantity() {
@@ -386,7 +375,7 @@ function luckyDiscount() {
   const interval = () => {
     setInterval(() => {
       const luckyItem = { ...productOptions[Math.floor(Math.random() * productOptions.length)] };
-      if (luckyItem.q > 0) {
+      if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
         updateSelOpts(luckyItem);
@@ -399,8 +388,8 @@ function luckyDiscount() {
 function suggestAdditionalDiscount() {
   const interval = () => {
     setInterval(function () {
-      if (lastSelectedItem) {
-        const suggestItem = { ...productOptions.find((item) => item.id !== lastSelectedItem.id && item.q > 0) };
+      if (lastSelectedId) {
+        const suggestItem = { ...productOptions.find((item) => item.id !== lastSelectedId && item.q > 0) };
         if (suggestItem) {
           alert(suggestItem.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
           suggestItem.val = Math.round(suggestItem.val * 0.95);
@@ -512,7 +501,6 @@ function renderTotalPrice() {
 
 function renderDiscountInfo() {
   const { discountRate } = calculateTotalPrice();
-
   if (discountRate <= 0) return;
   const $discountInfo = new Element("span", {
     className: "text-green-500 ml-2",
@@ -589,7 +577,7 @@ $addBtn.el.addEventListener("click", () => {
     cartController.add(newItem);
   }
   renderCart();
-  lastSelectedItem = currentProduct;
+  lastSelectedId = currentProductId;
 });
 
 $cartItems.el.addEventListener("click", (event) => {
@@ -610,3 +598,5 @@ $cartItems.el.addEventListener("click", (event) => {
     renderCart();
   }
 });
+
+export { luckyDiscount, main, suggestAdditionalDiscount };
