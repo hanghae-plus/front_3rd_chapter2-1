@@ -217,6 +217,7 @@ function renderLoyaltyPoints(points) {
 
 function renderStockStatus() {
   $stockStatus.textContent = prodList
+    .filter(({ q }) => q < 5)
     .map(({ q, name }) => {
       return `${name}: ${q > 0 ? `재고 부족 (${q}개 남음)` : '품절'}`;
     })
