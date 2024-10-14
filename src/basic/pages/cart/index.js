@@ -1,12 +1,12 @@
 import { cartTemplates } from './templates.js';
 import { registerCartEvents } from './events/registerCartEvents.js';
-import { cartItemStore, cartPointStore, cartTotalPriceStore } from './store.js';
-import { rerenderCartItems } from './modules/rerenderCartItems.js';
-import { rerenderCartTotalPrice } from './modules/rerenderCartTotalPrice.js';
+import { cartItemStore, cartTotalPriceStore } from './store.js';
+import { rerenderCartItems } from './rerenders/rerenderCartItems.js';
+import { renderCartTotalAndPoints } from './rerenders/renderCartTotalAndPoints.js';
 
 function Cart() {
   cartItemStore.subscribe(rerenderCartItems);
-  cartTotalPriceStore.subscribe(rerenderCartTotalPrice);
+  cartTotalPriceStore.subscribe(renderCartTotalAndPoints);
 
   return {
     element: cartTemplates(),

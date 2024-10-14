@@ -1,18 +1,14 @@
-import { cartItemStore, globalCartStore } from '../store.js';
+import { cartItemStore } from '../store.js';
+import { DEFAULT_PRODUCT_LIST } from '../constant/defaultProducts.js';
 
 export function updateCartItemQuantity(productId, quantityChange) {
   const { cartItems } = cartItemStore.getState();
-  const { productList } = globalCartStore.getState();
+  const prevProduct = DEFAULT_PRODUCT_LIST.find((item) => item.id === productId);
+  const selectedCartItem = cartItems.find((item) => item.id === productId);
 
-  // 해당 상품 찾기
-  const prevProduct = productList.find((item) => item.id === productId);
-  const product = cartItems.find((item) => item.id === productId);
+  const newSelectQuantity = selectedCartItem.selectQuantity + quantityChange;
+  const newQuantity = selectedCartItem.quantity - quantityChange;
 
-  // 수량 업데이트
-  const newSelectQuantity = product.selectQuantity + quantityChange;
-  const newQuantity = product.quantity - quantityChange;
-
-  // 재고가 부족한 경우 처리
   if (newSelectQuantity > prevProduct.quantity) {
     alert('재고가 부족합니다.');
     return;
@@ -26,7 +22,6 @@ export function updateCartItemQuantity(productId, quantityChange) {
     });
   }
 
-  // 스토어의 상태 업데이트
   cartItemStore.setState((prevState) => {
     const updatedCartItems = prevState.cartItems.map((item) => {
       if (item.id === productId) {
