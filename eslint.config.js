@@ -12,5 +12,6 @@ export default [
       // 'comma-dangle': ['error', 'always-multiline'],
       'no-var': 'error',
     },
+    ignorePatterns: ['node_modules/', 'src/main.js'],
   },
 ];
