@@ -1,4 +1,4 @@
-import { updateCartItemInfo } from './cart';
+import { getTargetItemElementQuantity, updateCartItemInfo } from './cart';
 
 const createNewItem = (targetProduct) => {
   const newItem = document.createElement('div');
@@ -21,20 +21,20 @@ const createNewItem = (targetProduct) => {
     '">삭제</button></div>';
   document.getElementById('cart-items').appendChild(newItem);
 };
-export const addToCart = (targetCartItem, targetProduct) => {
-  if (!targetCartItem) {
+export const addToCart = ($targetCartItem, targetProduct) => {
+  if (!$targetCartItem) {
     createNewItem(targetProduct);
     targetProduct.quantity--;
     return;
   }
 
-  const currentItemQuantity = parseInt(targetCartItem.querySelector('span').textContent.split('x ')[1]);
+  const currentItemQuantity = getTargetItemElementQuantity($targetCartItem);
   const newItemQuantity = currentItemQuantity + 1;
 
   // BUG: 로직 개선
   const isStockRemain = newItemQuantity <= targetProduct.quantity;
   if (isStockRemain) {
-    updateCartItemInfo(targetProduct, newItemQuantity, targetCartItem);
+    updateCartItemInfo(targetProduct, newItemQuantity, $targetCartItem);
     targetProduct.quantity--;
   } else {
     alert('재고가 부족합니다.');
@@ -48,7 +48,7 @@ export const removeCartItem = (targetProduct, $itemElement, restoreQuantity) => 
 };
 export const changeCartItemQuantity = (clickedElement, $itemElement, targetProduct) => {
   const quantityChangeAmount = parseInt(clickedElement.dataset.change);
-  const currentItemQuantity = parseInt($itemElement.querySelector('span').textContent.split('x ')[1]);
+  const currentItemQuantity = getTargetItemElementQuantity($itemElement);
   const newItemQuantity = currentItemQuantity + quantityChangeAmount;
 
   const isStockRemain = newItemQuantity <= targetProduct.quantity + currentItemQuantity;

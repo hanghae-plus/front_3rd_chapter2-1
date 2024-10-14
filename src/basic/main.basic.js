@@ -1,4 +1,4 @@
-import { updateCartInfos } from './utils/cart';
+import { getTargetItemElementQuantity, updateCartInfos } from './utils/cart';
 import { addToCart, changeCartItemQuantity, removeCartItem } from './utils/cartOperations';
 import { setSuggestDiscount, setSurpriseDiscount } from './utils/discount';
 import { products, renderProductOptions } from './utils/product';
@@ -84,7 +84,7 @@ const handle$CartItemsDisplay = (event) => {
   if (clickedElement.classList.contains('quantity-change')) {
     changeCartItemQuantity(clickedElement, $itemElement, targetProduct);
   } else if (clickedElement.classList.contains('remove-item')) {
-    const currentItemQuantity = parseInt($itemElement.querySelector('span').textContent.split('x ')[1]);
+    const currentItemQuantity = getTargetItemElementQuantity($itemElement);
     removeCartItem(targetProduct, $itemElement, currentItemQuantity);
   }
 

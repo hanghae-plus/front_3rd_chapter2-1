@@ -6,6 +6,10 @@ import {
 } from './discount';
 import { products, renderProductsStockInfo } from './product';
 
+export const getTargetItemElementQuantity = ($targetItemElement) => {
+  return parseInt($targetItemElement.querySelector('span').textContent.split('x ')[1]);
+};
+
 export const updateCartInfos = (bonusPoints) => {
   const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
 
@@ -45,9 +49,9 @@ const calculateCartTotals = () => {
 
   const cartItems = document.getElementById('cart-items').children;
 
-  for (let cartItem of cartItems) {
-    const currentProduct = products.find((product) => product.id === cartItem.id);
-    const quantity = parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
+  for (let $cartItem of cartItems) {
+    const currentProduct = products.find((product) => product.id === $cartItem.id);
+    const quantity = getTargetItemElementQuantity($cartItem);
     const productTotalPrice = currentProduct.price * quantity;
 
     totalItems += quantity;
