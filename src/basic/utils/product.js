@@ -20,3 +20,17 @@ export const renderProductsStockInfo = () => {
 
   stockInfo.textContent = formatLowStocksInfo(lowStockProducts);
 };
+
+export const renderProductOptions = () => {
+  const productSelectDropdown = document.getElementById('product-select');
+  productSelectDropdown.innerHTML = '';
+
+  products.forEach((item) => {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+
+    opt.textContent = item.name + ' - ' + item.price + '원';
+    if (item.quantity === 0) opt.disabled = true;
+    productSelectDropdown.appendChild(opt);
+  });
+};
