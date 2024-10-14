@@ -32,15 +32,15 @@ export const cartTemplates = () => {
           
           <button id="add-to-cart" class="bg-blue-500 text-white px-4 py-2 rounded">추가</button>
           
-        ${productList
-          .filter((product) => product.quantity <= 5)
-          .map(
-            (product) => `
-    <div id="stock-status" class="text-sm text-gray-500 mt-2">
-      ${product.name} : ${product.quantity > 0 ? '재고 부족' + ` (${product.quantity}개 남음)` : '품절'}
-    </div>
+<!--        <div id="stock-status" class="text-sm text-gray-500 mt-2"></div>-->
+        
+                ${productList
+                  .filter((product) => product.quantity === 0)
+                  .map(
+                    (product) => `
+    <div id="stock-status" class="text-sm text-gray-500 mt-2">${product.name}: ${product.quantity > 0 ? '재고 부족' + ` (${product.quantity}개 남음)` : '품절'}</div>
   `
-          )}
+                  )}
         
         </div>
       </div>

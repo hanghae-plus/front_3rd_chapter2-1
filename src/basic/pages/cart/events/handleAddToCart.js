@@ -12,15 +12,24 @@ export function handleAddToCart() {
 
 // 장바구니에 아이템 업데이트
 function updateCart(product) {
+  const { cartItems } = cartItemStore.getState();
   const setCartItemState = cartItemStore.setState;
-  const cartItemElement = document.getElementById(product.id);
+  console.log(product, 'product');
+  const currentProduct = cartItems.find((item) => item.id === product.id);
 
-  if (cartItemElement) {
+  console.log(currentProduct, 'currentProduct');
+
+  if (product.quantity === 0) return;
+
+  if (currentProduct) {
     updateCartItemQuantity(product.id, 1);
   } else {
     setCartItemState((prevState) => {
       return {
-        cartItems: [...prevState.cartItems, { ...product, selectQuantity: 1 }],
+        cartItems: [
+          ...prevState.cartItems,
+          { ...product, quantity: product.quantity - 1, selectQuantity: 1 },
+        ],
       };
     });
   }
@@ -30,29 +39,29 @@ function updateCart(product) {
 
 // 새로운 수량을 설정하는 함수 - 스토어를 통해 상태를 업데이트
 export function updateCartItemQuantity(productId, quantityChange) {
-  const { cartItems } = cartItemStore.getState(); // 현재 cartItems 상태 가져오기
+  const { cartItems } = cartItemStore.getState();
+  const { productList } = globalCartStore.getState();
 
   // 해당 상품 찾기
+  const prevProduct = productList.find((item) => item.id === productId);
   const product = cartItems.find((item) => item.id === productId);
+
   if (!product) {
     console.error(`Product with id ${productId} not found.`);
     return;
   }
 
-  console.log(product.selectQuantity, 'product.selectQuantity');
-
   // 수량 업데이트
-  const newQty = product.selectQuantity + quantityChange;
-
-  console.log(newQty, 'newQty');
+  const newSelectQuantity = product.selectQuantity + quantityChange;
+  const newQuantity = product.quantity - quantityChange;
 
   // 재고가 부족한 경우 처리
-  if (newQty > product.quantity) {
+  if (newSelectQuantity > prevProduct.quantity) {
     alert('재고가 부족합니다.');
     return;
   }
 
-  if (newQty === 0) {
+  if (newSelectQuantity === 0) {
     cartItemStore.setState((prevState) => {
       const updatedCartItems = prevState.cartItems.filter(
         (item) => item.id !== productId
@@ -66,8 +75,11 @@ export function updateCartItemQuantity(productId, quantityChange) {
   cartItemStore.setState((prevState) => {
     const updatedCartItems = prevState.cartItems.map((item) => {
       if (item.id === productId) {
-        console.log('Updating selectQuantity:', newQty);
-        return { ...item, selectQuantity: newQty }; // 새로운 수량으로 업데이트
+        return {
+          ...item,
+          quantity: newQuantity,
+          selectQuantity: newSelectQuantity,
+        };
       }
       return item;
     });
