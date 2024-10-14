@@ -77,20 +77,22 @@ export const updateTotalInfo = (discountedTotalPrice, discountRate) => {
     cartTotalInfo.appendChild(span);
   }
 };
+
+const createBonusPointsTag = () => {
+  const pointTagElement = document.createElement('span');
+  pointTagElement.id = 'loyalty-points';
+  pointTagElement.className = 'text-blue-500 ml-2';
+
+  document.getElementById('cart-total').appendChild(pointTagElement);
+  return pointTagElement;
+};
 export const updateBonusPoints = (bonusPoints, totalPrice) => {
-  bonusPoints += Math.floor(totalPrice / 1000);
+  const updatedBonusPoints = bonusPoints + Math.floor(totalPrice / 1000);
 
-  let ptsTag = document.getElementById('loyalty-points');
-  if (!ptsTag) {
-    const cartTotalInfo = document.getElementById('cart-total');
-    ptsTag = document.createElement('span');
-    ptsTag.id = 'loyalty-points';
-    ptsTag.className = 'text-blue-500 ml-2';
-    cartTotalInfo.appendChild(ptsTag);
-  }
-  ptsTag.textContent = '(포인트: ' + bonusPoints + ')';
+  const pointTagElement = document.getElementById('loyalty-points') || createBonusPointsTag();
+  pointTagElement.textContent = `(포인트: ${updatedBonusPoints})`;
 
-  return bonusPoints;
+  return updatedBonusPoints;
 };
 export const renderProductsStockInfo = () => {
   const stockInfo = document.getElementById('stock-status');
