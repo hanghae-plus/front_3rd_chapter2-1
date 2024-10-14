@@ -68,7 +68,7 @@ const handleAddToCart = () => {
     lastAddedProduct = selectedProductId;
   }
 };
-const handle$CartItemsDisplay = (event) => {
+const handleCartItemsDisplay = (event) => {
   const clickedElement = event.target;
   const isRelatedQuantityChange =
     clickedElement.classList.contains('quantity-change') || clickedElement.classList.contains('remove-item');
@@ -92,7 +92,7 @@ const handle$CartItemsDisplay = (event) => {
 };
 const setEventListeners = () => {
   $addToCartBtn.addEventListener('click', handleAddToCart);
-  $cartItemsDisplay.addEventListener('click', handle$CartItemsDisplay);
+  $cartItemsDisplay.addEventListener('click', handleCartItemsDisplay);
 };
 
 const scheduleRandomDiscount = () => {
