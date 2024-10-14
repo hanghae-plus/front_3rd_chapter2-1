@@ -34,7 +34,8 @@ export const createOption = ({ val, text, disabled = false }) => {
 export const createBtn = ({ id, className, text }) => {
   const button = document.createElement('button');
   if (id) button.id = id;
-  if (className) button.className = 'bg-blue-500 text-white px-4 py-2 rounded' + className;
+  if (className) button.className = 'bg-blue-500 text-white px-4 py-2 rounded ' + className;
+  else button.className = 'bg-blue-500 text-white px-4 py-2 rounded';
   if (text) button.textContent = text;
 
   return button;
@@ -43,7 +44,7 @@ export const createBtn = ({ id, className, text }) => {
 export const createSpan = ({ id, className, text }) => {
   const span = document.createElement('span');
   if (id) span.id = id;
-  if (className) span.className = 'bg-blue-500 text-white px-4 py-2 rounded' + className;
+  if (className) span.className = className;
   if (text) span.textContent = text;
 
   return span;
