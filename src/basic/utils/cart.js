@@ -1,3 +1,5 @@
+const TOTAL_BULK_DISCOUNT_RATE = 0.25;
+
 export const products = [
   { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
   { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
@@ -7,6 +9,7 @@ export const products = [
 ];
 
 export const calculateDiscountedPrice = (price, discountRate) => price * (1 - discountRate);
+const calculateDiscountRate = (totalPrice, discountedTotalPrice) => (totalPrice - discountedTotalPrice) / totalPrice;
 
 export const getProductBulkDiscountRate = (productId, quantity) => {
   const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
@@ -21,27 +24,35 @@ export const getProductBulkDiscountRate = (productId, quantity) => {
   if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
   return 0;
 };
-export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
-  const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
+
+const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
   let updatedTotalPrice = 0;
   let discountRate = 0;
 
-  if (totalItems >= TOTAL_BULK_DISCOUNT_AMOUNT) {
-    const bulkDiscountedPrice = discountedTotalPrice * 0.25;
-    const itemBulkDiscountedPrice = totalPrice - discountedTotalPrice;
-    if (bulkDiscountedPrice > itemBulkDiscountedPrice) {
-      updatedTotalPrice = calculateDiscountedPrice(totalPrice, 0.25);
-      discountRate = 0.25;
-    } else {
-      updatedTotalPrice = discountedTotalPrice;
-      discountRate = (totalPrice - discountedTotalPrice) / totalPrice;
-    }
+  const bulkDiscountingPrice = discountedTotalPrice * TOTAL_BULK_DISCOUNT_RATE;
+  const itemBulkDiscountingPrice = totalPrice - discountedTotalPrice;
+
+  if (bulkDiscountingPrice > itemBulkDiscountingPrice) {
+    updatedTotalPrice = calculateDiscountedPrice(totalPrice, TOTAL_BULK_DISCOUNT_RATE);
+    discountRate = TOTAL_BULK_DISCOUNT_RATE;
   } else {
     updatedTotalPrice = discountedTotalPrice;
-    discountRate = (totalPrice - discountedTotalPrice) / totalPrice;
+    discountRate = calculateDiscountRate(totalPrice, discountedTotalPrice);
   }
 
   return { updatedTotalPrice, discountRate };
+};
+export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
+  const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
+
+  if (totalItems < TOTAL_BULK_DISCOUNT_AMOUNT) {
+    return {
+      updatedTotalPrice: discountedTotalPrice,
+      discountRate: calculateDiscountRate(totalPrice, discountedTotalPrice),
+    };
+  }
+
+  return getMoreDiscountPriceAndRate(discountedTotalPrice, totalPrice);
 };
 export const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
   const SALE_DAY = 2;
