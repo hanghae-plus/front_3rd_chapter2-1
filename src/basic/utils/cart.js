@@ -19,7 +19,7 @@ export const getProductBulkDiscountRate = (productId, quantity) => {
   if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
   return 0;
 };
-export const calcTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
+export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
   const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
   let updatedTotalPrice = 0;
   let discountRate = 0;
@@ -41,7 +41,7 @@ export const calcTotalProductsBulkDiscount = (totalItems, totalPrice, discounted
 
   return { updatedTotalPrice, discountRate };
 };
-export const calcDayDiscount = ({ updatedTotalPrice, discountRate }) => {
+export const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
   const SALE_DAY = 2;
   const SALE_DAY_DISCOUNT_RATE = 0.1;
 
