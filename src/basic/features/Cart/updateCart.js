@@ -1,5 +1,5 @@
 import { calculateCart } from "./calculateCart";
-import { getProductList } from "../../stores/productListStore";
+import { getProductList, updateProductQuantity } from "../../stores/productListStore";
 
 export function updateCart(event) {
   const target = event.target;
@@ -20,6 +20,7 @@ export function updateCart(event) {
         cartItem.querySelector("span").textContent =
           `${selectedProduct.name} - ${selectedProduct.price}원 x ${newQuantity}`;
         selectedProduct.quantity -= quantityChange;
+        updateProductQuantity(selectedProductId, selectedProduct.quantity);
       } else if (newQuantity <= 0) {
         cartItem.remove();
         selectedProduct.quantity += currentQuantity;
@@ -29,6 +30,7 @@ export function updateCart(event) {
     } else if (target.classList.contains("remove-item")) {
       const currentQuantity = parseInt(cartItem.querySelector("span").textContent.split("x ")[1]);
       selectedProduct.quantity += currentQuantity;
+      updateProductQuantity(selectedProductId, selectedProduct.quantity);
       cartItem.remove();
     }
     calculateCart(); // 장바구니 계산

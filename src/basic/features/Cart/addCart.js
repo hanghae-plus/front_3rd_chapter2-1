@@ -17,7 +17,7 @@ export function addCart(productSelect, cartContainer) {
 
       if (newQuantity <= selectedProduct.quantity) {
         quantitySpan.textContent = `${selectedProduct.name} - ${selectedProduct.price}원 x ${newQuantity}`;
-        selectedProduct.quantity--;
+        updateProductQuantity(selectedProduct.id, selectedProduct.quantity - 1);
       } else {
         alert("재고가 부족합니다.");
         return;
@@ -34,7 +34,6 @@ export function addCart(productSelect, cartContainer) {
           <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${selectedProduct.id}">삭제</button>
         </div>`;
       cartContainer.appendChild(newProduct);
-      // selectedProduct.quantity--;
       updateProductQuantity(selectedProduct.id, selectedProduct.quantity - 1);
     }
     calculateCart(cartContainer);

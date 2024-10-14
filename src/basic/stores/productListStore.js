@@ -21,8 +21,6 @@ export const updateProductQuantity = (productId, newQuantity) => {
     );
   productListStore.setState({ productList: updatedProductList });
 };
-export const resetProductList = () =>
-  productListStore.setState({ productList: initialProductList });
 export const subscribeToProductList = (listener) => productListStore.subscribe(listener);
 
 export default productListStore;

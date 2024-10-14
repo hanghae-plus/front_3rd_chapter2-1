@@ -17,9 +17,7 @@ export function updateSelectOptions() {
     });
   }
 
-  // 초기 렌더링
   renderOptions();
 
-  // 상품 목록 변경 시 업데이트
   subscribeToProductList(renderOptions);
 }

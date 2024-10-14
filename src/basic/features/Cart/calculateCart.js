@@ -1,16 +1,16 @@
 import { getProductList } from "../../stores/productListStore";
 
 let totalAmount, itemCount;
-let cartTotal, cartDisplay;
+let cartTotal, cartContainer;
 
 export function calculateCart() {
-  cartDisplay = document.getElementById("cart-items");
+  cartContainer = document.getElementById("cart-items");
   cartTotal = document.getElementById("cart-total");
 
   itemCount = 0;
   totalAmount = 0;
 
-  const cartItems = cartDisplay.children;
+  const cartItems = cartContainer.children;
   const productList = getProductList();
 
   let subTotal = 0;
