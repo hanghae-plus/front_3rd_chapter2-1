@@ -38,15 +38,19 @@ export function calcCart() {
   // 화요일 할인 적용
   const { finalTotalPrice, finalDiscountRate } = applyTuesdayDiscount(totalPrice, discountRate);
 
-  console.log(finalDiscountRate, 'finalDiscountRate');
+  console.log(finalTotalPrice, 'finalDiscountRate');
 
   // 포인트 계산
-  const rewardPoints = calculateRewardPoints(totalPrice);
+  const rewardPoints = calculateRewardPoints(finalTotalPrice);
+  console.log(rewardPoints, 'rewardPoints');
 
   // 최종적으로 상태 업데이트를 한 번에 처리
-  cartTotalPriceStore.setState({
-    totalPrice: finalTotalPrice,
-    discountRate: finalDiscountRate,
+  cartTotalPriceStore.setState((prevState) => {
+    return {
+      totalPrice: finalTotalPrice,
+      discountRate: finalDiscountRate,
+      rewardPoints: prevState.rewardPoints + rewardPoints,
+    };
   });
 
   cartPointStore.setState({
@@ -84,5 +88,6 @@ function applyTuesdayDiscount(totalPrice, discountRate) {
 
 // 보상 포인트 계산 함수
 function calculateRewardPoints(totalPrice) {
+  console.log(totalPrice, 'totalPrice');
   return Math.floor(totalPrice / 1000); // 예: 1000원당 1포인트
 }

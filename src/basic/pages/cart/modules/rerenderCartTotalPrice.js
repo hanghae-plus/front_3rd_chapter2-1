@@ -1,11 +1,10 @@
 import { cartTotalPriceStore } from '../store.js';
 
 export function rerenderCartTotalPrice() {
-  const { totalPrice, discountRate } = cartTotalPriceStore.getState();
+  const { totalPrice, discountRate, rewardPoints } = cartTotalPriceStore.getState();
   const $totalPriceElement = document.getElementById('cart-total');
-  // const $rewardPointElement = document.getElementById('loyalty-points');
+  let $rewardPointElement = document.getElementById('loyalty-points');
 
-  console.log(totalPrice, discountRate, 'totalPrice, rewardPoints');
   $totalPriceElement.textContent = `총액: ${totalPrice}원`;
 
   if (discountRate > 0) {
@@ -14,4 +13,13 @@ export function rerenderCartTotalPrice() {
     span.textContent = '(' + (discountRate * 100).toFixed(1) + '% 할인 적용)';
     $totalPriceElement.appendChild(span);
   }
+
+  if (!$rewardPointElement) {
+    $rewardPointElement = document.createElement('span');
+    $rewardPointElement.id = 'loyalty-points';
+    $rewardPointElement.className = 'text-blue-500 ml-2';
+  }
+
+  $totalPriceElement.appendChild($rewardPointElement);
+  $rewardPointElement.textContent = `(포인트: ${rewardPoints})`;
 }

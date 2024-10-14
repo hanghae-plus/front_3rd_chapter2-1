@@ -17,6 +17,7 @@ export const cartItemStore = createStore({
 export const cartTotalPriceStore = createStore({
   totalPrice: 0,
   discountRate: 0,
+  rewardPoints: 0,
 });
 
 export const cartPointStore = createStore({
