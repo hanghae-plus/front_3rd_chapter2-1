@@ -3,7 +3,8 @@ var lastSel,
   bonusPts = 0,
   totalAmt = 0,
   itemCnt = 0;
-function main() {
+
+export function main() {
   prodList = [
     { id: "p1", name: "상품1", val: 10000, q: 50 },
     { id: "p2", name: "상품2", val: 20000, q: 30 },
@@ -170,7 +171,9 @@ function updateStockInfo() {
   });
   stockInfo.textContent = infoMsg;
 }
+
 main();
+
 addBtn.addEventListener("click", function () {
   var selItem = sel.value;
   var itemToAdd = prodList.find(function (p) {

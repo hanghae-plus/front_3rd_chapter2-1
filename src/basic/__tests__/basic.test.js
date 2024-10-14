@@ -27,6 +27,7 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      vi.clearAllTimers(); // 타이머 초기화
       vi.restoreAllMocks();
     });
 
@@ -85,6 +86,7 @@ describe('basic test', () => {
       sel.value='p1';
       addBtn.click();
       addBtn.click();
+      
       expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
     });
 
