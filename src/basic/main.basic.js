@@ -16,6 +16,12 @@ function main() {
   let root = document.getElementById('app');
   root.appendChild(renderHome());
 
+  sel = document.getElementById('product-select');
+  addBtn = document.getElementById('add-to-cart');
+  cartDisp = document.getElementById('cart-items');
+  sum = document.getElementById('cart-total');
+  stockInfo = document.getElementById('stock-status');
+
   updateSelOpts(sel, prodList);
 
   calcCart(sum);
