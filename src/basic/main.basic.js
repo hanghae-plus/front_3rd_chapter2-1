@@ -112,16 +112,18 @@ function main() {
   }, Math.random() * 20000);
 }
 
-function updateSelOpts() {
+function updateSelOpts(sel, prodList) {
   sel.innerHTML = '';
-  prodList.forEach(function (item) {
-    let opt = document.createElement('option');
-    opt.value = item.id;
+  prodList.forEach((item) => {
+    const { id, name, val, q } = item;
+    const opt = document.createElement('option');
 
-    opt.textContent = item.name + ' - ' + item.val + '원';
-    if (item.q === 0) {
+    opt.value = id;
+    opt.textContent = `${name} - ${val}원`;
+    if (q === 0) {
       opt.disabled = true;
     }
+
     sel.appendChild(opt);
   });
 }
