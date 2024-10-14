@@ -6,6 +6,8 @@ export const products = [
   { id: 'p5', name: '상품5', price: 25000, quantity: 10 },
 ];
 
+export const calculateDiscountedPrice = (price, discountRate) => price * (1 - discountRate);
+
 export const getProductBulkDiscountRate = (productId, quantity) => {
   const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
   const PRODUCT_BULK_DISCOUNT_RATE = {
@@ -28,7 +30,7 @@ export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, disco
     const bulkDiscountedPrice = discountedTotalPrice * 0.25;
     const itemBulkDiscountedPrice = totalPrice - discountedTotalPrice;
     if (bulkDiscountedPrice > itemBulkDiscountedPrice) {
-      updatedTotalPrice = totalPrice * (1 - 0.25);
+      updatedTotalPrice = calculateDiscountedPrice(totalPrice, 0.25);
       discountRate = 0.25;
     } else {
       updatedTotalPrice = discountedTotalPrice;
@@ -46,7 +48,7 @@ export const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
   const SALE_DAY_DISCOUNT_RATE = 0.1;
 
   if (new Date().getDay() === SALE_DAY) {
-    updatedTotalPrice *= 1 - SALE_DAY_DISCOUNT_RATE;
+    updatedTotalPrice = calculateDiscountedPrice(updatedTotalPrice, SALE_DAY_DISCOUNT_RATE);
     discountRate = Math.max(discountRate, SALE_DAY_DISCOUNT_RATE);
   }
 

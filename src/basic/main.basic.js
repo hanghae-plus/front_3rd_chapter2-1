@@ -1,5 +1,6 @@
 import {
   calculateDayDiscount,
+  calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   getProductBulkDiscountRate,
   products,
@@ -85,7 +86,7 @@ const updateCartInfos = () => {
     totalPrice += productTotalPrice;
 
     const productBulkDiscountRate = getProductBulkDiscountRate(currentProduct.id, quantity);
-    discountedTotalPrice += productTotalPrice * (1 - productBulkDiscountRate);
+    discountedTotalPrice += calculateDiscountedPrice(productTotalPrice, productBulkDiscountRate);
   }
 
   const updatedTotalPriceAndDiscountRate = calculateTotalProductsBulkDiscount(
