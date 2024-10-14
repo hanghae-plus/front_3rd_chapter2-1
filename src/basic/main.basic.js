@@ -1,11 +1,11 @@
 import {
-  products,
   calcDayDiscount,
-  getProductBulkDiscountRate,
-  updateBonusPoints,
-  renderProductsStockInfo,
-  updateTotalInfo,
   calcTotalProductsBulkDiscount,
+  getProductBulkDiscountRate,
+  products,
+  renderProductsStockInfo,
+  updateBonusPoints,
+  updateTotalInfo,
 } from './utils/cart';
 
 let productSelectDropdown, addToCartBtn, cartItemsDisplay, cartTotalInfo, productsStockInfo;
