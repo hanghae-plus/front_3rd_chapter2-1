@@ -1,5 +1,5 @@
 let prodList, containerWrap, container, title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList;
-var lastSel,
+var lastSelectedProduct,
   bonusPoints = 0,
   totalPrice = 0,
   itemCnt = 0;
@@ -61,7 +61,7 @@ function main() {
     className: 'text-sm text-gray-500 mt-2',
   });
 
-  updateSelOpts();
+  updateProdList();
 
   container.append(title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList);
   containerWrap.appendChild(container);
@@ -69,32 +69,41 @@ function main() {
 
   calcCart();
 
-  setTimeout(function () {
-    setInterval(function () {
-      var luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-      if (Math.random() < 0.3 && luckyItem.q > 0) {
-        luckyItem.val = Math.round(luckyItem.val * 0.8);
-        alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateSelOpts();
+  alertSaleItem(luckySaleItem, Math.random() * 10000, 30000);
+  alertSaleItem(recommendSaleItem, Math.random() * 20000, 60000);
+
+  function alertSaleItem(callback, initialDelay, setTime) {
+    setTimeout(function () {
+      callback();
+      setInterval(callback, setTime);
+    }, initialDelay);
+  }
+
+  function luckySaleItem() {
+    const selectedProduct = prodList[Math.floor(Math.random() * prodList.length)];
+    const isSaleItem = Math.random() < 0.3;
+
+    if (isSaleItem && selectedProduct.q > 0) {
+      selectedProduct.val = Math.round(selectedProduct.val * 0.8);
+      alert(`번개세일! ${selectedProduct.name}이(가) 20% 할인 중입니다!`);
+      updateProdList();
+    }
+  }
+
+  function recommendSaleItem() {
+    if (lastSelectedProduct) {
+      const recommendItem = prodList.find((item) => item.id !== lastSelectedProduct && item.q > 0);
+
+      if (recommendItem) {
+        recommendItem.val = Math.round(recommendItem.val * 0.95);
+        alert(`${recommendItem.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
+        updateProdList();
       }
-    }, 30000);
-  }, Math.random() * 10000);
-  setTimeout(function () {
-    setInterval(function () {
-      if (lastSel) {
-        var suggest = prodList.find(function (item) {
-          return item.id !== lastSel && item.q > 0;
-        });
-        if (suggest) {
-          alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-          suggest.val = Math.round(suggest.val * 0.95);
-          updateSelOpts();
-        }
-      }
-    }, 60000);
-  }, Math.random() * 20000);
+    }
+  }
 }
-function updateSelOpts() {
+
+function updateProdList() {
   cartItemSelect.innerHTML = '';
   prodList.forEach(function (item) {
     var opt = document.createElement('option');
@@ -104,8 +113,10 @@ function updateSelOpts() {
     if (item.q === 0) opt.disabled = true;
     cartItemSelect.appendChild(opt);
   });
+  console.log('kyj 여기서 업데이트를 했음!');
 }
 function calcCart() {
+  console.log('calcCart()');
   totalPrice = 0;
   itemCnt = 0;
   var cartItems = cartList.children;
@@ -135,6 +146,7 @@ function calcCart() {
       totalPrice += itemTot * (1 - disc);
     })();
   }
+
   let discRate = 0;
   if (itemCnt >= 30) {
     var bulkDisc = totalPrice * 0.25;
@@ -148,7 +160,7 @@ function calcCart() {
   } else {
     discRate = (subTot - totalPrice) / subTot;
   }
-
+  console.log('discRate:', discRate, 'subTot:', subTot, 'totalPrice:', totalPrice);
   if (new Date().getDay() === 2) {
     totalPrice *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
@@ -160,10 +172,11 @@ function calcCart() {
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     cartTotalPrice.appendChild(span);
   }
+  console.log('discRate::', discRate);
   updatesoldoutList();
   renderBonusPts();
 }
-const renderBonusPts = () => {
+function renderBonusPts() {
   bonusPoints += Math.floor(totalPrice / 1000);
   var ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
@@ -172,8 +185,9 @@ const renderBonusPts = () => {
     ptsTag.className = 'text-blue-500 ml-2';
     cartTotalPrice.appendChild(ptsTag);
   }
+
   ptsTag.textContent = '(포인트: ' + bonusPoints + ')';
-};
+}
 
 function updatesoldoutList() {
   var infoMsg = '';
@@ -223,7 +237,7 @@ addBtn.addEventListener('click', function () {
       itemToAdd.q--;
     }
     calcCart();
-    lastSel = selItem;
+    lastSelectedProduct = selItem;
   }
 });
 cartList.addEventListener('click', function (event) {
