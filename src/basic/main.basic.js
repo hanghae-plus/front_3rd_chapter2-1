@@ -1,7 +1,7 @@
-let prodList, cont, wrap, hTxt, cartDisp, sum, sel, addBtn, stockInfo;
+let prodList, containerWrap, container, title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList;
 var lastSel,
-  bonusPts = 0,
-  totalAmt = 0,
+  bonusPoints = 0,
+  totalPrice = 0,
   itemCnt = 0;
 
 function main() {
@@ -23,29 +23,29 @@ function main() {
     return element;
   }
 
-  cont = createElementWithAttributes('div', {
+  containerWrap = createElementWithAttributes('div', {
     className: 'bg-gray-100 p-8',
   });
 
-  wrap = createElementWithAttributes('div', {
+  container = createElementWithAttributes('div', {
     className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
   });
 
-  hTxt = createElementWithAttributes('h1', {
+  title = createElementWithAttributes('h1', {
     className: 'text-2xl font-bold mb-4',
     textContent: '장바구니',
   });
 
-  cartDisp = createElementWithAttributes('div', {
+  cartList = createElementWithAttributes('div', {
     id: 'cart-items',
   });
 
-  sum = createElementWithAttributes('div', {
+  cartTotalPrice = createElementWithAttributes('div', {
     id: 'cart-total',
     className: 'text-xl font-bold my-4',
   });
 
-  sel = createElementWithAttributes('select', {
+  cartItemSelect = createElementWithAttributes('select', {
     id: 'product-select',
     className: 'border rounded p-2 mr-2',
   });
@@ -56,16 +56,16 @@ function main() {
     textContent: '추가',
   });
 
-  stockInfo = createElementWithAttributes('div', {
+  soldoutList = createElementWithAttributes('div', {
     id: 'stock-status',
     className: 'text-sm text-gray-500 mt-2',
   });
 
   updateSelOpts();
 
-  wrap.append(hTxt, cartDisp, sum, sel, addBtn, stockInfo);
-  cont.appendChild(wrap);
-  root.appendChild(cont);
+  container.append(title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList);
+  containerWrap.appendChild(container);
+  root.appendChild(container);
 
   calcCart();
 
@@ -95,20 +95,20 @@ function main() {
   }, Math.random() * 20000);
 }
 function updateSelOpts() {
-  sel.innerHTML = '';
+  cartItemSelect.innerHTML = '';
   prodList.forEach(function (item) {
     var opt = document.createElement('option');
     opt.value = item.id;
 
     opt.textContent = item.name + ' - ' + item.val + '원';
     if (item.q === 0) opt.disabled = true;
-    sel.appendChild(opt);
+    cartItemSelect.appendChild(opt);
   });
 }
 function calcCart() {
-  totalAmt = 0;
+  totalPrice = 0;
   itemCnt = 0;
-  var cartItems = cartDisp.children;
+  var cartItems = cartList.children;
   var subTot = 0;
   for (var i = 0; i < cartItems.length; i++) {
     (function () {
@@ -132,61 +132,61 @@ function calcCart() {
         else if (curItem.id === 'p4') disc = 0.05;
         else if (curItem.id === 'p5') disc = 0.25;
       }
-      totalAmt += itemTot * (1 - disc);
+      totalPrice += itemTot * (1 - disc);
     })();
   }
   let discRate = 0;
   if (itemCnt >= 30) {
-    var bulkDisc = totalAmt * 0.25;
-    var itemDisc = subTot - totalAmt;
+    var bulkDisc = totalPrice * 0.25;
+    var itemDisc = subTot - totalPrice;
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
+      totalPrice = subTot * (1 - 0.25);
       discRate = 0.25;
     } else {
-      discRate = (subTot - totalAmt) / subTot;
+      discRate = (subTot - totalPrice) / subTot;
     }
   } else {
-    discRate = (subTot - totalAmt) / subTot;
+    discRate = (subTot - totalPrice) / subTot;
   }
 
   if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
+    totalPrice *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
-  sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
+  cartTotalPrice.textContent = '총액: ' + Math.round(totalPrice) + '원';
   if (discRate > 0) {
     var span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
-    sum.appendChild(span);
+    cartTotalPrice.appendChild(span);
   }
-  updateStockInfo();
+  updatesoldoutList();
   renderBonusPts();
 }
 const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+  bonusPoints += Math.floor(totalPrice / 1000);
   var ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
     ptsTag = document.createElement('span');
     ptsTag.id = 'loyalty-points';
     ptsTag.className = 'text-blue-500 ml-2';
-    sum.appendChild(ptsTag);
+    cartTotalPrice.appendChild(ptsTag);
   }
-  ptsTag.textContent = '(포인트: ' + bonusPts + ')';
+  ptsTag.textContent = '(포인트: ' + bonusPoints + ')';
 };
 
-function updateStockInfo() {
+function updatesoldoutList() {
   var infoMsg = '';
   prodList.forEach(function (item) {
     if (item.q < 5) {
       infoMsg += item.name + ': ' + (item.q > 0 ? '재고 부족 (' + item.q + '개 남음)' : '품절') + '\n';
     }
   });
-  stockInfo.textContent = infoMsg;
+  soldoutList.textContent = infoMsg;
 }
 main();
 addBtn.addEventListener('click', function () {
-  var selItem = sel.value;
+  var selItem = cartItemSelect.value;
   var itemToAdd = prodList.find(function (p) {
     return p.id === selItem;
   });
@@ -219,14 +219,14 @@ addBtn.addEventListener('click', function () {
         '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
         itemToAdd.id +
         '">삭제</button></div>';
-      cartDisp.appendChild(newItem);
+      cartList.appendChild(newItem);
       itemToAdd.q--;
     }
     calcCart();
     lastSel = selItem;
   }
 });
-cartDisp.addEventListener('click', function (event) {
+cartList.addEventListener('click', function (event) {
   var tgt = event.target;
 
   if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
