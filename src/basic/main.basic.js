@@ -24,35 +24,46 @@ function main() {
 
   // 엘리먼트 생성 및 초기화
   const $root = document.getElementById('app');
+
+  // 장바구니 페이지
   const $cart = document.createElement('div');
-  const $cartInner = document.createElement('div');
-  const $title = document.createElement('h1');
-
-  $cartItems = document.createElement('div');
-  $cartTotal = document.createElement('div');
-  $productSelect = document.createElement('select');
-  $addButton = document.createElement('button');
-  $stockStatus = document.createElement('div');
-  $cartItems.id = 'cart-items';
-  $cartTotal.id = 'cart-total';
-  $productSelect.id = 'product-select';
-  $addButton.id = 'add-to-cart';
-
-  $stockStatus.id = 'stock-status';
-
   $cart.id = 'cart';
   $cart.className = 'bg-gray-100 p-8';
+
+  // 장바구니 페이지 inner
+  const $cartInner = document.createElement('div');
   $cartInner.id = 'cart-inner';
   $cartInner.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
+
+  // 페이지 제목
+  const $title = document.createElement('h1');
   $title.className = 'text-2xl font-bold mb-4';
-  $cartTotal.className = 'text-xl font-bold my-4';
-  $productSelect.className = 'border rounded p-2 mr-2';
-  $addButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  $stockStatus.className = 'text-sm text-gray-500 mt-2';
   $title.textContent = '장바구니';
+
+  // 장바구니에 담긴 상품 리스트
+  $cartItems = document.createElement('div');
+  $cartItems.id = 'cart-items';
+
+  // 장바구니 총액
+  $cartTotal = document.createElement('div');
+  $cartTotal.id = 'cart-total';
+  $cartTotal.className = 'text-xl font-bold my-4';
+
+  // 상품 리스트
+  $productSelect = document.createElement('select');
+  $productSelect.id = 'product-select';
+  $productSelect.className = 'border rounded p-2 mr-2';
+
+  // 상품 추가 버튼
+  $addButton = document.createElement('button');
+  $addButton.id = 'add-to-cart';
+  $addButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
   $addButton.textContent = '추가';
 
-  renderProductSelect();
+  // 상품 재고 상태 문구
+  $stockStatus = document.createElement('div');
+  $stockStatus.id = 'stock-status';
+  $stockStatus.className = 'text-sm text-gray-500 mt-2';
 
   $cartInner.appendChild($title);
   $cartInner.appendChild($cartItems);
@@ -60,9 +71,12 @@ function main() {
   $cartInner.appendChild($productSelect);
   $cartInner.appendChild($addButton);
   $cartInner.appendChild($stockStatus);
+
   $cart.appendChild($cartInner);
+
   $root.appendChild($cart);
 
+  renderProductSelect();
   calcCart();
 
   // 30초 마다 무작위로 상품을 하나 선택하고, 30%의 확률로 20% 할인을 적용
