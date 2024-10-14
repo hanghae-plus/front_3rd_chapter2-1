@@ -30,6 +30,11 @@ describe('advanced test', () => {
       vi.restoreAllMocks();
     });
 
+    afterAll(() => {
+      // 모든 타이머 제거
+      vi.useRealTimers();
+    });
+
     it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
       expect(sel).toBeDefined();
       expect(sel.tagName.toLowerCase()).toBe('select');
