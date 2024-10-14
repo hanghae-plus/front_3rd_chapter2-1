@@ -42,13 +42,13 @@ export const addToCart = (targetCartItem, targetProduct) => {
 };
 
 // TODO: handleAddToCart랑 중복되는 부분 합칠 수 있는 지 확인
-export const removeCartItem = (targetProduct, itemElement, restoreQuantity) => {
+export const removeCartItem = (targetProduct, $itemElement, restoreQuantity) => {
   targetProduct.quantity += restoreQuantity;
-  itemElement.remove();
+  $itemElement.remove();
 };
-export const changeCartItemQuantity = (clickedElement, itemElement, targetProduct) => {
+export const changeCartItemQuantity = (clickedElement, $itemElement, targetProduct) => {
   const quantityChangeAmount = parseInt(clickedElement.dataset.change);
-  const currentItemQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  const currentItemQuantity = parseInt($itemElement.querySelector('span').textContent.split('x ')[1]);
   const newItemQuantity = currentItemQuantity + quantityChangeAmount;
 
   const isStockRemain = newItemQuantity <= targetProduct.quantity + currentItemQuantity;
@@ -56,9 +56,9 @@ export const changeCartItemQuantity = (clickedElement, itemElement, targetProduc
   if (!isStockRemain) {
     alert('재고가 부족합니다.');
   } else if (newItemQuantity > 0) {
-    updateCartItemInfo(targetProduct, newItemQuantity, itemElement);
+    updateCartItemInfo(targetProduct, newItemQuantity, $itemElement);
     targetProduct.quantity -= quantityChangeAmount;
   } else {
-    removeCartItem(targetProduct, itemElement, 1);
+    removeCartItem(targetProduct, $itemElement, 1);
   }
 };

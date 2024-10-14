@@ -27,14 +27,14 @@ export const updateCartItemInfo = (targetProduct, newItemQuantity, targetCartIte
   targetCartItem.querySelector('span').textContent = newCartItemInfo;
 };
 const updateCartTotalInfo = (discountedTotalPrice, discountRate) => {
-  const cartTotalInfo = document.getElementById('cart-total');
+  const $cartTotalInfo = document.getElementById('cart-total');
 
-  cartTotalInfo.textContent = `총액: ${Math.round(discountedTotalPrice)}원`;
+  $cartTotalInfo.textContent = `총액: ${Math.round(discountedTotalPrice)}원`;
   if (discountRate > 0) {
     const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-    cartTotalInfo.appendChild(span);
+    $cartTotalInfo.appendChild(span);
   }
 };
 
@@ -70,8 +70,8 @@ const createBonusPointsTag = () => {
 export const updateBonusPoints = (bonusPoints, totalPrice) => {
   const updatedBonusPoints = bonusPoints + Math.floor(totalPrice / 1000);
 
-  const pointTagElement = document.getElementById('loyalty-points') || createBonusPointsTag();
-  pointTagElement.textContent = `(포인트: ${updatedBonusPoints})`;
+  const $pointTagElement = document.getElementById('loyalty-points') || createBonusPointsTag();
+  $pointTagElement.textContent = `(포인트: ${updatedBonusPoints})`;
 
   return updatedBonusPoints;
 };

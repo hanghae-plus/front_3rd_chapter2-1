@@ -15,22 +15,22 @@ const formatLowStocksInfo = (lowStockProducts) => {
     .join('\n');
 };
 export const renderProductsStockInfo = () => {
-  const stockInfo = document.getElementById('stock-status');
+  const $stockInfo = document.getElementById('stock-status');
   const lowStockProducts = products.filter((product) => product.quantity < LACK_OF_STOCK);
 
-  stockInfo.textContent = formatLowStocksInfo(lowStockProducts);
+  $stockInfo.textContent = formatLowStocksInfo(lowStockProducts);
 };
 
 export const renderProductOptions = () => {
-  const productSelectDropdown = document.getElementById('product-select');
-  productSelectDropdown.innerHTML = '';
+  const $productSelectDropdown = document.getElementById('product-select');
+  $productSelectDropdown.innerHTML = '';
 
   products.forEach((item) => {
-    const opt = document.createElement('option');
-    opt.value = item.id;
+    const $option = document.createElement('option');
+    $option.value = item.id;
 
-    opt.textContent = item.name + ' - ' + item.price + '원';
-    if (item.quantity === 0) opt.disabled = true;
-    productSelectDropdown.appendChild(opt);
+    $option.textContent = item.name + ' - ' + item.price + '원';
+    if (item.quantity === 0) $option.disabled = true;
+    $productSelectDropdown.appendChild($option);
   });
 };
