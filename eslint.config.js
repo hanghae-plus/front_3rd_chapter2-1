@@ -9,7 +9,7 @@ export default [
     rules: {
       eqeqeq: 'error',
       'no-console': 'warn',
-      curly: 'error',
+      curly: ['error', 'multi'],
       // 'comma-dangle': ['error', 'always-multiline'],
       'no-var': 'error',
       'no-undefined': 'error',
