@@ -7,7 +7,7 @@ let $addButton;
 let $cartItems;
 let $cartTotal;
 let $stockStatus;
-let lastSel;
+let lastAddedProductId = null;
 let loyaltyPoints = 0;
 let totalAmt = 0;
 let itemCnt = 0;
@@ -94,9 +94,9 @@ function main() {
   // 장바구니에 마지막으로 추가된 상품을 제외하고, 무작위로 상품을 하나 선택해서 5% 할인을 적용
   setTimeout(function () {
     setInterval(function () {
-      if (lastSel) {
+      if (lastAddedProductId !== null) {
         const suggest = prodList.find(function (item) {
-          return item.id !== lastSel && item.q > 0;
+          return item.id !== lastAddedProductId && item.q > 0;
         });
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
@@ -265,7 +265,7 @@ $addButton.addEventListener('click', function () {
     calcCart();
 
     // 마지막에 장바구니에 담은 상품 저장
-    lastSel = selItem;
+    lastAddedProductId = selItem;
   }
 });
 
