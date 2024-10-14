@@ -262,6 +262,3 @@ cartItemsContainer.addEventListener('click', function (event) {
         calcCart();
     }
 });
-
-
-main()
