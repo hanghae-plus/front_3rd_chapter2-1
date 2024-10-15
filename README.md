@@ -58,7 +58,7 @@ calcCart => updateCartInfos
 - calculateDiscountRate : 할인률 계산 로직
 - createBonusPointsTag : 포인트 element 생성
 - formatLowStocksInfo : 재고 부족/품절 텍스트 포맷
-- updateCartItemInfo : 총액 텍스트 업데이트
+- renderCartItemInfo : 총액 텍스트 업데이트
 - getTargetItemElementQuantity : 카트에 특정 상품 담긴 수량
 
 [] 노션에 있는 내용 보고 하나씩 점검하기

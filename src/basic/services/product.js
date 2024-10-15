@@ -1,5 +1,3 @@
-import { LACK_OF_STOCK } from '../const/product';
-
 const products = [
   { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
   { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
@@ -15,25 +13,5 @@ const formatLowStocksInfo = (lowStockProducts) => {
     )
     .join('\n');
 };
-const renderProductsStockInfo = () => {
-  const $stockInfo = document.getElementById('stock-status');
-  const lowStockProducts = products.filter((product) => product.quantity < LACK_OF_STOCK);
 
-  $stockInfo.textContent = formatLowStocksInfo(lowStockProducts);
-};
-
-const renderProductOptions = () => {
-  const $productSelectDropdown = document.getElementById('product-select');
-  $productSelectDropdown.innerHTML = '';
-
-  products.forEach((item) => {
-    const $option = document.createElement('option');
-    $option.value = item.id;
-
-    $option.textContent = item.name + ' - ' + item.price + '원';
-    if (item.quantity === 0) $option.disabled = true;
-    $productSelectDropdown.appendChild($option);
-  });
-};
-
-export { products, renderProductsStockInfo, renderProductOptions };
+export { products, formatLowStocksInfo };

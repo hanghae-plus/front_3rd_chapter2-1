@@ -1,8 +1,9 @@
 import { updateCartInfos } from './services/cart';
 import { addToCart, changeCartItemQuantity, removeCartItem } from './services/cartOperations';
 import { setSuggestDiscount, setSurpriseDiscount } from './services/discount';
-import { products, renderProductOptions } from './services/product';
+import { products } from './services/product';
 import { getTargetItemElementQuantity } from './utils/cart';
+import { renderProductOptions } from './views/product';
 
 let $addToCartBtn, $cartItemsDisplay;
 let lastAddedProduct,
@@ -17,6 +18,7 @@ const main = () => {
   setEventListeners();
 };
 
+// 전역변수와 관련이 있는 함수들은 main.js에서 관리
 const renderCartUI = () => {
   const $root = document.getElementById('app');
   const $cartWrapper = document.createElement('div');

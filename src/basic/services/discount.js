@@ -1,4 +1,6 @@
 import {
+  PRODUCT_BULK_DISCOUNT_AMOUNT,
+  PRODUCT_BULK_DISCOUNT_RATE,
   SALE_DAY,
   SALE_DAY_DISCOUNT_RATE,
   SUGGEST_DISCOUNT_RATE,
@@ -10,15 +12,9 @@ import {
   TOTAL_BULK_DISCOUNT_RATE,
 } from '../const/discount';
 import { calculateDiscountedPrice, calculateDiscountRate } from '../utils/discount';
+import { renderProductOptions } from '../views/product';
 
-import { products, renderProductOptions } from './product';
-
-const createDiscountInfo = (discountRate) => {
-  const span = document.createElement('span');
-  span.className = 'text-green-500 ml-2';
-  span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-  return span;
-};
+import { products } from './product';
 
 const setSurpriseDiscount = () => {
   setTimeout(() => {
@@ -68,6 +64,10 @@ const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
   return { updatedTotalPrice, discountRate };
 };
 
+const getProductBulkDiscountRate = (productId, quantity) => {
+  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
+  return 0;
+};
 const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
   let updatedTotalPrice = 0;
   let discountRate = 0;
@@ -87,10 +87,10 @@ const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
 };
 
 export {
-  createDiscountInfo,
   setSurpriseDiscount,
   setSuggestDiscount,
   calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   calculateDayDiscount,
+  getProductBulkDiscountRate,
 };
