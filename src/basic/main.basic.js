@@ -116,10 +116,6 @@ const calcCart = () => {
   }
   let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
 
-  if (new Date().getDay() === 2) {
-    totalAmount *= 1 - 0.1;
-    discountRate = Math.max(discountRate, 0.1);
-  }
   updateCartTotal(discountRate);
   updateStockInfo();
   calculateBonusPoints();
@@ -146,17 +142,27 @@ const getDiscount = (product, quantity) => {
   return 0;
 };
 
+const applyTuesdayDiscount = (totalAmount, discountRate) => {
+  if (new Date().getDay() === 2) {
+    totalAmount *= 1 - 0.1;
+    return (discountRate = Math.max(discountRate, 0.1));
+  }
+  return discountRate;
+};
+
 const getDiscountRate = (itemCnt, subtotal, totalAmount) => {
+  let discountRate = 0;
   if (itemCnt >= 30) {
     const bulkDiscount = subtotal * 0.25;
     const itemDiscount = subtotal - totalAmount;
     if (bulkDiscount > itemDiscount) {
       totalAmount = subtotal * (1 - 0.25);
-      return 0.25;
+      discountRate = 0.25;
     }
-    return (subtotal - totalAmount) / subtotal;
+    discountRate = (subtotal - totalAmount) / subtotal;
   }
-  return (subtotal - totalAmount) / subtotal;
+  discountRate = (subtotal - totalAmount) / subtotal;
+  return applyTuesdayDiscount(totalAmount, discountRate);
 };
 
 const updateCartTotal = (discountRate) => {
