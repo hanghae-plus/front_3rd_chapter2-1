@@ -2,6 +2,7 @@ import { HeaderText, CartDisplay, TotalPrice, ProductSelect, AddButton, StockInf
 import { STOCK_OUT_MESSAGE } from "../constants"
 import { productList } from "../data"
 import { updateCartInfo } from "../state"
+import { calculatorCart } from "./calculatorUtils"
 /**
  * 레이아웃 초기화
  */
@@ -37,7 +38,7 @@ export const handleClickAddToCart = () => {
     const addProduct = document.getElementById(targetProduct.id)
 
     addToCart(addProduct, targetProduct)
-    // bonusPoint = updateCartInfos(bonusPoint)
+    calculatorCart()
     updateCartInfo("lastAddedProduct", targetProduct)
   }
 }
