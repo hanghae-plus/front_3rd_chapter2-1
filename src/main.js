@@ -3,6 +3,7 @@ var lastSel,
   bonusPts = 0,
   totalAmt = 0,
   itemCnt = 0;
+
 function main() {
   prodList = [
     { id: "p1", name: "상품1", val: 10000, q: 50 },
@@ -16,11 +17,13 @@ function main() {
   let cont = document.createElement("div");
   var wrap = document.createElement("div");
   let hTxt = document.createElement("h1");
+
   cartDisp = document.createElement("div");
   sum = document.createElement("div");
   sel = document.createElement("select");
   addBtn = document.createElement("button");
   stockInfo = document.createElement("div");
+
   cartDisp.id = "cart-items";
   sum.id = "cart-total";
   sel.id = "product-select";
