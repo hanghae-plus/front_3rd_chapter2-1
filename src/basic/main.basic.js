@@ -147,19 +147,23 @@ function calcCart() {
     $cartTotal.appendChild(span);
   }
   updateStockInfo();
-  renderBonusPts();
+  calculateBonusPoints();
+  displayBonusPoints(bonusPoints);
 }
 
-const renderBonusPts = () => {
+const calculateBonusPoints = () => {
   bonusPoints += Math.floor(totalAmt / 1000);
-  let ptsTag = document.getElementById("loyalty-points");
-  if (!ptsTag) {
-    ptsTag = document.createElement("span");
-    ptsTag.id = "loyalty-points";
-    ptsTag.className = "text-blue-500 ml-2";
-    $cartTotal.appendChild(ptsTag);
+};
+
+const displayBonusPoints = (bonusPoints) => {
+  let pointsTag = document.getElementById("loyalty-points");
+  if (!pointsTag) {
+    pointsTag = document.createElement("span");
+    pointsTag.id = "loyalty-points";
+    pointsTag.className = "text-blue-500 ml-2";
+    $cartTotal.appendChild(pointsTag);
   }
-  ptsTag.textContent = "(포인트: " + bonusPoints + ")";
+  pointsTag.textContent = "(포인트: " + bonusPoints + ")";
 };
 
 function updateStockInfo() {
