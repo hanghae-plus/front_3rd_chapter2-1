@@ -54,16 +54,33 @@ const main = () => {
 
   calcCart();
 
+  const RANDOM_SALE_RATE = {
+    LUCKY_SALE: 0.8,
+    RECOMMEND_SALE: 0.95,
+  };
+
+  const SALE_INTERVAL = {
+    LUCKY_INTERVAL: 30000,
+    RECOMMEND_INTERVAL: 60000,
+  };
+
+  const SALE_TIMEOUT = {
+    LUCKY_TIMEOUT: 10000,
+    RECOMMEND_TIMEOUT: 20000,
+  };
+
+  const LUCKY_SALE_PROBABILITY = 0.3;
+
   setTimeout(() => {
     setInterval(() => {
       const luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-      if (Math.random() < 0.3 && luckyItem.q > 0) {
-        luckyItem.val = Math.round(luckyItem.val * 0.8);
+      if (Math.random() < LUCKY_SALE_PROBABILITY && luckyItem.q > 0) {
+        luckyItem.val = Math.round(luckyItem.val * RANDOM_SALE_RATE.LUCKY_SALE);
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
         updateSelOpts();
       }
-    }, 30000);
-  }, Math.random() * 10000);
+    }, SALE_INTERVAL.LUCKY_INTERVAL);
+  }, Math.random() * SALE_TIMEOUT.LUCKY_TIMEOUT);
 
   setTimeout(() => {
     setInterval(() => {
@@ -71,12 +88,12 @@ const main = () => {
         const suggest = prodList.find(item => item.id !== lastSel && item.q > 0);
         if (suggest) {
           alert(suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggest.val = Math.round(suggest.val * 0.95);
+          suggest.val = Math.round(suggest.val * RANDOM_SALE_RATE.RECOMMEND_SALE);
           updateSelOpts();
         }
       }
-    }, 60000);
-  }, Math.random() * 20000);
+    }, SALE_INTERVAL.RECOMMEND_INTERVAL);
+  }, Math.random() * SALE_TIMEOUT.RECOMMEND_TIMEOUT);
 };
 
 const updateSelOpts = () => {
@@ -108,22 +125,31 @@ const calcCart = () => {
         }
       }
 
+      const SALE_RATE = {
+        P1: 0.1,
+        P2: 0.15,
+        P3: 0.2,
+        P4: 0.05,
+        P5: 0.25,
+      };
       const q = parseInt(cartItems[i].querySelector("span").textContent.split("x ")[1]);
       const itemTot = curItem.val * q;
       let disc = 0;
       itemCnt += q;
       subTot += itemTot;
-      if (q >= 10) {
+      const MIN_SALE_ITEMS = 10;
+
+      if (q >= MIN_SALE_ITEMS) {
         if (curItem.id === "p1") {
-          disc = 0.1;
+          disc = SALE_RATE.P1;
         } else if (curItem.id === "p2") {
-          disc = 0.15;
+          disc = SALE_RATE.P2;
         } else if (curItem.id === "p3") {
-          disc = 0.2;
+          disc = SALE_RATE.P3;
         } else if (curItem.id === "p4") {
-          disc = 0.05;
+          disc = SALE_RATE.P4;
         } else if (curItem.id === "p5") {
-          disc = 0.25;
+          disc = SALE_RATE.P5;
         }
       }
       totalAmt += itemTot * (1 - disc);
@@ -131,13 +157,14 @@ const calcCart = () => {
   }
 
   let discRate = 0;
-
-  if (itemCnt >= 30) {
-    const bulkDisc = totalAmt * 0.25;
+  const MIN_BULK_ITEMS = 30;
+  const BULK_SALE_RATE = 0.25;
+  if (itemCnt >= MIN_BULK_ITEMS) {
+    const bulkDisc = totalAmt * BULK_SALE_RATE;
     const itemDisc = subTot - totalAmt;
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
-      discRate = 0.25;
+      totalAmt = subTot * (1 - BULK_SALE_RATE);
+      discRate = BULK_SALE_RATE;
     } else {
       discRate = (subTot - totalAmt) / subTot;
     }
@@ -145,17 +172,21 @@ const calcCart = () => {
     discRate = (subTot - totalAmt) / subTot;
   }
 
-  if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+  const SPECIAL_DAY = 2;
+  const SPECIAL_DAY_DISCOUNT = 0.1;
+  if (new Date().getDay() === SPECIAL_DAY) {
+    totalAmt *= 1 - SPECIAL_DAY_DISCOUNT;
+    discRate = Math.max(discRate, SPECIAL_DAY_DISCOUNT);
   }
 
   $sum.textContent = "총액: " + Math.round(totalAmt) + "원";
 
+  const TO_PERCENT = 100;
+
   if (discRate > 0) {
     const span = document.createElement("span");
     span.className = "text-green-500 ml-2";
-    span.textContent = "(" + (discRate * 100).toFixed(1) + "% 할인 적용)";
+    span.textContent = "(" + (discRate * TO_PERCENT).toFixed(1) + "% 할인 적용)";
     $sum.appendChild(span);
   }
 
@@ -164,7 +195,8 @@ const calcCart = () => {
 };
 
 const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+  const POINTS_CONVERSION_RATE = 1000;
+  bonusPts += Math.floor(totalAmt / POINTS_CONVERSION_RATE);
   let ptsTag = document.getElementById("loyalty-points");
   if (!ptsTag) {
     ptsTag = document.createElement("span");
@@ -177,8 +209,9 @@ const renderBonusPts = () => {
 
 const updateStockInfo = () => {
   let infoMsg = "";
+  const MIN_STOCK = 5;
   prodList.forEach(item => {
-    if (item.q < 5) {
+    if (item.q < MIN_STOCK) {
       infoMsg +=
         item.name + ": " + (item.q > 0 ? "재고 부족 (" + item.q + "개 남음)" : "품절") + "\n";
     }
