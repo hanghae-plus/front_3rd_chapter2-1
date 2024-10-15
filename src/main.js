@@ -27,8 +27,8 @@ const main = () => {
   $sum.id = "cart-total";
   $select.id = "product-select";
   $addBtn.id = "add-to-cart";
-
   $stockInfo.id = "stock-status";
+
   $container.className = "bg-gray-100 p-8";
   $wrapper.className =
     "max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8";
@@ -37,6 +37,7 @@ const main = () => {
   $select.className = "border rounded p-2 mr-2";
   $addBtn.className = "bg-blue-500 text-white px-4 py-2 rounded";
   $stockInfo.className = "text-sm text-gray-500 mt-2";
+
   $title.textContent = "장바구니";
   $addBtn.textContent = "추가";
 
@@ -67,9 +68,7 @@ const main = () => {
   setTimeout(() => {
     setInterval(() => {
       if (lastSel) {
-        const suggest = prodList.find(function (item) {
-          return item.id !== lastSel && item.q > 0;
-        });
+        const suggest = prodList.find(item => item.id !== lastSel && item.q > 0);
         if (suggest) {
           alert(suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
           suggest.val = Math.round(suggest.val * 0.95);
@@ -82,7 +81,7 @@ const main = () => {
 
 const updateSelOpts = () => {
   $select.innerHTML = "";
-  prodList.forEach(function (item) {
+  prodList.forEach(item => {
     const opt = document.createElement("option");
     opt.value = item.id;
 
@@ -178,7 +177,7 @@ const renderBonusPts = () => {
 
 const updateStockInfo = () => {
   let infoMsg = "";
-  prodList.forEach(function (item) {
+  prodList.forEach(item => {
     if (item.q < 5) {
       infoMsg +=
         item.name + ": " + (item.q > 0 ? "재고 부족 (" + item.q + "개 남음)" : "품절") + "\n";
@@ -191,9 +190,7 @@ main();
 
 $addBtn.addEventListener("click", () => {
   const selItem = $select.value;
-  const itemToAdd = prodList.find(function (p) {
-    return p.id === selItem;
-  });
+  const itemToAdd = prodList.find(p => p.id === selItem);
   if (itemToAdd && itemToAdd.q > 0) {
     const $item = document.getElementById(itemToAdd.id);
     if ($item) {
