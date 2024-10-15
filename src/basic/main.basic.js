@@ -1,9 +1,9 @@
 let prodList = [
-  { id: 'p1', name: '상품1', val: 10000, q: 50 },
-  { id: 'p2', name: '상품2', val: 20000, q: 30 },
-  { id: 'p3', name: '상품3', val: 30000, q: 20 },
-  { id: 'p4', name: '상품4', val: 15000, q: 0 },
-  { id: 'p5', name: '상품5', val: 25000, q: 10 },
+  { id: 'p1', name: '상품1', price: 10000, stock: 50 },
+  { id: 'p2', name: '상품2', price: 20000, stock: 30 },
+  { id: 'p3', name: '상품3', price: 30000, stock: 20 },
+  { id: 'p4', name: '상품4', price: 15000, stock: 0 },
+  { id: 'p5', name: '상품5', price: 25000, stock: 10 },
 ]
 
 let sel, addBtn, cartDisp, sum, stockInfo
@@ -63,10 +63,10 @@ function setupElements() {
 
 function updateSelOptions() {
   sel.innerHTML = ''
-  prodList.forEach(({ id, name, val, q }) => {
-    const opt = createElement('option', '', `${name} - ${val}원`)
+  prodList.forEach(({ id, name, price, stock }) => {
+    const opt = createElement('option', '', `${name} - ${price}원`)
     opt.value = id
-    opt.disabled = q === 0
+    opt.disabled = stock === 0
     sel.appendChild(opt)
   })
 }
@@ -82,19 +82,18 @@ function setupEventListeners() {
 
 function handleAddToCart() {
   const selItem = sel.value
-  const itemToAdd = prodList.find((p) => p.id === selItem)
-  if (itemToAdd && itemToAdd.q > 0) {
-    console.log(itemToAdd)
+  const itemToAdd = prodList.find((stock) => stock.id === selItem)
+  if (itemToAdd && itemToAdd.stock > 0) {
     let item = document.getElementById(itemToAdd.id)
     if (item) {
       const currentQty = parseInt(
         item.querySelector('span').textContent.split('x ')[1],
       )
       const newQty = currentQty + 1
-      if (newQty <= itemToAdd.q) {
+      if (newQty <= itemToAdd.stock) {
         item.querySelector('span').textContent =
-          `${itemToAdd.name} - ${itemToAdd.val}원 x ${newQty}`
-        itemToAdd.q--
+          `${itemToAdd.name} - ${itemToAdd.price}원 x ${newQty}`
+        itemToAdd.stock--
       } else {
         alert('재고가 부족합니다.')
       }
@@ -103,14 +102,14 @@ function handleAddToCart() {
       item.id = itemToAdd.id
       item.className = 'flex justify-between items-center mb-2'
       item.innerHTML = `
-        <span>${itemToAdd.name} - ${itemToAdd.val}원 x 1</span>
+        <span>${itemToAdd.name} - ${itemToAdd.price}원 x 1</span>
         <div>
           <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="-1">-</button>
           <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="1">+</button>
           <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${itemToAdd.id}">삭제</button>
         </div>`
       cartDisp.appendChild(item)
-      itemToAdd.q--
+      itemToAdd.stock--
     }
     calcCart()
     updateStockInfo()
@@ -123,10 +122,10 @@ function handleAddToCart() {
 function updateCartItemQuantity(item, itemToAdd, change) {
   const newQty =
     parseInt(item.querySelector('span').textContent.split('x ')[1]) + change
-  if (newQty <= itemToAdd.q) {
+  if (newQty <= itemToAdd.stock) {
     item.querySelector('span').textContent =
-      `${itemToAdd.name} - ${itemToAdd.val}원 x ${newQty}`
-    itemToAdd.q -= change
+      `${itemToAdd.name} - ${itemToAdd.price}원 x ${newQty}`
+    itemToAdd.stock -= change
   } else {
     alert('재고가 부족합니다.')
   }
@@ -136,14 +135,14 @@ function createNewCartItem(itemToAdd) {
   const newItem = createElement('div', 'flex justify-between items-center mb-2')
   newItem.id = itemToAdd.id
   newItem.innerHTML = `
-    <span>${itemToAdd.name} - ${itemToAdd.val}원 x 1</span>
+    <span>${itemToAdd.name} - ${itemToAdd.price}원 x 1</span>
     <div>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="-1">-</button>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="1">+</button>
       <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${itemToAdd.id}">삭제</button>
     </div>`
   cartDisp.appendChild(newItem)
-  itemToAdd.q--
+  itemToAdd.stock--
 }
 
 function handleCartInteraction(event) {
@@ -162,13 +161,13 @@ function handleCartInteraction(event) {
         itemElem.querySelector('span').textContent.split('x ')[1],
       )
       const newQty = currentQty + qtyChange
-      if (newQty > 0 && newQty <= prod.q + currentQty) {
+      if (newQty > 0 && newQty <= prod.stock + currentQty) {
         itemElem.querySelector('span').textContent =
-          `상품 ${prod.name} - ${prod.val}원 x ${newQty}`
-        prod.q -= qtyChange
+          `상품 ${prod.name} - ${prod.price}원 x ${newQty}`
+        prod.stock -= qtyChange
       } else if (newQty <= 0) {
         itemElem.remove()
-        prod.q += qtyChange
+        prod.stock += qtyChange
       } else {
         alert('재고가 부족합니다.')
       }
@@ -176,7 +175,7 @@ function handleCartInteraction(event) {
       const remQty = parseInt(
         itemElem.querySelector('span').textContent.split('x ')[1],
       )
-      prod.q += remQty
+      prod.stock += remQty
       itemElem.remove()
     }
     calcCart()
@@ -200,8 +199,8 @@ function setupDiscountAlerts({
 
 function applyLightningSale() {
   const luckyItem = prodList[Math.floor(Math.random() * prodList.length)]
-  if (Math.random() < 0.3 && luckyItem.q > 0) {
-    luckyItem.val = Math.round(luckyItem.val * 0.8)
+  if (Math.random() < 0.3 && luckyItem.stock > 0) {
+    luckyItem.price = Math.round(luckyItem.price * 0.8)
     alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`)
     updateSelOptions()
   }
@@ -210,15 +209,16 @@ function applyLightningSale() {
 function suggestProduct() {
   if (!lastSel) return
 
-  const suggest = prodList.find((item) => item.id !== lastSel && item.q > 0)
+  const suggest = prodList.find((item) => item.id !== lastSel && item.stock > 0)
   if (suggest) {
     alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`)
-    suggest.val = Math.round(suggest.val * 0.95)
+    suggest.price = Math.round(suggest.price * 0.95)
     updateSelOptions()
   }
 }
 
 function renderSuffix(discountRate) {
+  console.log(discountRate)
   sum.textContent = `총액: ${Math.round(totalAmt)}원`
 
   if (discountRate > 0) {
@@ -237,13 +237,13 @@ function calcCart() {
 
   Array.from(cartItems).forEach((cartItem) => {
     const curItem = prodList.find(({ id }) => id === cartItem.id)
-    const q = parseInt(
+    const curStock = parseInt(
       cartItem.querySelector('span').textContent.split('x ')[1],
     )
-    const itemTot = curItem.val * q
+    const itemTot = curItem.price * curStock
     let disc = 0
 
-    if (q >= 10) {
+    if (curStock >= 10) {
       if (curItem.id === 'p1') disc = 0.1
       else if (curItem.id === 'p2') disc = 0.15
       else if (curItem.id === 'p3') disc = 0.2
@@ -251,12 +251,12 @@ function calcCart() {
       else if (curItem.id === 'p5') disc = 0.25
     }
 
-    itemCnt += q
+    itemCnt += curStock
     subTot += itemTot
     totalAmt += itemTot * (1 - disc)
   })
 
-  const discountRate = (subTot - totalAmt) / subTot
+  let discountRate = (subTot - totalAmt) / subTot
   if (itemCnt >= 30) {
     const bulkDisc = totalAmt * 0.25
     const itemDisc = subTot - totalAmt
@@ -267,7 +267,8 @@ function calcCart() {
 
   const dayOfWeek = new Date().getDay()
   if (dayOfWeek === 2) {
-    totalAmt *= 0.9 // 10% Tuesday discount
+    totalAmt *= 0.9
+    discountRate = Math.max(discountRate, 0.1)
   }
 
   renderSuffix(discountRate)
@@ -277,7 +278,7 @@ function calcCart() {
 
 function calculateItemDiscount(curItem, q) {
   let disc = 0
-  if (q >= 10) {
+  if (stock >= 10) {
     switch (curItem.id) {
       case 'p1':
         disc = 0.1
@@ -330,9 +331,9 @@ function renderDiscontRate(discRate) {
 
 function updateStockInfo() {
   let infoMsg = ''
-  prodList.forEach(({ name, q }) => {
-    if (q < 5) {
-      infoMsg += `${name}: ${q > 0 ? '재고 부족 (' + q + '개 남음)' : '품절'}\n`
+  prodList.forEach(({ name, stock }) => {
+    if (stock < 5) {
+      infoMsg += `${name}: ${stock > 0 ? '재고 부족 (' + stock + '개 남음)' : '품절'}\n`
     }
   })
   stockInfo.textContent = infoMsg
