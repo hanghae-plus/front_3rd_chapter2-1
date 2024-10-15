@@ -166,21 +166,22 @@ const updateBonusPoints = (bonusPoints) => {
   pointsTag.textContent = "(포인트: " + bonusPoints + ")";
 };
 
-function updateStockInfo() {
-  let infoMsg = "";
-  productList.forEach(function (item) {
-    if (item.quantity < 5) {
-      infoMsg +=
-        item.name +
+const updateStockInfo = () => {
+  let infoMessage = "";
+  productList.forEach(function (product) {
+    if (product.quantity < 5) {
+      infoMessage +=
+        product.name +
         ": " +
-        (item.quantity > 0
-          ? "재고 부족 (" + item.quantity + "개 남음)"
+        (product.quantity > 0
+          ? "재고 부족 (" + product.quantity + "개 남음)"
           : "품절") +
         "\n";
     }
   });
-  $stockStatus.textContent = infoMsg;
-}
+  $stockStatus.textContent = infoMessage;
+};
+
 main();
 $addButton.addEventListener("click", function () {
   const selItem = $productSelect.value;
