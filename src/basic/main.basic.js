@@ -114,19 +114,7 @@ function calcCart() {
       totalAmount += itemTot * (1 - discount);
     })();
   }
-  let discountRate = 0;
-  if (itemCnt >= 30) {
-    const bulkDisc = totalAmount * 0.25;
-    const itemDisc = subTot - totalAmount;
-    if (bulkDisc > itemDisc) {
-      totalAmount = subTot * (1 - 0.25);
-      discountRate = 0.25;
-    } else {
-      discountRate = (subTot - totalAmount) / subTot;
-    }
-  } else {
-    discountRate = (subTot - totalAmount) / subTot;
-  }
+  let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
 
   if (new Date().getDay() === 2) {
     totalAmount *= 1 - 0.1;
@@ -156,6 +144,19 @@ const getDiscount = (product, quantity) => {
     }
   }
   return 0;
+};
+
+const getDiscountRate = (itemCnt, subtotal, totalAmount) => {
+  if (itemCnt >= 30) {
+    const bulkDiscount = subtotal * 0.25;
+    const itemDiscount = subtotal - totalAmount;
+    if (bulkDiscount > itemDiscount) {
+      totalAmount = subtotal * (1 - 0.25);
+      return 0.25;
+    }
+    return (subtotal - totalAmount) / subtotal;
+  }
+  return (subtotal - totalAmount) / subtotal;
 };
 
 const updateCartTotal = (discountRate) => {
