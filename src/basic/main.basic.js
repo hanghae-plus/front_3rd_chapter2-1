@@ -1,5 +1,5 @@
-let products, productsSelectElement, addToCartBtnElement, cartItemsElement, cartTotalElement, stockStatusElement;
-let lastSelectedItemId,
+let products, productSelectElement, addToCartBtnElement, cartItemsElement, cartTotalElement, stockStatusElement;
+let lastAddedItemId,
   loyaltyPoints = 0,
   finalTotalPrice = 0,
   totalItemCount = 0;
@@ -62,13 +62,13 @@ const main = () => {
   const root = document.getElementById("app");
   root.innerHTML = CartPageTemplate();
 
-  productsSelectElement = document.getElementById("product-select");
+  productSelectElement = document.getElementById("product-select");
   addToCartBtnElement = document.getElementById("add-to-cart");
   cartItemsElement = document.getElementById("cart-items");
   cartTotalElement = document.getElementById("cart-total");
   stockStatusElement = document.getElementById("stock-status");
 
-  updateSelectOptions();
+  updateProductSelectOptions();
   calculateCartTotal();
 
   setTimeout(() => {
@@ -78,20 +78,20 @@ const main = () => {
       if (Math.random() < 0.3 && flashSaleItem.quantity > 0) {
         flashSaleItem.price = Math.round(flashSaleItem.price * 0.8);
         alert(`번개세일! ${flashSaleItem.name}이(가) 20% 할인 중입니다!`);
-        updateSelectOptions();
+        updateProductSelectOptions();
       }
     }, 30000);
   }, Math.random() * 10000);
 
   setTimeout(() => {
     setInterval(() => {
-      if (lastSelectedItemId) {
-        const instantDiscountItem = products.find((item) => item.id !== lastSelectedItemId && item.quantity > 0);
+      if (lastAddedItemId) {
+        const instantDiscountItem = products.find((item) => item.id !== lastAddedItemId && item.quantity > 0);
 
         if (instantDiscountItem) {
           alert(`${instantDiscountItem.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           instantDiscountItem.price = Math.round(instantDiscountItem.price * 0.95);
-          updateSelectOptions();
+          updateProductSelectOptions();
         }
       }
     }, 60000);
@@ -168,11 +168,11 @@ const calculateCartTotal = () => {
   updateLoyaltyPoints();
 };
 
-const updateSelectOptions = () => {
-  productsSelectElement.innerHTML = "";
+const updateProductSelectOptions = () => {
+  productSelectElement.innerHTML = "";
 
   products.forEach((item) => {
-    productsSelectElement.innerHTML += productOptionTemplate(item);
+    productSelectElement.innerHTML += productOptionTemplate(item);
   });
 };
 
@@ -200,30 +200,30 @@ const updateStockStatus = () => {
 main();
 
 addToCartBtnElement.addEventListener("click", () => {
-  const selectedProductId = productsSelectElement.value;
-  const selectedItem = products.find((p) => p.id === selectedProductId);
+  const addedProductId = productSelectElement.value;
+  const addedItem = products.find((p) => p.id === addedProductId);
 
-  if (selectedItem && selectedItem.quantity > 0) {
-    const selectedItemElement = document.getElementById(selectedItem.id);
+  if (addedItem && addedItem.quantity > 0) {
+    const addedItemElement = document.getElementById(addedItem.id);
 
-    if (selectedItemElement) {
-      const selectedItemQuantity = parseInt(selectedItemElement.querySelector("span").textContent.split("x ")[1]) + 1;
+    if (addedItemElement) {
+      const addedItemQuantity = parseInt(addedItemElement.querySelector("span").textContent.split("x ")[1]) + 1;
 
-      if (selectedItemQuantity <= selectedItem.quantity) {
-        selectedItemElement.querySelector("span").textContent =
-          `${selectedItem.name} - ${selectedItem.price}원 x ${selectedItemQuantity}`;
+      if (addedItemQuantity <= addedItem.quantity) {
+        addedItemElement.querySelector("span").textContent =
+          `${addedItem.name} - ${addedItem.price}원 x ${addedItemQuantity}`;
 
-        selectedItem.quantity--;
+        addedItem.quantity--;
       } else {
         alert("재고가 부족합니다.");
       }
     } else {
-      cartItemsElement.innerHTML += firstAddedItemTemplate(selectedItem);
-      selectedItem.quantity--;
+      cartItemsElement.innerHTML += firstAddedItemTemplate(addedItem);
+      addedItem.quantity--;
     }
 
     calculateCartTotal();
-    lastSelectedItemId = selectedProductId;
+    lastAddedItemId = addedProductId;
   }
 });
 
