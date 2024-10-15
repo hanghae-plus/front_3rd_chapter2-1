@@ -5,6 +5,7 @@ const productList = [
   { id: 'p4', name: '상품4', price: 15000, stock: 0 },
   { id: 'p5', name: '상품5', price: 25000, stock: 10 },
 ];
+const discountsOfProduct = { p1: 0.1, p2: 0.15, p3: 0.2, p4: 0.05, p5: 0.25 };
 
 const state = {
   lastSelected: null,
@@ -24,7 +25,7 @@ const createElementWithHandler = (tagName, { events = {}, ...options } = {}, par
   return element;
 };
 
-const setupUI = () => {
+const renderSetupUI = () => {
   const container = createElementWithHandler('div', { className: 'bg-gray-100 p-8' });
   const wrapper = createElementWithHandler(
     'div',
@@ -74,14 +75,14 @@ const handleAddToCart = () => {
 
   if (product && product.stock > 0) {
     const existingItem = document.getElementById(product.id);
-    existingItem ? updateCartItem(product, 1) : addCartItem(product);
+    existingItem ? updateCartItem(product, 1) : renderCartItem(product);
     state.lastSelected = selectedItemId;
   } else {
     alert('재고가 부족합니다.');
   }
 };
 
-const addCartItem = (product) => {
+const renderCartItem = (product) => {
   const cart = document.getElementById('cart-items');
   createElementWithHandler(
     'div',
@@ -100,7 +101,7 @@ const addCartItem = (product) => {
     cart
   );
   product.stock--;
-  calcCart();
+  calculateCart();
 };
 
 const updateCartItem = (product, addQuantity) => {
@@ -116,7 +117,7 @@ const updateCartItem = (product, addQuantity) => {
   } else {
     alert('재고가 부족합니다.');
   }
-  calcCart();
+  calculateCart();
 };
 
 const handleCartItemClick = (event) => {
@@ -135,7 +136,7 @@ const removeCartItem = (product) => {
   const quantity = parseInt(item.querySelector('span').textContent.split('x ')[1]);
   product.stock += quantity;
   item.remove();
-  calcCart();
+  calculateCart();
 };
 const updateSelOpts = () => {
   const productSelect = document.getElementById('product-select');
@@ -149,7 +150,12 @@ const updateSelOpts = () => {
     productSelect.appendChild(opt);
   });
 };
-const calcCart = () => {
+
+const getDiscountRate = (productId) => {
+  return discountsOfProduct[productId] || 0;
+};
+
+const calculateCart = () => {
   state.totalAmount = 0;
   state.itemCount = 0;
   let subTot = 0;
@@ -179,22 +185,17 @@ const calcCart = () => {
     state.discountRate = (subTot - state.totalAmount) / subTot;
   }
 
-  getDiscountRateTuesday();
+  processDiscountRate();
   renderCartTotal();
   renderBonusPoints();
   updateStockInfo();
 };
 
-const getDiscountRateTuesday = () => {
-  if (new Date().getDay() === 3) {
+const processDiscountRate = () => {
+  if (new Date().getDay() === 2) {
     state.totalAmount *= 1 - 0.1;
     state.discountRate = Math.max(state.discountRate, 0.1);
   }
-};
-
-const getDiscountRate = (productId) => {
-  const discounts = { p1: 0.1, p2: 0.15, p3: 0.2, p4: 0.05, p5: 0.25 };
-  return discounts[productId] || 0;
 };
 
 const renderCartTotal = () => {
@@ -254,10 +255,10 @@ const setupTimeSale = () => {
 };
 
 function main() {
-  setupUI();
+  renderSetupUI();
   setupTimeSale();
   updateStockInfo();
-  calcCart();
+  calculateCart();
 }
 
 main();

@@ -115,7 +115,7 @@ describe('basic test', () => {
     });
 
     it('화요일 할인이 적용되는지 확인', () => {
-      const mockDate = new Date('2024-10-16'); // 화요일
+      const mockDate = new Date('2024-10-15'); // 화요일
       vi.setSystemTime(mockDate);
       sel.value = 'p1';
       addBtn.click();
