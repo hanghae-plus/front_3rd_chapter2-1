@@ -1,7 +1,12 @@
 let totalAmt = 0,
   itemCnt = 0;
 
-export function CartDisp({ wrap, prodList, stockInfo, updateSumDetails }) {
+export function CartDisp({
+  wrap,
+  prodList,
+  updateStockInfo,
+  updateSumDetails,
+}) {
   const cartDisp = document.createElement('div');
   cartDisp.id = 'cart-items';
   wrap.appendChild(cartDisp);
@@ -63,22 +68,7 @@ export function CartDisp({ wrap, prodList, stockInfo, updateSumDetails }) {
       totalPrice: totalAmt,
       discount: discRate,
     });
-
-    function updateStockInfo() {
-      let infoMsg = '';
-      prodList.forEach(function (item) {
-        if (item.q < 5) {
-          infoMsg +=
-            item.name +
-            ': ' +
-            (item.q > 0 ? '재고 부족 (' + item.q + '개 남음)' : '품절') +
-            '\n';
-        }
-      });
-      stockInfo.textContent = infoMsg;
-    }
-
-    updateStockInfo();
+    updateStockInfo(prodList);
   };
 
   this.calcCart();

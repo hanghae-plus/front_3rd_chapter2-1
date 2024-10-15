@@ -37,11 +37,13 @@ function main() {
   const cartDisp = new CartDisp({
     wrap,
     prodList,
-    stockInfo: stockInfo.$element,
 
     updateSumDetails: ({ totalPrice, discount }) => {
       sum.totalPrice = totalPrice;
       sum.discountRate = discount;
+    },
+    updateStockInfo: (productList) => {
+      stockInfo.productList = productList;
     },
   });
   const select = new Select({ wrap, prodList });
@@ -56,6 +58,8 @@ function main() {
       lastSel = selItem;
     },
   });
+
+  stockInfo.mount();
 
   setTimeout(function () {
     setInterval(function () {
