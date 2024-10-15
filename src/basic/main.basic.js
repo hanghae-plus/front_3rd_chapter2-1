@@ -1,6 +1,6 @@
 let $productSelect, $addButton, $cartItems, $cartTotal, $stockStatus;
 let lastSel,
-  bonusPts = 0,
+  bonusPoints = 0,
   totalAmt = 0,
   itemCnt = 0;
 
@@ -149,8 +149,9 @@ function calcCart() {
   updateStockInfo();
   renderBonusPts();
 }
+
 const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+  bonusPoints += Math.floor(totalAmt / 1000);
   let ptsTag = document.getElementById("loyalty-points");
   if (!ptsTag) {
     ptsTag = document.createElement("span");
@@ -158,7 +159,7 @@ const renderBonusPts = () => {
     ptsTag.className = "text-blue-500 ml-2";
     $cartTotal.appendChild(ptsTag);
   }
-  ptsTag.textContent = "(포인트: " + bonusPts + ")";
+  ptsTag.textContent = "(포인트: " + bonusPoints + ")";
 };
 
 function updateStockInfo() {
