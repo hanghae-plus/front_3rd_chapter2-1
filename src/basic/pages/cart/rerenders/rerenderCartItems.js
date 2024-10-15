@@ -12,7 +12,7 @@ const createCartItemTemplate = (item) => `
         </div>
 `;
 
-function removeItemById(itemsArray, targetItemId) {
+function removeRenderedItemId(itemsArray, targetItemId) {
   const targetIndex = itemsArray.indexOf(targetItemId);
   if (targetIndex > -1) {
     itemsArray.splice(targetIndex, 1);
@@ -22,7 +22,7 @@ function removeItemById(itemsArray, targetItemId) {
 export function rerenderCartItems() {
   const { cartItems } = cartItemState.getState();
   const cartItemsContainer = document.getElementById('cart-items');
-  const currentCartItemIds = Array.from(cartItemsContainer.children).map((item) => item.id);
+  const alreadyRenderedItemIds = Array.from(cartItemsContainer.children).map((item) => item.id);
 
   rerenderStockStatus(cartItems);
 
@@ -33,14 +33,14 @@ export function rerenderCartItems() {
       const $cartItemInfoElement = $currentCartItemElement.querySelector('span');
       $cartItemInfoElement.textContent = `${item.name} - ${item.price}원 x ${item.selectQuantity}`;
 
-      removeItemById(currentCartItemIds, item.id);
+      removeRenderedItemId(alreadyRenderedItemIds, item.id);
       return;
     }
 
     cartItemsContainer.insertAdjacentHTML('beforeend', createCartItemTemplate(item));
   });
 
-  currentCartItemIds.forEach((id) => {
+  alreadyRenderedItemIds.forEach((id) => {
     const $cartItemElement = document.getElementById(id);
     if ($cartItemElement) {
       $cartItemElement.remove();
