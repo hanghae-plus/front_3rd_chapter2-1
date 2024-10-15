@@ -53,6 +53,14 @@ const renderCartUI = () => {
   $cartWrapper.appendChild($cartContainer);
   $root.appendChild($cartWrapper);
 };
+const scheduleRandomDiscount = () => {
+  setSurpriseDiscount();
+  setSuggestDiscount(lastAddedProduct);
+};
+const setEventListeners = () => {
+  $addToCartBtn.addEventListener('click', handleAddToCart);
+  $cartItemsDisplay.addEventListener('click', handleCartItemsDisplay);
+};
 
 const handleAddToCart = () => {
   const selectedProductId = document.getElementById('product-select').value;
@@ -89,15 +97,6 @@ const handleCartItemsDisplay = (event) => {
   }
 
   bonusPoints = updateCartInfos(bonusPoints);
-};
-const setEventListeners = () => {
-  $addToCartBtn.addEventListener('click', handleAddToCart);
-  $cartItemsDisplay.addEventListener('click', handleCartItemsDisplay);
-};
-
-const scheduleRandomDiscount = () => {
-  setSurpriseDiscount();
-  setSuggestDiscount(lastAddedProduct);
 };
 
 main();
