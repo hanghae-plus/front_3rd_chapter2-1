@@ -12,6 +12,13 @@ const createCartItemTemplate = (item) => `
         </div>
 `;
 
+function removeItemById(itemsArray, targetItemId) {
+  const targetIndex = itemsArray.indexOf(targetItemId);
+  if (targetIndex > -1) {
+    itemsArray.splice(targetIndex, 1);
+  }
+}
+
 export function rerenderCartItems() {
   const { cartItems } = cartItemState.getState();
   const cartItemsContainer = document.getElementById('cart-items');
@@ -26,13 +33,11 @@ export function rerenderCartItems() {
       const $cartItemInfoElement = $currentCartItemElement.querySelector('span');
       $cartItemInfoElement.textContent = `${item.name} - ${item.price}원 x ${item.selectQuantity}`;
 
-      const index = currentCartItemIds.indexOf(item.id);
-      if (index > -1) {
-        currentCartItemIds.splice(index, 1);
-      }
-    } else {
-      cartItemsContainer.insertAdjacentHTML('beforeend', createCartItemTemplate(item));
+      removeItemById(currentCartItemIds, item.id);
+      return;
     }
+
+    cartItemsContainer.insertAdjacentHTML('beforeend', createCartItemTemplate(item));
   });
 
   currentCartItemIds.forEach((id) => {
