@@ -107,11 +107,11 @@ function calcCart() {
       const quantity = parseInt(
         cartItems[i].querySelector("span").textContent.split("x ")[1]
       );
-      const itemTot = currentProduct.price * quantity;
+      const productTotalPrice = currentProduct.price * quantity;
       const discount = getDiscount(currentProduct, quantity);
       itemCnt += quantity;
-      subTot += itemTot;
-      totalAmount += itemTot * (1 - discount);
+      subTot += productTotalPrice;
+      totalAmount += productTotalPrice * (1 - discount);
     })();
   }
   let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
