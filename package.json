@@ -16,16 +16,24 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
+    "@swc/cli": "0.4.1-nightly.20240914",
+    "@swc/core": "^1.7.36",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/user-event": "^14.5.2",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "@vitest/ui": "^2.1.1",
     "eslint": "^9.12.0",
     "globals": "^15.11.0",
     "jsdom": "^25.0.0",
+    "typescript": "^5.6.3",
     "vite": "^5.1.0",
     "vitest": "^2.1.1"
   },
   "dependencies": {
-    "eslint-plugin-import": "^2.31.0"
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "eslint-plugin-import": "^2.31.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
