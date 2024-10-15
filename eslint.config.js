@@ -12,7 +12,7 @@ export default [
     ignores: ['**/__tests__/*'],
   },
   {
-    files: ['**/*.js', '**/*.mjs'],
+    files: ['**/*.js', '**/*.mjs', '**/*.jsx'],
     languageOptions: {
       parser: babelParser,
       parserOptions: {

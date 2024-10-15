@@ -20,6 +20,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/user-event": "^14.5.2",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "@vitest/ui": "^2.1.1",
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -34,5 +35,9 @@
     "prettier": "^3.3.3",
     "vite": "^5.1.0",
     "vitest": "^2.1.1"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
