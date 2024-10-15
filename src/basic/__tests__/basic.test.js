@@ -30,6 +30,8 @@ describe('basic test', () => {
 
     beforeEach(() => {
       vi.useFakeTimers();
+      const startDate = new Date('2024-10-14'); // 월요일
+      vi.setSystemTime(startDate);
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
