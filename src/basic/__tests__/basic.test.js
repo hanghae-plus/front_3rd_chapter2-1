@@ -4,7 +4,7 @@ describe('basic test', () => {
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'basic', loadFile: () => import('../main.basic.js'), },
+    { type: 'basic', loadFile: () => import('../main.ts.js'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
@@ -24,6 +24,9 @@ describe('basic test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const monday = new Date('2024-10-14');
+      vi.setSystemTime(monday);
     });
 
     afterEach(() => {
