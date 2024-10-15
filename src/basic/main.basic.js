@@ -114,25 +114,25 @@ function calcCart() {
       totalAmount += itemTot * (1 - discount);
     })();
   }
-  let discRate = 0;
+  let discountRate = 0;
   if (itemCnt >= 30) {
     const bulkDisc = totalAmount * 0.25;
     const itemDisc = subTot - totalAmount;
     if (bulkDisc > itemDisc) {
       totalAmount = subTot * (1 - 0.25);
-      discRate = 0.25;
+      discountRate = 0.25;
     } else {
-      discRate = (subTot - totalAmount) / subTot;
+      discountRate = (subTot - totalAmount) / subTot;
     }
   } else {
-    discRate = (subTot - totalAmount) / subTot;
+    discountRate = (subTot - totalAmount) / subTot;
   }
 
   if (new Date().getDay() === 2) {
     totalAmount *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+    discountRate = Math.max(discountRate, 0.1);
   }
-  updateCartTotal(discRate);
+  updateCartTotal(discountRate);
   updateStockInfo();
   calculateBonusPoints();
   updateBonusPoints(bonusPoints);
