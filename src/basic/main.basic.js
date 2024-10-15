@@ -67,7 +67,7 @@ function main() {
   containerWrap.appendChild(container);
   root.appendChild(container);
 
-  calcCart();
+  caclCartPrice();
 
   alertSaleItem(luckySaleItem, Math.random() * 10000, 30000);
   alertSaleItem(recommendSaleItem, Math.random() * 20000, 60000);
@@ -114,12 +114,11 @@ function updateProdList() {
     if (item.count === 0) opt.disabled = true;
     cartItemSelect.appendChild(opt);
   });
-  console.log('kyj 여기서 업데이트를 했음!');
 }
 
 // 금액 계산 함수
-function calcCart() {
-  console.log('calcCart()');
+function caclCartPrice() {
+  console.log('caclCartPrice()');
   totalPrice = 0;
   itemCnt = 0;
   var cartItems = cartList.children;
@@ -140,7 +139,7 @@ function calcCart() {
       // itemCnt = 총 수량 / initialTotal = 총 금액
       itemCnt += count;
       initialTotal += itemTot;
-      console.log('kyj count:', count, 'itemTot:', itemTot, 'initialTotal:', initialTotal, 'itemCnt:', itemCnt);
+
       //
       if (count >= 10) {
         if (curItem.id === 'p1') disc = 0.1;
@@ -153,33 +152,33 @@ function calcCart() {
     })();
   }
 
-  let discRate = 0;
+  let totalDisc = 0;
   if (itemCnt >= 30) {
     var bulkDisc = totalPrice * 0.25;
     var itemDisc = initialTotal - totalPrice;
     if (bulkDisc > itemDisc) {
       totalPrice = initialTotal * (1 - 0.25);
-      discRate = 0.25;
+      totalDisc = 0.25;
     } else {
-      discRate = (initialTotal - totalPrice) / initialTotal;
+      totalDisc = (initialTotal - totalPrice) / initialTotal;
     }
   } else {
-    discRate = (initialTotal - totalPrice) / initialTotal;
+    totalDisc = (initialTotal - totalPrice) / initialTotal;
   }
-  console.log('여기까진 맞나??discRate:', discRate, 'initialTotal:', initialTotal, 'totalPrice:', totalPrice);
+
   if (new Date().getDay() === 2) {
     totalPrice *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+    totalDisc = Math.max(totalDisc, 0.1);
   }
-  console.log('실제로 금액 보여주는 곳 totalPrice:', totalPrice, 'discRate:', discRate);
+
   cartTotalPrice.textContent = '총액: ' + Math.round(totalPrice) + '원';
-  if (discRate > 0) {
+  if (totalDisc > 0) {
     var span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
-    span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
+    span.textContent = '(' + (totalDisc * 100).toFixed(1) + '% 할인 적용)';
     cartTotalPrice.appendChild(span);
   }
-  console.log('discRate::', discRate);
+  console.log('totalDisc::', totalDisc);
   updatesoldoutList();
   renderBonusPts();
 }
@@ -243,21 +242,21 @@ addBtn.addEventListener('click', function () {
       cartList.appendChild(newItem);
       itemToAdd.count--;
     }
-    calcCart();
+    caclCartPrice();
     lastSelectedProduct = selItem;
   }
 });
 cartList.addEventListener('click', function (event) {
-  var tgt = event.target;
+  var eTarget = event.target;
 
-  if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
-    var prodId = tgt.dataset.productId;
+  if (eTarget.classList.contains('quantity-change') || eTarget.classList.contains('remove-item')) {
+    var prodId = eTarget.dataset.productId;
     var itemElem = document.getElementById(prodId);
     var prod = prodList.find(function (p) {
       return p.id === prodId;
     });
-    if (tgt.classList.contains('quantity-change')) {
-      var qtyChange = parseInt(tgt.dataset.change);
+    if (eTarget.classList.contains('quantity-change')) {
+      var qtyChange = parseInt(eTarget.dataset.change);
       var newQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + qtyChange;
       if (newQty > 0 && newQty <= prod.count + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])) {
         itemElem.querySelector('span').textContent =
@@ -269,11 +268,11 @@ cartList.addEventListener('click', function (event) {
       } else {
         alert('재고가 부족합니다.');
       }
-    } else if (tgt.classList.contains('remove-item')) {
+    } else if (eTarget.classList.contains('remove-item')) {
       var remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
       prod.count += remQty;
       itemElem.remove();
     }
-    calcCart();
+    caclCartPrice();
   }
 });
