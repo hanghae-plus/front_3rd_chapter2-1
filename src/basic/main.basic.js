@@ -67,33 +67,54 @@ function main() {
     cartSection.appendChild(productStockStatus);
     componentContainer.appendChild(cartSection);
     root.appendChild(componentContainer);
+
     updateCartTotalAndApplyDiscounts();
 
-    setTimeout(function () {
-        setInterval(function () {
-            const luckyItem = productInventory[Math.floor(Math.random() * productInventory.length)];
-            if (Math.random() < FLASH_SALE_PROBABILITY && luckyItem.quantity > 0) {
-                luckyItem.price = Math.round(luckyItem.price * FLASH_SALE_DISCOUNT_RATE);
-                console.log(`번개세일! ${luckyItem.name}이(가) ${(1 - FLASH_SALE_DISCOUNT_RATE) * 100}% 할인 중입니다!`);
-                updateProductOptions();
-            }
-        }, FLASH_SALE_INTERVAL);
+    setTimeout(() => {
+        applyFlashSaleToRandomProduct();
+        // 그 이후에는 반복적으로 실행
+        setInterval(applyFlashSaleToRandomProduct, FLASH_SALE_INTERVAL);
     }, Math.random() * FLASH_SALE_INTERVAL);
 
-    setTimeout(function () {
-        setInterval(function () {
-            if (lastSelectedProductId) {
-                const suggest = productInventory.find(function (item) {
-                    return item.id !== lastSelectedProductId && item.quantity > 0;
-                });
-                if (suggest) {
-                    console.log(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 ${(1 - SUGGESTION_DISCOUNT_RATE) * 100}% 추가 할인!`);
-                    suggest.price = Math.round(suggest.price * SUGGESTION_DISCOUNT_RATE);
-                    updateProductOptions();
-                }
+    // 번개세일 로직을 별도의 함수로 분리
+    function applyFlashSaleToRandomProduct() {
+        if (productInventory.length > 0) {
+            const randomIndex = Math.floor(Math.random() * productInventory.length);
+            const luckyItem = productInventory[randomIndex];
+            if (Math.random() < FLASH_SALE_PROBABILITY && luckyItem.quantity > 0) {
+                luckyItem.price = (luckyItem.price * FLASH_SALE_DISCOUNT_RATE).toFixed(1);
+                console.log(`번개세일! ${luckyItem.name}이(가) ${((1 - FLASH_SALE_DISCOUNT_RATE) * 100).toFixed()}% 할인 중입니다!`);
+                updateProductOptions();
             }
-        }, PRODUCT_SUGGESTION_INTERVAL);
+        }
+    }
+
+    // 일정 시간 후, 주기적으로 상품 추천
+    setTimeout(() => {
+        setInterval(suggestAlternativeProduct, PRODUCT_SUGGESTION_INTERVAL);
     }, Math.random() * PRODUCT_SUGGESTION_INTERVAL);
+
+    // 추천 로직 처리 함수
+    function suggestAlternativeProduct() {
+        if (!lastSelectedProductId) return; // lastSelectedProductId가 없으면 함수 종료
+
+        const suggestion = findSuggestionProduct();
+        if (suggestion) {
+            applySuggestionDiscount(suggestion);
+            console.log(`${suggestion.name}은(는) 어떠세요? 지금 구매하시면 ${((1 - SUGGESTION_DISCOUNT_RATE) * 100).toFixed()}% 추가 할인!`);
+            updateProductOptions();
+        }
+    }
+
+    // 추천 상품을 찾는 함수
+    function findSuggestionProduct() {
+        return productInventory.find((item) => item.id !== lastSelectedProductId && item.quantity > 0);
+    }
+
+    // 추천 상품에 할인 적용하는 함수
+    function applySuggestionDiscount(product) {
+        product.price = Math.round(product.price * SUGGESTION_DISCOUNT_RATE);
+    }
 }
 
 function updateProductOptions() {
@@ -112,8 +133,8 @@ function updateCartTotalAndApplyDiscounts() {
     cartTotalAmount = 0;
     cartItemCount = 0;
     const cartItems = cartItemsContainer.children;
-    console.log(`cartItems: ${cartItems}`);
-    console.log(cartItems);
+    // console.log(`cartItems: ${cartItems}`);
+    // console.log(cartItems);
     let subTot = 0;
 
     for (let i = 0; i < cartItems.length; i++) {
