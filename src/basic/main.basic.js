@@ -50,7 +50,6 @@ function main() {
     $cartTotalDiv,
     $stockStatusDiv,
   });
-
   handleCartItemsClick({
     $cartItemsDiv,
     $cartTotalDiv,
