@@ -1,3 +1,6 @@
+import { AMOUNT_PER_LOYALTY_POINT, BULK_DISCOUNT_MINIMUM_ITEM_COUNT, BULK_DISCOUNT_RATE, FLASH_SALE_INTERVAL, LOW_STOCK_THRESHOLD, PRODUCT_SUGGESTION_INTERVAL, TUESDAY_DISCOUNT_RATE } from "./constants";
+import { ADD_CART_BUTTON_TEXT, CART_TITLE_TEXT } from "./constants/testContent";
+
 let productInventory, productDropdown, addCartButton, cartItemsContainer, cartTotalAmountContainer, productStockStatus;
 
 let lastSelectedProductId,
@@ -39,8 +42,8 @@ function main() {
     addCartButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
     productStockStatus.className = 'text-sm text-gray-500 mt-2';
 
-    cartTitle.textContent = '장바구니';
-    addCartButton.textContent = '추가';
+    cartTitle.textContent = CART_TITLE_TEXT
+    addCartButton.textContent = ADD_CART_BUTTON_TEXT
 
     updateProductOptions();
 
@@ -63,7 +66,7 @@ function main() {
                 updateProductOptions();
             }
         }, 30000);
-    }, Math.random() * 10000);
+    }, Math.random() * FLASH_SALE_INTERVAL);
 
     setTimeout(function () {
         setInterval(function () {
@@ -78,7 +81,7 @@ function main() {
                 }
             }
         }, 60000);
-    }, Math.random() * 20000);
+    }, Math.random() * PRODUCT_SUGGESTION_INTERVAL);
 }
 
 function updateProductOptions() {
@@ -132,13 +135,13 @@ function updateCartTotalAndApplyDiscounts() {
 
     let discRate = 0;
 
-    if (cartItemCount >= 30) {
-        const bulkDisc = cartTotalAmount * 0.25;
+    if (cartItemCount >= BULK_DISCOUNT_MINIMUM_ITEM_COUNT) {
+        const bulkDisc = cartTotalAmount * BULK_DISCOUNT_RATE;
         const itemDisc = subTot - cartTotalAmount;
 
         if (bulkDisc > itemDisc) {
-            cartTotalAmount = subTot * (1 - 0.25);
-            discRate = 0.25;
+            cartTotalAmount = subTot * (1 - BULK_DISCOUNT_RATE);
+            discRate = BULK_DISCOUNT_RATE;
         } else {
             discRate = (subTot - cartTotalAmount) / subTot;
         }
@@ -147,8 +150,8 @@ function updateCartTotalAndApplyDiscounts() {
     }
 
     if (new Date().getDay() === 2) {
-        cartTotalAmount *= 1 - 0.1;
-        discRate = Math.max(discRate, 0.1);
+        cartTotalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
+        discRate = Math.max(discRate, TUESDAY_DISCOUNT_RATE);
     }
 
     cartTotalAmountContainer.textContent = `총액: ${Math.round(cartTotalAmount)}원`;
@@ -165,7 +168,7 @@ function updateCartTotalAndApplyDiscounts() {
 }
 
 const updateAndDisplayLoyaltyPoints = () => {
-    bonusPoint += Math.floor(cartTotalAmount / 1000);
+    bonusPoint += Math.floor(cartTotalAmount / AMOUNT_PER_LOYALTY_POINT);
 
     console.log(`bonusPoint: ${bonusPoint}`);
 
@@ -185,7 +188,7 @@ function displayStockShortage() {
     let infoMsg = '';
 
     productInventory.forEach(function (item) {
-        if (item.quantity < 5) {
+        if (item.quantity < LOW_STOCK_THRESHOLD) {
             infoMsg += `${item.name}: ${item.quantity > 0 ? `재고 부족 (${item.quantity}개 남음)` : '품절'}\n`;
         }
     });
