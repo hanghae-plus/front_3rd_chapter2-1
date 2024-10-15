@@ -6,8 +6,8 @@ const productList = [
   { id: "p5", name: "상품5", price: 25000, quantity: 10 },
 ];
 
-let lastSel;
-let bonusPts = 0;
+let lastControledProduct;
+let bonusPoint = 0;
 let finalCost = 0;
 
 const $root = document.getElementById("app");
@@ -66,37 +66,37 @@ const updateSelectOption = () => {
 };
 
 const randomEvent = () => {
-  // const LIGHTNING_SALE_TIMEOUT = 10000;
-  // const LIGHTNING_SALE_INTERVAL = 30000;
-  // const LIGHTNING_SALE_RANDOM_PROBABILITY = 0.3;
-  // const LIGHTNING_SALE_RATE = 0.8;
-  // setTimeout(() => {
-  //   setInterval(() => {
-  //     const randomProduct = productList[Math.floor(Math.random() * productList.length)];
-  //     if (Math.random() < LIGHTNING_SALE_RANDOM_PROBABILITY && randomProduct.quantity > 0) {
-  //       randomProduct.price = Math.round(randomProduct.price * LIGHTNING_SALE_RATE);
-  //       alert("번개세일! " + randomProduct.name + "이(가) 20% 할인 중입니다!");
-  //       updateSelectOption();
-  //     }
-  //   }, LIGHTNING_SALE_INTERVAL);
-  // }, Math.random() * LIGHTNING_SALE_TIMEOUT);
-  // const ADDITIONAL_SALE_TIMEOUT = 20000;
-  // const ADDITIONAL_SALE_INTERVAL = 60000;
-  // const ADDITIONAL_SALE_RATE = 0.95;
-  // setTimeout(() => {
-  //   setInterval(() => {
-  //     if (lastSel) {
-  //       const suggestedProuduct = productList.find(
-  //         product => product.id !== lastSel && product.quantity > 0,
-  //       );
-  //       if (suggestedProuduct !== undefined) {
-  //         alert(suggestedProuduct.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-  //         suggestedProuduct.price = Math.round(suggestedProuduct.price * ADDITIONAL_SALE_RATE);
-  //         updateSelectOption();
-  //       }
-  //     }
-  //   }, ADDITIONAL_SALE_INTERVAL);
-  // }, Math.random() * ADDITIONAL_SALE_TIMEOUT);
+  const LIGHTNING_SALE_TIMEOUT = 10000;
+  const LIGHTNING_SALE_INTERVAL = 30000;
+  const LIGHTNING_SALE_RANDOM_PROBABILITY = 0.3;
+  const LIGHTNING_SALE_RATE = 0.8;
+  setTimeout(() => {
+    setInterval(() => {
+      const randomProduct = productList[Math.floor(Math.random() * productList.length)];
+      if (Math.random() < LIGHTNING_SALE_RANDOM_PROBABILITY && randomProduct.quantity > 0) {
+        randomProduct.price = Math.round(randomProduct.price * LIGHTNING_SALE_RATE);
+        alert(`번개세일! ${randomProduct.name}이(가) 20% 할인 중입니다!`);
+        updateSelectOption();
+      }
+    }, LIGHTNING_SALE_INTERVAL);
+  }, Math.random() * LIGHTNING_SALE_TIMEOUT);
+  const ADDITIONAL_SALE_TIMEOUT = 20000;
+  const ADDITIONAL_SALE_INTERVAL = 60000;
+  const ADDITIONAL_SALE_RATE = 0.95;
+  setTimeout(() => {
+    setInterval(() => {
+      if (lastControledProduct) {
+        const suggestedProuduct = productList.find(
+          product => product.id !== lastControledProduct && product.quantity > 0,
+        );
+        if (suggestedProuduct !== undefined) {
+          alert(`${suggestedProuduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
+          suggestedProuduct.price = Math.round(suggestedProuduct.price * ADDITIONAL_SALE_RATE);
+          updateSelectOption();
+        }
+      }
+    }, ADDITIONAL_SALE_INTERVAL);
+  }, Math.random() * ADDITIONAL_SALE_TIMEOUT);
 };
 
 const calcCartProduct = () => {
@@ -104,7 +104,9 @@ const calcCartProduct = () => {
   let cartQuantity = 0;
   const cartProductList = $cart.children;
   let cartCost = 0;
-  // (() => {  // 이걸 꼭 함수안에 둬야 할까?
+
+  // 장바구니의 상품들 할인율 계산해서 총 값을 계산하는 반복문
+  // 이걸 함수로 빼고싶었지만, 다른 변수들과 연관성이 있어 빼지 못했다.
   for (const cartProduct of cartProductList) {
     const productInCart = productList.find(product => product.id === cartProduct.id);
 
@@ -116,10 +118,7 @@ const calcCartProduct = () => {
     let productDiscountRate = 0;
     cartCost += productCartCost;
 
-    // 매직넘버 모두사용을 설정하니 이런 부분에선 가독성이 더 좋지 못한 것 같다.
-    // 매직넘버 모두사용은 해제할까요?
     const MIN_QUANTITY_PRODUCT_DISCOUNT = 10;
-
     const P1_DISCOUNT_RATE = 0.1;
     const P2_DISCOUNT_RATE = 0.15;
     const P3_DISCOUNT_RATE = 0.2;
@@ -147,8 +146,8 @@ const calcCartProduct = () => {
     }
     finalCost += productCartCost * (1 - productDiscountRate);
   }
-  // })();
 
+  // 이부분도 마찬가지. 함수로 빼고 싶었지만 못뺌.
   let totalDiscountRate = 0;
   const MIN_TOTAL_DISCONUT_QUANTITY = 30;
   const BULK_PURCHASE_DISCOUNT_RATE = 0.25;
@@ -165,47 +164,71 @@ const calcCartProduct = () => {
   } else {
     totalDiscountRate = (cartCost - finalCost) / cartCost;
   }
-  // 여기까지 함 ↑
 
-  if (new Date().getDay() === 2) {
-    finalCost *= 1 - 0.1;
-    totalDiscountRate = Math.max(totalDiscountRate, 0.1);
+  const TUESDAY_GET_NUMBER = 2;
+  const TUESDAY_DISCOUNT_RATE = 0.1;
+  const FORMAT_PERCENTAGE = 100;
+
+  if (new Date().getDay() === TUESDAY_GET_NUMBER) {
+    finalCost *= 1 - TUESDAY_DISCOUNT_RATE;
+    totalDiscountRate = Math.max(totalDiscountRate, TUESDAY_DISCOUNT_RATE);
   }
-  $totalPrice.textContent = "총액: " + Math.round(finalCost) + "원";
+
+  $totalPrice.textContent = `총액: ${Math.round(finalCost)} 원`;
+
   if (totalDiscountRate > 0) {
-    const span = document.createElement("span");
-    span.className = "text-green-500 ml-2";
-    span.textContent = "(" + (totalDiscountRate * 100).toFixed(1) + "% 할인 적용)";
-    $totalPrice.appendChild(span);
+    const $applyDiscountText = document.createElement("span");
+    $applyDiscountText.className = "text-green-500 ml-2";
+    $applyDiscountText.textContent = `(${(totalDiscountRate * FORMAT_PERCENTAGE).toFixed(1)}% 할인 적용)`;
+    $totalPrice.appendChild($applyDiscountText);
   }
-  updateStockInfo();
-  renderBonusPts();
+  updateStock();
+  updateBonusPoint();
 };
 
-const renderBonusPts = () => {
-  bonusPts += Math.floor(finalCost / 1000);
-  let ptsTag = document.getElementById("loyalty-points");
-  if (!ptsTag) {
-    ptsTag = document.createElement("span");
-    ptsTag.id = "loyalty-points";
-    ptsTag.className = "text-blue-500 ml-2";
-    $totalPrice.appendChild(ptsTag);
-  }
-  ptsTag.textContent = "(포인트: " + bonusPts + ")";
-};
-
-const updateStockInfo = () => {
-  let infoMsg = "";
-  productList.forEach(item => {
-    if (item.quantity < 5) {
-      infoMsg +=
-        item.name +
-        ": " +
-        (item.quantity > 0 ? "재고 부족 (" + item.quantity + "개 남음)" : "품절") +
-        "\n";
+const updateStock = () => {
+  let textContent = "";
+  const MAX_PRODUCT_QUANTITY = 5;
+  productList.forEach(product => {
+    if (product.quantity < MAX_PRODUCT_QUANTITY) {
+      const quantityStatus =
+        product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : "품절";
+      textContent += `${product.name}: ${quantityStatus}\n`;
     }
   });
-  $remainedStock.textContent = infoMsg;
+  $remainedStock.textContent = textContent;
+};
+
+const updateBonusPoint = () => {
+  const BONUS_POINT_RATE = 1000;
+  bonusPoint += Math.floor(finalCost / BONUS_POINT_RATE);
+
+  let $bonusPoint = document.getElementById("loyalty-points");
+  if ($bonusPoint === null) {
+    $bonusPoint = document.createElement("span");
+    $bonusPoint.id = "loyalty-points";
+    $bonusPoint.className = "text-blue-500 ml-2";
+    $totalPrice.appendChild($bonusPoint);
+  }
+  $bonusPoint.textContent = `(포인트: ${bonusPoint})`;
+};
+
+const createCartElement = toAddProduct => {
+  const addNewCart = document.createElement("div");
+  addNewCart.id = toAddProduct.id;
+  addNewCart.className = "flex justify-between items-center mb-2";
+  addNewCart.innerHTML =
+    `<span>${toAddProduct.name} - ${toAddProduct.price}원 x 1</span><div>` +
+    `<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${
+      toAddProduct.id
+    }" data-change="-1">-</button>` +
+    `<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${
+      toAddProduct.id
+    }" data-change="1">+</button>` +
+    `<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${
+      toAddProduct.id
+    }">삭제</button></div>`;
+  $cart.appendChild(addNewCart);
 };
 
 const main = () => {
