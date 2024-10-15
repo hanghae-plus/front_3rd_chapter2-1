@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe('basic test', () => {
 
@@ -24,6 +24,11 @@ describe('basic test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      // 테스트가 실제 화요일에 실행될 경우, 요일 할인이 적용되어 실패할 수 있으므로
+      // 이를 방지하기 위해 수요일 날짜로 시스템 시간을 고정
+      const mockDate = new Date('2024-10-16'); // 수요일
+      vi.setSystemTime(mockDate);
     });
 
     afterEach(() => {
