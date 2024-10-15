@@ -9,6 +9,9 @@ export default [
   ...compat.extends('eslint-config-airbnb'),
   eslintPluginPrettierRecommended,
   {
+    ignores: ['**/__tests__/*'],
+  },
+  {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       parser: babelParser,
@@ -20,10 +23,6 @@ export default [
           presets: ['@babel/preset-env'],
         },
       },
-    },
-  },
-  {
-    languageOptions: {
       globals: {
         ...globals.browser,
       },
