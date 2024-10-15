@@ -22,7 +22,7 @@ const $select = document.createElement("select");
 const $addBtn = document.createElement("button");
 const $stockInfo = document.createElement("div");
 
-function main() {
+const main = () => {
   $cartDisp.id = "cart-items";
   $sum.id = "cart-total";
   $select.id = "product-select";
@@ -53,8 +53,8 @@ function main() {
 
   calcCart();
 
-  setTimeout(function () {
-    setInterval(function () {
+  setTimeout(() => {
+    setInterval(() => {
       const luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
@@ -64,8 +64,8 @@ function main() {
     }, 30000);
   }, Math.random() * 10000);
 
-  setTimeout(function () {
-    setInterval(function () {
+  setTimeout(() => {
+    setInterval(() => {
       if (lastSel) {
         const suggest = prodList.find(function (item) {
           return item.id !== lastSel && item.q > 0;
@@ -78,9 +78,9 @@ function main() {
       }
     }, 60000);
   }, Math.random() * 20000);
-}
+};
 
-function updateSelOpts() {
+const updateSelOpts = () => {
   $select.innerHTML = "";
   prodList.forEach(function (item) {
     const opt = document.createElement("option");
@@ -92,15 +92,15 @@ function updateSelOpts() {
     }
     $select.appendChild(opt);
   });
-}
+};
 
-function calcCart() {
+const calcCart = () => {
   totalAmt = 0;
   itemCnt = 0;
   const cartItems = $cartDisp.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
-    (function () {
+    (() => {
       let curItem;
       for (let j = 0; j < prodList.length; j++) {
         if (prodList[j].id === cartItems[i].id) {
@@ -162,7 +162,7 @@ function calcCart() {
 
   updateStockInfo();
   renderBonusPts();
-}
+};
 
 const renderBonusPts = () => {
   bonusPts += Math.floor(totalAmt / 1000);
@@ -176,7 +176,7 @@ const renderBonusPts = () => {
   ptsTag.textContent = "(포인트: " + bonusPts + ")";
 };
 
-function updateStockInfo() {
+const updateStockInfo = () => {
   let infoMsg = "";
   prodList.forEach(function (item) {
     if (item.q < 5) {
@@ -185,11 +185,11 @@ function updateStockInfo() {
     }
   });
   $stockInfo.textContent = infoMsg;
-}
+};
 
 main();
 
-$addBtn.addEventListener("click", function () {
+$addBtn.addEventListener("click", () => {
   const selItem = $select.value;
   const itemToAdd = prodList.find(function (p) {
     return p.id === selItem;
@@ -232,15 +232,13 @@ $addBtn.addEventListener("click", function () {
   }
 });
 
-$cartDisp.addEventListener("click", function (event) {
+$cartDisp.addEventListener("click", event => {
   const tgt = event.target;
 
   if (tgt.classList.contains("quantity-change") || tgt.classList.contains("remove-item")) {
     const prodId = tgt.dataset.productId;
     const itemElem = document.getElementById(prodId);
-    const prod = prodList.find(function (p) {
-      return p.id === prodId;
-    });
+    const prod = prodList.find(p => p.id === prodId);
     if (tgt.classList.contains("quantity-change")) {
       const qtyChange = parseInt(tgt.dataset.change);
       const newQty =
