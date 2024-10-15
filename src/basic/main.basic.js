@@ -37,8 +37,12 @@ function main() {
   const cartDisp = new CartDisp({
     wrap,
     prodList,
-    sum: sum.$element,
     stockInfo: stockInfo.$element,
+
+    updateSumDetails: ({ totalPrice, discount }) => {
+      sum.totalPrice = totalPrice;
+      sum.discountRate = discount;
+    },
   });
   const select = new Select({ wrap, prodList });
 
