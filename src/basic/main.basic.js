@@ -89,13 +89,13 @@ function updateProductOptions() {
   });
 }
 
-function calcCart() {
+const calcCart = () => {
   totalAmount = 0;
   itemCnt = 0;
   const cartItems = $cartItems.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
-    (function () {
+    (() => {
       let currentProduct;
       for (let j = 0; j < productList.length; j++) {
         if (productList[j].id === cartItems[i].id) {
@@ -124,7 +124,7 @@ function calcCart() {
   updateStockInfo();
   calculateBonusPoints();
   updateBonusPoints(bonusPoints);
-}
+};
 
 const getDiscount = (product, quantity) => {
   if (quantity >= 10) {
