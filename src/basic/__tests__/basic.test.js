@@ -29,7 +29,7 @@ describe('basic test', () => {
     afterEach(() => {
       vi.restoreAllMocks();
     });
-    
+
     afterAll(() => {
       // 모든 타이머 제거
       vi.useRealTimers();
@@ -90,7 +90,15 @@ describe('basic test', () => {
       sel.value='p1';
       addBtn.click();
       addBtn.click();
-      expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
+
+      const mockDate = new Date();
+      const isTuesday = mockDate.getDay() === 2;
+
+      if(isTuesday === true){
+        expect(sum.textContent).toContain('총액: 18000원(10.0% 할인 적용)(포인트: 81)');
+      } else{
+        expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
+      }
     });
 
     it('할인이 올바르게 적용되는지 확인', () => {
@@ -104,7 +112,15 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value='p2';
       addBtn.click();
-      expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
+
+      const mockDate = new Date();
+      const isTuesday = mockDate.getDay() === 2;
+
+      if(isTuesday === true){
+        expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 841)');
+      } else{
+        expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
+      } 
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
