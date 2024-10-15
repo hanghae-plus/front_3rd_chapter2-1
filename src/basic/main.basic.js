@@ -108,10 +108,10 @@ function calcCart() {
         cartItems[i].querySelector("span").textContent.split("x ")[1]
       );
       const itemTot = currentProduct.price * quantity;
-      const disc = calculateDiscount(currentProduct, quantity);
+      const discount = getDiscount(currentProduct, quantity);
       itemCnt += quantity;
       subTot += itemTot;
-      totalAmount += itemTot * (1 - disc);
+      totalAmount += itemTot * (1 - discount);
     })();
   }
   let discRate = 0;
@@ -138,7 +138,7 @@ function calcCart() {
   updateBonusPoints(bonusPoints);
 }
 
-const calculateDiscount = (product, quantity) => {
+const getDiscount = (product, quantity) => {
   if (quantity >= 10) {
     switch (product.id) {
       case "p1":
