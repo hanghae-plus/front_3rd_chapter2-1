@@ -26,6 +26,7 @@
 
     return element;
   };
+  
   // 초기 HTML 구조 렌더링 함수
   const renderElements = () => {
     const root = document.getElementById('app');
@@ -65,6 +66,7 @@
       selectedProduct.appendChild(opt);
     });
   };
+
   // 포인트 정보 업데이트 함수
   const updatePointInfo = () => {
     let point = 0;
@@ -75,6 +77,7 @@
     }
     pointInfo.textContent = `(포인트: ${point})`;
   };
+
   // 품절 정보 업데이트 함수
   const updateStockInfo = () => {
     let infoMsg = '';
@@ -102,6 +105,7 @@
     alert(msg);
     updateSelectOptions();
   };
+
   // 일정한 간격으로 랜덤한 시간 지연 후에 콜백을 실행하는 함수
   const applyRandomInterval = (callback, interval, delay) => {
     const randomDelay = Math.random() * delay;
@@ -109,6 +113,7 @@
       setInterval(callback, interval);
     }, randomDelay);
   };
+
   // 번개 세일 알림 함수
   const alertLuckySale = () => {
     const luckyItem = productList[Math.floor(Math.random() * productList.length)];
@@ -116,6 +121,7 @@
       applyDiscount(luckyItem, 0.8, `번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
     }
   };
+
   // 추천 상품 알림 함수
   const alertSuggestItem = () => {
     if (lastSelectOption) {
@@ -148,40 +154,37 @@
   // 장바구니 추가 버튼 클릭 시, 실행되는 함수
   const onClickCartAddBtn = () => {  
     const addItem = getAddItem();
-    
     if (addItem?.count > 0) {
         const addItemElement = document.getElementById(addItem.id);
-        
         if (addItemElement) {
             const currentCount = getCurrentCount(addItemElement);
-            
             if (currentCount < addItem.count) {
                 updateAddItemText(addItemElement, addItem, currentCount + 1);
                 addItem.count--;
-            } else {
-                alert('재고가 부족합니다.');
-            }
-        } else {
-            createAddItemElement(addItem);
-        }
-        
+            } else alert('재고가 부족합니다.');
+            
+        } else createAddItemElement(addItem);
         calcCart(); // 장바구니 계산
         lastSelectOption = selectedProduct; // 마지막 선택한 옵션 저장
     }
   };
+
   // 장바구니에 추가한 상품 정보 구하는 함수
   const getAddItem = () => {
     return productList.find(product => product.id === selectedProduct.value);
   }
+
   // 장바구니에서 현재 수량을 가져오는 함수
   const getCurrentCount = (itemElement) => {
     return parseInt(itemElement.querySelector('span').textContent.split('x ')[1], 10);
   }
+
   // 장바구니에 추가한 상품의 텍스트를 업데이트하는 함수
   const updateAddItemText = (itemElement, addItem, newCount) => {
     const { name, price } = addItem;
     itemElement.querySelector('span').textContent = `${name} - ${price}원 x ${newCount}`;
   }
+
   // 장바구니에 추가한 상품 요소 생성 함수
   const createAddItemElement = (addItem) => {
     const { id, name, price } = addItem;
@@ -206,7 +209,9 @@
   // DOM이 완전히 로드된 후 main 함수 실행
   document.addEventListener('DOMContentLoaded', () => {
     main();
+
     // 이벤트 등록
     cartAddBtn.addEventListener('click', onClickCartAddBtn);
   });
+
 })();
