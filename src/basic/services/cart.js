@@ -1,3 +1,4 @@
+import { products } from '../data/products';
 import { getTargetItemElementQuantity } from '../utils/cart';
 import { createBonusPointsTag, renderCartTotalInfo } from '../views/cart';
 import { renderProductsStockInfo } from '../views/product';
@@ -9,7 +10,6 @@ import {
   calculateTotalProductsBulkDiscount,
   getProductBulkDiscountRate,
 } from './discount';
-import { products } from './product';
 
 const updateCartInfos = (bonusPoints) => {
   const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
