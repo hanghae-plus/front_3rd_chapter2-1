@@ -1,18 +1,10 @@
-import {
-  beforeAll,
-  beforeEach,
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 
 describe('basic test', () => {
   describe.each([
-    {type: 'origin', loadFile: () => import('../../main.js')},
-    {type: 'basic', loadFile: () => import('../main.basic.js')},
-  ])('$type 장바구니 시나리오 테스트', ({loadFile}) => {
+    { type: 'origin', loadFile: () => import('../../main.js') },
+    { type: 'basic', loadFile: () => import('../main.basic.js') },
+  ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
     beforeAll(async () => {
@@ -35,6 +27,8 @@ describe('basic test', () => {
 
     afterEach(() => {
       vi.restoreAllMocks();
+      vi.clearAllTimers();
+      vi.setSystemTime();
     });
 
     it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
@@ -71,19 +65,13 @@ describe('basic test', () => {
       sel.value = 'p1';
       addBtn.click();
       expect(cartDisp.children.length).toBe(1);
-      expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 1',
-      );
+      expect(cartDisp.children[0].querySelector('span').textContent).toContain('상품1 - 10000원 x 1');
     });
 
     it('장바구니에서 상품 수량을 변경할 수 있는지 확인', () => {
-      const increaseBtn = cartDisp.querySelector(
-        '.quantity-change[data-change="1"]',
-      );
+      const increaseBtn = cartDisp.querySelector('.quantity-change[data-change="1"]');
       increaseBtn.click();
-      expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 2',
-      );
+      expect(cartDisp.children[0].querySelector('span').textContent).toContain('상품1 - 10000원 x 2');
     });
 
     it('장바구니에서 상품을 삭제할 수 있는지 확인', () => {
@@ -112,9 +100,7 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value = 'p2';
       addBtn.click();
-      expect(document.getElementById('loyalty-points').textContent).toContain(
-        '(포인트: 935)',
-      );
+      expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
@@ -130,9 +116,7 @@ describe('basic test', () => {
       vi.setSystemTime(mockDate);
       sel.value = 'p1';
       addBtn.click();
-      expect(document.getElementById('cart-total').textContent).toContain(
-        '(10.0% 할인 적용)',
-      );
+      expect(document.getElementById('cart-total').textContent).toContain('(10.0% 할인 적용)');
     });
 
     it('재고가 부족한 경우 추가되지 않는지 확인', () => {
@@ -141,9 +125,7 @@ describe('basic test', () => {
       addBtn.click();
 
       // p4 상품이 장바구니에 없는지 확인
-      const p4InCart = Array.from(cartDisp.children).some(
-        item => item.id === 'p4',
-      );
+      const p4InCart = Array.from(cartDisp.children).some((item) => item.id === 'p4');
       expect(p4InCart).toBe(false);
       expect(stockInfo.textContent).toContain('상품4: 품절');
     });
@@ -153,15 +135,11 @@ describe('basic test', () => {
       addBtn.click();
 
       // p5 상품이 장바구니에 추가되었는지 확인
-      const p5InCart = Array.from(cartDisp.children).some(
-        item => item.id === 'p5',
-      );
+      const p5InCart = Array.from(cartDisp.children).some((item) => item.id === 'p5');
       expect(p5InCart).toBe(true);
 
       // 수량 증가 버튼 찾기
-      const increaseBtn = cartDisp.querySelector(
-        '#p5 .quantity-change[data-change="1"]',
-      );
+      const increaseBtn = cartDisp.querySelector('#p5 .quantity-change[data-change="1"]');
       expect(increaseBtn).not.toBeNull();
 
       // 수량을 10번 증가시키기
@@ -173,9 +151,7 @@ describe('basic test', () => {
       increaseBtn.click();
 
       // 재고 부족 알림이 표시되었는지 확인
-      expect(window.alert).toHaveBeenCalledWith(
-        expect.stringContaining('재고가 부족합니다'),
-      );
+      expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('재고가 부족합니다'));
 
       // 장바구니의 상품 수량이 10개인지 확인
       const itemQuantity = cartDisp.querySelector('#p5 span').textContent;
