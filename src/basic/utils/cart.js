@@ -2,6 +2,7 @@ import {
   calculateDayDiscount,
   calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
+  createDiscountInfo,
   getProductBulkDiscountRate,
 } from './discount';
 import { products, renderProductsStockInfo } from './product';
@@ -38,12 +39,6 @@ const updateCartTotalInfo = (discountedTotalPrice, discountRate) => {
     const $discountInfo = createDiscountInfo(discountRate);
     $cartTotalInfo.appendChild($discountInfo);
   }
-};
-const createDiscountInfo = (discountRate) => {
-  const span = document.createElement('span');
-  span.className = 'text-green-500 ml-2';
-  span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-  return span;
 };
 
 const calculateCartTotals = () => {

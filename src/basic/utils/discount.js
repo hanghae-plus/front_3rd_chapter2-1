@@ -1,10 +1,27 @@
+import {
+  PRODUCT_BULK_DISCOUNT_AMOUNT,
+  PRODUCT_BULK_DISCOUNT_RATE,
+  SALE_DAY,
+  SALE_DAY_DISCOUNT_RATE,
+  SUGGEST_DISCOUNT_RATE,
+  SUGGEST_TIME_INTERVAL,
+  SURPRISE_DISCOUNT_PROBABILITY,
+  SURPRISE_DISCOUNT_RATE,
+  SURPRISE_TIME_INTERVAL,
+  TOTAL_BULK_DISCOUNT_AMOUNT,
+  TOTAL_BULK_DISCOUNT_RATE,
+} from '../const/discount';
+
 import { products, renderProductOptions } from './product';
 
-export const setSurpriseDiscount = () => {
-  const SURPRISE_DISCOUNT_PROBABILITY = 0.3;
-  const SURPRISE_DISCOUNT_RATE = 0.8;
-  const SURPRISE_TIME_INTERVAL = 30000;
+export const createDiscountInfo = (discountRate) => {
+  const span = document.createElement('span');
+  span.className = 'text-green-500 ml-2';
+  span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
+  return span;
+};
 
+export const setSurpriseDiscount = () => {
   setTimeout(() => {
     setInterval(() => {
       const luckyItem = products[Math.floor(Math.random() * products.length)];
@@ -17,9 +34,6 @@ export const setSurpriseDiscount = () => {
   }, Math.random() * 10000);
 };
 export const setSuggestDiscount = (lastAddedProduct) => {
-  const SUGGEST_DISCOUNT_RATE = 0.95;
-  const SUGGEST_TIME_INTERVAL = 60000;
-
   setTimeout(() => {
     setInterval(() => {
       if (lastAddedProduct) {
@@ -36,14 +50,6 @@ export const setSuggestDiscount = (lastAddedProduct) => {
   }, Math.random() * 20000);
 };
 
-const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
-const PRODUCT_BULK_DISCOUNT_RATE = {
-  p1: 0.1,
-  p2: 0.15,
-  p3: 0.2,
-  p4: 0.05,
-  p5: 0.25,
-};
 export const getProductBulkDiscountRate = (productId, quantity) => {
   if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
   return 0;
@@ -52,8 +58,6 @@ export const getProductBulkDiscountRate = (productId, quantity) => {
 const calculateDiscountRate = (totalPrice, discountedTotalPrice) => (totalPrice - discountedTotalPrice) / totalPrice;
 export const calculateDiscountedPrice = (price, discountRate) => price * (1 - discountRate);
 export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
-  const TOTAL_BULK_DISCOUNT_AMOUNT = 30;
-
   if (totalItems < TOTAL_BULK_DISCOUNT_AMOUNT) {
     return {
       updatedTotalPrice: discountedTotalPrice,
@@ -64,9 +68,6 @@ export const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, disco
   return getMoreDiscountPriceAndRate(discountedTotalPrice, totalPrice);
 };
 export const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
-  const SALE_DAY = 2;
-  const SALE_DAY_DISCOUNT_RATE = 0.1;
-
   if (new Date().getDay() === SALE_DAY) {
     updatedTotalPrice = calculateDiscountedPrice(updatedTotalPrice, SALE_DAY_DISCOUNT_RATE);
     discountRate = Math.max(discountRate, SALE_DAY_DISCOUNT_RATE);
@@ -75,7 +76,6 @@ export const calculateDayDiscount = ({ updatedTotalPrice, discountRate }) => {
   return { updatedTotalPrice, discountRate };
 };
 
-const TOTAL_BULK_DISCOUNT_RATE = 0.25;
 const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
   let updatedTotalPrice = 0;
   let discountRate = 0;
