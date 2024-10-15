@@ -1,6 +1,4 @@
 import {
-  PRODUCT_BULK_DISCOUNT_AMOUNT,
-  PRODUCT_BULK_DISCOUNT_RATE,
   SALE_DAY,
   SALE_DAY_DISCOUNT_RATE,
   SUGGEST_DISCOUNT_RATE,
@@ -11,6 +9,7 @@ import {
   TOTAL_BULK_DISCOUNT_AMOUNT,
   TOTAL_BULK_DISCOUNT_RATE,
 } from '../const/discount';
+import { calculateDiscountedPrice, calculateDiscountRate } from '../utils/discount';
 
 import { products, renderProductOptions } from './product';
 
@@ -50,13 +49,6 @@ const setSuggestDiscount = (lastAddedProduct) => {
   }, Math.random() * 20000);
 };
 
-const getProductBulkDiscountRate = (productId, quantity) => {
-  if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
-  return 0;
-};
-
-const calculateDiscountRate = (totalPrice, discountedTotalPrice) => (totalPrice - discountedTotalPrice) / totalPrice;
-const calculateDiscountedPrice = (price, discountRate) => price * (1 - discountRate);
 const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
   if (totalItems < TOTAL_BULK_DISCOUNT_AMOUNT) {
     return {
@@ -98,7 +90,6 @@ export {
   createDiscountInfo,
   setSurpriseDiscount,
   setSuggestDiscount,
-  getProductBulkDiscountRate,
   calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   calculateDayDiscount,

@@ -1,7 +1,8 @@
-import { getTargetItemElementQuantity, updateCartInfos } from './services/cart';
+import { updateCartInfos } from './services/cart';
 import { addToCart, changeCartItemQuantity, removeCartItem } from './services/cartOperations';
 import { setSuggestDiscount, setSurpriseDiscount } from './services/discount';
 import { products, renderProductOptions } from './services/product';
+import { getTargetItemElementQuantity } from './utils/cart';
 
 let $addToCartBtn, $cartItemsDisplay;
 let lastAddedProduct,

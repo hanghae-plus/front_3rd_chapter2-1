@@ -1,4 +1,6 @@
-import { getTargetItemElementQuantity, updateCartItemInfo } from './cart';
+import { getTargetItemElementQuantity } from '../utils/cart';
+
+import { updateCartItemInfo } from './cart';
 
 const createNewItem = (targetProduct) => {
   const newItem = document.createElement('div');

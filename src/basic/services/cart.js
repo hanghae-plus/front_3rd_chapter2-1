@@ -1,15 +1,13 @@
+import { getTargetItemElementQuantity } from '../utils/cart';
+import { getProductBulkDiscountRate } from '../utils/discount';
+
 import {
   calculateDayDiscount,
   calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   createDiscountInfo,
-  getProductBulkDiscountRate,
 } from './discount';
 import { products, renderProductsStockInfo } from './product';
-
-const getTargetItemElementQuantity = ($targetItemElement) => {
-  return parseInt($targetItemElement.querySelector('span').textContent.split('x ')[1]);
-};
 
 const updateCartInfos = (bonusPoints) => {
   const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
@@ -79,4 +77,4 @@ const updateBonusPoints = (bonusPoints, totalPrice) => {
   return updatedBonusPoints;
 };
 
-export { getTargetItemElementQuantity, updateCartInfos, updateCartItemInfo, updateBonusPoints };
+export { updateCartInfos, updateCartItemInfo, updateBonusPoints };
