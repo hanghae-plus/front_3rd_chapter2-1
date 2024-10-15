@@ -42,7 +42,7 @@ function main() {
     cartTitle.textContent = '장바구니';
     addCartButton.textContent = '추가';
 
-    updateSelOpts();
+    updateProductOptions();
 
     cartSection.appendChild(cartTitle);
     cartSection.appendChild(cartItemsContainer);
@@ -52,7 +52,7 @@ function main() {
     cartSection.appendChild(productStockStatus);
     componentContainer.appendChild(cartSection);
     root.appendChild(componentContainer);
-    calcCart();
+    updateCartTotalAndApplyDiscounts();
 
     setTimeout(function () {
         setInterval(function () {
@@ -60,7 +60,7 @@ function main() {
             if (Math.random() < 0.3 && luckyItem.quantity > 0) {
                 luckyItem.val = Math.round(luckyItem.val * 0.8);
                 console.log(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
-                updateSelOpts();
+                updateProductOptions();
             }
         }, 30000);
     }, Math.random() * 10000);
@@ -74,14 +74,14 @@ function main() {
                 if (suggest) {
                     console.log(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
                     suggest.val = Math.round(suggest.val * 0.95);
-                    updateSelOpts();
+                    updateProductOptions();
                 }
             }
         }, 60000);
     }, Math.random() * 20000);
 }
 
-function updateSelOpts() {
+function updateProductOptions() {
     productDropdown.innerHTML = '';
     productInventory.forEach(function (item) {
         var opt = document.createElement('option');
@@ -93,7 +93,7 @@ function updateSelOpts() {
     });
 }
 
-function calcCart() {
+function updateCartTotalAndApplyDiscounts() {
     cartTotalAmount = 0;
     cartItemCount = 0;
     var cartItems = cartItemsContainer.children;
@@ -156,11 +156,11 @@ function calcCart() {
         cartTotalAmountContainer.appendChild(span);
     }
 
-    updateStockInfo();
-    renderBonusPts();
+    displayStockShortage();
+    updateAndDisplayLoyaltyPoints();
 }
 
-const renderBonusPts = () => {
+const updateAndDisplayLoyaltyPoints = () => {
     bonusPoint += Math.floor(cartTotalAmount / 1000);
 
     console.log(`bonusPoint: ${bonusPoint}`);
@@ -177,7 +177,7 @@ const renderBonusPts = () => {
     ptsTag.textContent = `(포인트: ${bonusPoint})`;
 };
 
-function updateStockInfo() {
+function displayStockShortage() {
     var infoMsg = '';
     productInventory.forEach(function (item) {
         if (item.quantity < 5) {
@@ -221,7 +221,7 @@ addCartButton.addEventListener('click', function () {
             itemToAdd.quantity--;
         }
 
-        calcCart();
+        updateCartTotalAndApplyDiscounts();
         lastSelectedProductId = selItem;
     }
 });
@@ -257,6 +257,6 @@ cartItemsContainer.addEventListener('click', function (event) {
             itemElem.remove();
         }
 
-        calcCart();
+        updateCartTotalAndApplyDiscounts();
     }
 });
