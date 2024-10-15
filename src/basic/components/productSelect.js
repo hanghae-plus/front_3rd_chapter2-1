@@ -1,4 +1,4 @@
-import { productList } from "../constants"
+import { productList } from "../data"
 
 export const ProductSelect = () => {
   return `
