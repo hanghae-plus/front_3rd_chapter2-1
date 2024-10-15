@@ -241,5 +241,3 @@ cartDisp.addEventListener("click", function (event) {
     calcCart();
   }
 });
-
-export { luckyDiscount, main, suggestAdditionalDiscount };

@@ -609,5 +609,3 @@ $cartItems.el.addEventListener("click", (event) => {
     renderCart();
   }
 });
-
-export { luckyDiscount, main, suggestAdditionalDiscount };
