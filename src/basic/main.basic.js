@@ -101,16 +101,18 @@ const calcCart = () => {
   for (let i = 0; i < cartItems.length; i++) {
     const cartItem = cartItems[i];
     const currentProduct = getProductById(cartItem.id);
-    if (currentProduct) {
-      const quantity = parseInt(
-        cartItems[i].querySelector("span").textContent.split("x ")[1]
-      );
-      const productTotalPrice = currentProduct.price * quantity;
-      const discount = getDiscount(currentProduct, quantity);
-      itemCnt += quantity;
-      subTot += productTotalPrice;
-      totalAmount += productTotalPrice * (1 - discount);
-    }
+
+    if (!currentProduct) return;
+
+    const quantity = parseInt(
+      cartItems[i].querySelector("span").textContent.split("x ")[1]
+    );
+    const productTotalPrice = currentProduct.price * quantity;
+    const discount = getDiscount(currentProduct, quantity);
+
+    itemCnt += quantity;
+    subTot += productTotalPrice;
+    totalAmount += productTotalPrice * (1 - discount);
   }
   let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
 
