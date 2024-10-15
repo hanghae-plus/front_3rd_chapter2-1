@@ -71,3 +71,14 @@ calcCart => updateCartInfos
 
 - 폴더 분리
 관심사가 한 눈에 들어오지 않아 비슷한 역할을 하는 함수끼리 묶어 파일 분리
+
+======================
+
+## 동료 개발자 피드백
+- const 분리
+- 텍스트 포맷팅 같은 함수는 아예 따로 utils로 구분 (이 경우 기존 utils에 있는 것들은 폴더명 수정 필요)
+  - 추가 utils 분리함수 추천 :  suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE); 
+- 함수의 경우 export 바로 하는 게 아니라 필요한 함수만 마지막에 몰아서 작성하기
+- 애매해보이긴 하지만 view 가공하는 부분이랑 비즈니스 로직 다루는 부분이 구분되면 좋을 것 같다
+
+=> 기존 utils 폴더명 services로 변경 : 비즈니스 로직을 담당하고 있기 때문에
