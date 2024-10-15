@@ -12,7 +12,7 @@ export default [
     ignores: ['**/__tests__/*'],
   },
   {
-    files: ['**/*.js', '**/*.mjs', '**/*.jsx'],
+    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: babelParser,
       parserOptions: {
@@ -20,7 +20,7 @@ export default [
         babelOptions: {
           babelrc: false,
           configFile: false,
-          presets: ['@babel/preset-env'],
+          presets: ['@babel/preset-env', '@babel/preset-react'],
         },
       },
       globals: {

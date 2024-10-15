@@ -5,7 +5,7 @@ function App() {
 }
 
 function main() {
-  const root = createRoot(document.getElementById('app'));
+  const root = createRoot(document.getElementById('app')!);
 	root.render(<App />);
 }
 
