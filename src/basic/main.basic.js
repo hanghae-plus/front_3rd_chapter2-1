@@ -4,6 +4,52 @@ let lastSelectedItemId,
   finalTotalPrice = 0,
   totalItemCount = 0;
 
+const CartPageTemplate = () => `<div class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
+      <h1 class="text-2xl font-bold mb-4">장바구니</h1>
+      <div id="cart-items"></div>
+      <div id="cart-total" class="text-xl font-bold my-4"></div>
+      <select id="product-select" class="border rounded p-2 mr-2"></select>
+      <button id="add-to-cart" class="bg-blue-500 text-white px-4 py-2 rounded">
+        추가
+      </button>
+      <div id="stock-status" class="text-sm text-gray-500 mt-2"></div>
+    </div>
+  </div>`;
+
+const discountPercentageTemplate = (discountPercentage) =>
+  `<span class="text-green-500 ml-2">(${discountPercentage.toFixed(1)}% 할인 적용)</span>`;
+
+const productOptionTemplate = (item) =>
+  `<option value=${item.id} ${item.quantity === 0 && "disabled"}>${item.name} - ${item.price}원</option>`;
+
+const loyaltyPointsTemplate = () =>
+  `<span id="loyalty-points" class="text-blue-500 ml-2">(포인트: ${loyaltyPoints})</span>`;
+
+const firstAddedItemTemplate = (item) => `<div id=${item.id} class="flex justify-between items-center mb-2">
+      <span>${item.name} - ${item.price}원 x 1</span>
+      <div>
+        <button 
+          class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+          data-product-id=${item.id}
+          data-change="-1"
+        >
+          -
+        </button>
+        <button 
+          class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+          data-product-id=${item.id}
+          data-change="1"
+        >
+          +
+        </button>
+        <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id=${item.id}>
+          삭제
+        </button>
+      
+      </div>
+  </div>`;
+
 const main = () => {
   products = [
     { id: "p1", name: "상품1", price: 10000, quantity: 50 },
@@ -14,49 +60,15 @@ const main = () => {
   ];
 
   const root = document.getElementById("app");
+  root.innerHTML = CartPageTemplate();
 
-  const bgElement = document.createElement("div");
-  bgElement.className = "bg-gray-100 p-8";
-
-  const cartTitleElement = document.createElement("h1");
-  cartTitleElement.className = "text-2xl font-bold mb-4";
-  cartTitleElement.textContent = "장바구니";
-
-  cartItemsElement = document.createElement("div");
-  cartItemsElement.id = "cart-items";
-
-  cartTotalElement = document.createElement("div");
-  cartTotalElement.id = "cart-total";
-  cartTotalElement.className = "text-xl font-bold my-4";
-
-  productsSelectElement = document.createElement("select");
-  productsSelectElement.id = "product-select";
-  productsSelectElement.className = "border rounded p-2 mr-2";
-
-  addToCartBtnElement = document.createElement("button");
-  addToCartBtnElement.id = "add-to-cart";
-  addToCartBtnElement.className = "bg-blue-500 text-white px-4 py-2 rounded";
-  addToCartBtnElement.textContent = "추가";
-
-  stockStatusElement = document.createElement("div");
-  stockStatusElement.id = "stock-status";
-  stockStatusElement.className = "text-sm text-gray-500 mt-2";
-
-  const cartContainerElement = document.createElement("div");
-  cartContainerElement.className = "max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8";
-  cartContainerElement.appendChild(cartTitleElement);
-  cartContainerElement.appendChild(cartItemsElement);
-  cartContainerElement.appendChild(cartTotalElement);
-  cartContainerElement.appendChild(productsSelectElement);
-  cartContainerElement.appendChild(addToCartBtnElement);
-  cartContainerElement.appendChild(stockStatusElement);
+  productsSelectElement = document.getElementById("product-select");
+  addToCartBtnElement = document.getElementById("add-to-cart");
+  cartItemsElement = document.getElementById("cart-items");
+  cartTotalElement = document.getElementById("cart-total");
+  stockStatusElement = document.getElementById("stock-status");
 
   updateSelectOptions();
-
-  bgElement.appendChild(cartContainerElement);
-
-  root.appendChild(bgElement);
-
   calculateCartTotal();
 
   setTimeout(() => {
@@ -149,10 +161,7 @@ const calculateCartTotal = () => {
   cartTotalElement.textContent = `총액: ${Math.round(finalTotalPrice)}원`;
 
   if (discountRate > 0) {
-    const percentageDiscountTextElement = document.createElement("span");
-    percentageDiscountTextElement.className = "text-green-500 ml-2";
-    percentageDiscountTextElement.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-    cartTotalElement.appendChild(percentageDiscountTextElement);
+    cartTotalElement.innerHTML += discountPercentageTemplate(discountRate * 100);
   }
 
   updateStockStatus();
@@ -163,30 +172,17 @@ const updateSelectOptions = () => {
   productsSelectElement.innerHTML = "";
 
   products.forEach((item) => {
-    const productsOptionElement = document.createElement("option");
-    productsOptionElement.value = item.id;
-    productsOptionElement.textContent = `${item.name} - ${item.price}원`;
-
-    if (item.quantity === 0) {
-      productsOptionElement.disabled = true;
-    }
-
-    productsSelectElement.appendChild(productsOptionElement);
+    productsSelectElement.innerHTML += productOptionTemplate(item);
   });
 };
 
 const updateLoyaltyPoints = () => {
   loyaltyPoints += Math.floor(finalTotalPrice / 1000);
-  let loyaltyPointsElement = document.getElementById("loyalty-points");
+  const loyaltyPointsElement = document.getElementById("loyalty-points");
 
   if (!loyaltyPointsElement) {
-    loyaltyPointsElement = document.createElement("span");
-    loyaltyPointsElement.id = "loyalty-points";
-    loyaltyPointsElement.className = "text-blue-500 ml-2";
-    cartTotalElement.appendChild(loyaltyPointsElement);
+    cartTotalElement.innerHTML += loyaltyPointsTemplate();
   }
-
-  loyaltyPointsElement.textContent = `(포인트: ${loyaltyPoints})`;
 };
 
 const updateStockStatus = () => {
@@ -222,21 +218,7 @@ addToCartBtnElement.addEventListener("click", () => {
         alert("재고가 부족합니다.");
       }
     } else {
-      const newlySelectedItemElement = document.createElement("div");
-      newlySelectedItemElement.id = selectedItem.id;
-      newlySelectedItemElement.className = "flex justify-between items-center mb-2";
-      newlySelectedItemElement.innerHTML = `
-      <span>${selectedItem.name} - ${selectedItem.price}원 x 1</span>
-      <div>
-        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" 
-                        data-product-id="${selectedItem.id}" data-change="-1">- </button>
-        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" 
-                        data-product-id="${selectedItem.id}" data-change="1">+</button>
-        <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" 
-                        data-product-id="${selectedItem.id}">삭제</button>
-      </div>`;
-
-      cartItemsElement.appendChild(newlySelectedItemElement);
+      cartItemsElement.innerHTML += firstAddedItemTemplate(selectedItem);
       selectedItem.quantity--;
     }
 
