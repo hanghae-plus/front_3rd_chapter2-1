@@ -2,7 +2,9 @@ const eventHandlers = {};
 
 const handleGlobalEvents = (e) => {
   const handlers = eventHandlers[e.type];
-  if (!handlers) return;
+  if (!handlers) {
+    return;
+  }
 
   for (const selector in handlers) {
     if (e.target.matches(selector)) {
