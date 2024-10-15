@@ -1,6 +1,6 @@
 import { LACK_OF_STOCK } from '../const/product';
 
-export const products = [
+const products = [
   { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
   { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
   { id: 'p3', name: '상품3', price: 30000, quantity: 20 },
@@ -15,14 +15,14 @@ const formatLowStocksInfo = (lowStockProducts) => {
     )
     .join('\n');
 };
-export const renderProductsStockInfo = () => {
+const renderProductsStockInfo = () => {
   const $stockInfo = document.getElementById('stock-status');
   const lowStockProducts = products.filter((product) => product.quantity < LACK_OF_STOCK);
 
   $stockInfo.textContent = formatLowStocksInfo(lowStockProducts);
 };
 
-export const renderProductOptions = () => {
+const renderProductOptions = () => {
   const $productSelectDropdown = document.getElementById('product-select');
   $productSelectDropdown.innerHTML = '';
 
@@ -35,3 +35,5 @@ export const renderProductOptions = () => {
     $productSelectDropdown.appendChild($option);
   });
 };
+
+export { products, renderProductsStockInfo, renderProductOptions };

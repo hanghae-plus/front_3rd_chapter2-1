@@ -21,7 +21,7 @@ const createNewItem = (targetProduct) => {
     '">삭제</button></div>';
   document.getElementById('cart-items').appendChild(newItem);
 };
-export const addToCart = ($targetCartItem, targetProduct) => {
+const addToCart = ($targetCartItem, targetProduct) => {
   if (!$targetCartItem) {
     createNewItem(targetProduct);
     targetProduct.quantity--;
@@ -42,11 +42,11 @@ export const addToCart = ($targetCartItem, targetProduct) => {
 };
 
 // TODO: handleAddToCart랑 중복되는 부분 합칠 수 있는 지 확인
-export const removeCartItem = (targetProduct, $itemElement, restoreQuantity) => {
+const removeCartItem = (targetProduct, $itemElement, restoreQuantity) => {
   targetProduct.quantity += restoreQuantity;
   $itemElement.remove();
 };
-export const changeCartItemQuantity = (clickedElement, $itemElement, targetProduct) => {
+const changeCartItemQuantity = (clickedElement, $itemElement, targetProduct) => {
   const quantityChangeAmount = parseInt(clickedElement.dataset.change);
   const currentItemQuantity = getTargetItemElementQuantity($itemElement);
   const newItemQuantity = currentItemQuantity + quantityChangeAmount;
@@ -62,3 +62,5 @@ export const changeCartItemQuantity = (clickedElement, $itemElement, targetProdu
     removeCartItem(targetProduct, $itemElement, 1);
   }
 };
+
+export { addToCart, removeCartItem, changeCartItemQuantity };

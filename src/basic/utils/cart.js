@@ -7,11 +7,11 @@ import {
 } from './discount';
 import { products, renderProductsStockInfo } from './product';
 
-export const getTargetItemElementQuantity = ($targetItemElement) => {
+const getTargetItemElementQuantity = ($targetItemElement) => {
   return parseInt($targetItemElement.querySelector('span').textContent.split('x ')[1]);
 };
 
-export const updateCartInfos = (bonusPoints) => {
+const updateCartInfos = (bonusPoints) => {
   const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
 
   const updatedTotalPriceAndDiscountRate = calculateTotalProductsBulkDiscount(
@@ -27,7 +27,7 @@ export const updateCartInfos = (bonusPoints) => {
 
   return bonusPoints;
 };
-export const updateCartItemInfo = (targetProduct, newItemQuantity, targetCartItem) => {
+const updateCartItemInfo = (targetProduct, newItemQuantity, targetCartItem) => {
   const newCartItemInfo = `${targetProduct.name} - ${targetProduct.price}원 x ${newItemQuantity}`;
   targetCartItem.querySelector('span').textContent = newCartItemInfo;
 };
@@ -70,7 +70,7 @@ const createBonusPointsTag = () => {
   document.getElementById('cart-total').appendChild(pointTagElement);
   return pointTagElement;
 };
-export const updateBonusPoints = (bonusPoints, totalPrice) => {
+const updateBonusPoints = (bonusPoints, totalPrice) => {
   const updatedBonusPoints = bonusPoints + Math.floor(totalPrice / 1000);
 
   const $pointTagElement = document.getElementById('loyalty-points') || createBonusPointsTag();
@@ -78,3 +78,5 @@ export const updateBonusPoints = (bonusPoints, totalPrice) => {
 
   return updatedBonusPoints;
 };
+
+export { getTargetItemElementQuantity, updateCartInfos, updateCartItemInfo, updateBonusPoints };
