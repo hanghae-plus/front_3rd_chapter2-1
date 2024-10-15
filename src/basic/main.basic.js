@@ -148,14 +148,14 @@ function calcCart() {
   }
   updateStockInfo();
   calculateBonusPoints();
-  displayBonusPoints(bonusPoints);
+  updateBonusPoints(bonusPoints);
 }
 
 const calculateBonusPoints = () => {
   bonusPoints += Math.floor(totalAmount / 1000);
 };
 
-const displayBonusPoints = (bonusPoints) => {
+const updateBonusPoints = (bonusPoints) => {
   let pointsTag = document.getElementById("loyalty-points");
   if (!pointsTag) {
     pointsTag = document.createElement("span");
