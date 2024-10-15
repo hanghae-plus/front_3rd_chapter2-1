@@ -99,14 +99,14 @@ const main = () => {
 const updateSelOpts = () => {
   $select.innerHTML = "";
   prodList.forEach(item => {
-    const opt = document.createElement("option");
-    opt.value = item.id;
+    const $option = document.createElement("option");
+    $option.value = item.id;
 
-    opt.textContent = item.name + " - " + item.val + "원";
+    $option.textContent = item.name + " - " + item.val + "원";
     if (item.q === 0) {
-      opt.disabled = true;
+      $option.disabled = true;
     }
-    $select.appendChild(opt);
+    $select.appendChild($option);
   });
 };
 
@@ -184,10 +184,10 @@ const calcCart = () => {
   const TO_PERCENT = 100;
 
   if (discRate > 0) {
-    const span = document.createElement("span");
-    span.className = "text-green-500 ml-2";
-    span.textContent = "(" + (discRate * TO_PERCENT).toFixed(1) + "% 할인 적용)";
-    $sum.appendChild(span);
+    const $saleDesc = document.createElement("span");
+    $saleDesc.className = "text-green-500 ml-2";
+    $saleDesc.textContent = "(" + (discRate * TO_PERCENT).toFixed(1) + "% 할인 적용)";
+    $sum.appendChild($saleDesc);
   }
 
   updateStockInfo();
@@ -197,14 +197,14 @@ const calcCart = () => {
 const renderBonusPts = () => {
   const POINTS_CONVERSION_RATE = 1000;
   bonusPts += Math.floor(totalAmt / POINTS_CONVERSION_RATE);
-  let ptsTag = document.getElementById("loyalty-points");
-  if (!ptsTag) {
-    ptsTag = document.createElement("span");
-    ptsTag.id = "loyalty-points";
-    ptsTag.className = "text-blue-500 ml-2";
-    $sum.appendChild(ptsTag);
+  let $pointTag = document.getElementById("loyalty-points");
+  if (!$pointTag) {
+    $pointTag = document.createElement("span");
+    $pointTag.id = "loyalty-points";
+    $pointTag.className = "text-blue-500 ml-2";
+    $sum.appendChild($pointTag);
   }
-  ptsTag.textContent = "(포인트: " + bonusPts + ")";
+  $pointTag.textContent = "(포인트: " + bonusPts + ")";
 };
 
 const updateStockInfo = () => {
@@ -267,29 +267,29 @@ $cartDisp.addEventListener("click", event => {
 
   if (tgt.classList.contains("quantity-change") || tgt.classList.contains("remove-item")) {
     const prodId = tgt.dataset.productId;
-    const itemElem = document.getElementById(prodId);
+    const $itemElement = document.getElementById(prodId);
     const prod = prodList.find(p => p.id === prodId);
     if (tgt.classList.contains("quantity-change")) {
       const qtyChange = parseInt(tgt.dataset.change);
       const newQty =
-        parseInt(itemElem.querySelector("span").textContent.split("x ")[1]) + qtyChange;
+        parseInt($itemElement.querySelector("span").textContent.split("x ")[1]) + qtyChange;
       if (
         newQty > 0 &&
-        newQty <= prod.q + parseInt(itemElem.querySelector("span").textContent.split("x ")[1])
+        newQty <= prod.q + parseInt($itemElement.querySelector("span").textContent.split("x ")[1])
       ) {
-        itemElem.querySelector("span").textContent =
-          itemElem.querySelector("span").textContent.split("x ")[0] + "x " + newQty;
+        $itemElement.querySelector("span").textContent =
+          $itemElement.querySelector("span").textContent.split("x ")[0] + "x " + newQty;
         prod.q -= qtyChange;
       } else if (newQty <= 0) {
-        itemElem.remove();
+        $itemElement.remove();
         prod.q -= qtyChange;
       } else {
         alert("재고가 부족합니다.");
       }
     } else if (tgt.classList.contains("remove-item")) {
-      const remQty = parseInt(itemElem.querySelector("span").textContent.split("x ")[1]);
+      const remQty = parseInt($itemElement.querySelector("span").textContent.split("x ")[1]);
       prod.q += remQty;
-      itemElem.remove();
+      $itemElement.remove();
     }
     calcCart();
   }
