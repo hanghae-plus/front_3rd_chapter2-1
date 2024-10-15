@@ -89,21 +89,19 @@ function updateProductOptions() {
   });
 }
 
+const getProductById = (productId) => {
+  return productList.find((product) => product.id === productId);
+};
+
 const calcCart = () => {
   totalAmount = 0;
   itemCnt = 0;
   const cartItems = $cartItems.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
-    (() => {
-      let currentProduct;
-      for (let j = 0; j < productList.length; j++) {
-        if (productList[j].id === cartItems[i].id) {
-          currentProduct = productList[j];
-          break;
-        }
-      }
-
+    const cartItem = cartItems[i];
+    const currentProduct = getProductById(cartItem.id);
+    if (currentProduct) {
       const quantity = parseInt(
         cartItems[i].querySelector("span").textContent.split("x ")[1]
       );
@@ -112,7 +110,7 @@ const calcCart = () => {
       itemCnt += quantity;
       subTot += productTotalPrice;
       totalAmount += productTotalPrice * (1 - discount);
-    })();
+    }
   }
   let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
 
