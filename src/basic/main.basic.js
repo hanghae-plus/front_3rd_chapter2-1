@@ -96,28 +96,21 @@ function calcCart() {
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
     (function () {
-      let curItem;
+      let currentProduct;
       for (let j = 0; j < productList.length; j++) {
         if (productList[j].id === cartItems[i].id) {
-          curItem = productList[j];
+          currentProduct = productList[j];
           break;
         }
       }
 
-      const q = parseInt(
+      const quantity = parseInt(
         cartItems[i].querySelector("span").textContent.split("x ")[1]
       );
-      const itemTot = curItem.price * q;
-      let disc = 0;
-      itemCnt += q;
+      const itemTot = currentProduct.price * quantity;
+      const disc = calculateDiscount(currentProduct, quantity);
+      itemCnt += quantity;
       subTot += itemTot;
-      if (q >= 10) {
-        if (curItem.id === "p1") disc = 0.1;
-        else if (curItem.id === "p2") disc = 0.15;
-        else if (curItem.id === "p3") disc = 0.2;
-        else if (curItem.id === "p4") disc = 0.05;
-        else if (curItem.id === "p5") disc = 0.25;
-      }
       totalAmount += itemTot * (1 - disc);
     })();
   }
@@ -150,6 +143,26 @@ function calcCart() {
   calculateBonusPoints();
   updateBonusPoints(bonusPoints);
 }
+
+const calculateDiscount = (product, quantity) => {
+  if (quantity >= 10) {
+    switch (product.id) {
+      case "p1":
+        return 0.1;
+      case "p2":
+        return 0.15;
+      case "p3":
+        return 0.2;
+      case "p4":
+        return 0.05;
+      case "p5":
+        return 0.25;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+};
 
 const calculateBonusPoints = () => {
   bonusPoints += Math.floor(totalAmount / 1000);
