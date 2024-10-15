@@ -9,9 +9,29 @@
 
 ## 기본과제
 
+- 구현 기록
+
+1. 함수들이 여러개 선언되어있고 함수들이 실행되는 형태. 전역변수로 선언된 것들도 있음.
+2. 함수 분리 -> 함수 명 -> 변수명 -> 그룹핑 순으로 진행할 예정.
+3. 함수 main 안에 여러 기능을 가진 로직(createElement, element의 attribute를 정해주는 로직 등)들이 섞여 있었고 기능에 맞게 함수들을 분리해주는 것이 좋겠다.
+4. 먼저 main함수를 분리해보기로 결정. main 함수안에는 prodList와 root, cont 등 element들을 생성하고 attribute들을 설정하는 로직, 부모요소에 자식 요소들을 붙여주는 로직, setTimeout이 2개가 있음.
+5. 먼저 createElement하는 로직 분리. -> 함수명은 createElement로 지음(이 함수의 역할은 element들을 새로 만들어 내는 것이기 때문).
+6. 전역변수가 아닌 root, cont, wrap, hTxt는 return해 줌. 지역변수이기 때문에 var를 쓸 필요가 없고 그 안에서 재할당 해주는 곳이 없기 때문에 const로 변경함.
+7. 속성들을 정하는 함수의 이름은 setElementAttribute로 지음. 직관적으로 정하다 + element + 속성을 합침.
+8. 그 다음에는 appendChild를 통해 DOM을 만드는 기능을 가진 함수로 addElement라는 이름으로 만들었다(더하다 + element)
+9. setTimeout 안에 있는 callback을 따로 분리하여 선언해주기로 했다(setTimeout안에 callback이 복잡하게 되어있어 가독성이 떨어짐)
+10. callback은 중복적으로 쓰이는 곳이 없어 main 함수 안에 작성. callback 함수의 이름은 handle + 번개세일(surprise sale). 구매 제안하는 callback 함수는 handle+suggest.
+11. addEventListner들의 callback 함수들을 바깥에 선언해줘 가독성을 높임.
+12. 추가하기 버튼을 누르면 callback함수의 실행되기 때문에 handle + add button, handle+cart item
+13. 함수들을 분리하고 나니 실행순서가 눈에 보이기 시작했다. main 실행 후 요소들에 클릭 이벤트를 걸어 놓은걸로 크게 나눌 수 있고, main 함수 안에서 createElement, setElementAttribute, updateSelOpts, addElement, calcCart, setTimeout이 실행된다. 함수 선언부들을 위에 위치시키고 실행부는 밑으로 옮겼다.
+14. 변수명들을 정리하기 전 전역변수들이 이렇게 많이 필요한지 살펴봄(전역 변수를 많이 선언할 경우 메모리를 많이 잡아 먹음. 지역변수일 경우 함수가 실행될 때만 선언됨).
+15.
+
+<!-- 왜 화살표 함수 안썼는지도 적기 -->
+
 ### 리팩토링 체크리스트
 
-- [ ] 코드가 Prettier를 통해 일관된 포맷팅이 적용되어 있는가?
+- [x] 코드가 Prettier를 통해 일관된 포맷팅이 적용되어 있는가?
 - [ ] 적절한 줄바꿈과 주석을 사용하여 코드의 논리적 단위를 명확히 구분했는가?
 - [ ] 변수명과 함수명이 그 역할을 명확히 나타내며, 일관된 네이밍 규칙을 따르는가?
 - [ ] 매직 넘버와 문자열을 의미 있는 상수로 추출했는가?

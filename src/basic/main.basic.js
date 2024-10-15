@@ -102,8 +102,6 @@ function calcCart() {
       var disc = 0;
       itemCnt += q;
       subTot += itemTot;
-      console.log(curItem.id);
-
       if (q >= 10) {
         if (curItem.id === 'p1') disc = 0.1;
         else if (curItem.id === 'p2') disc = 0.15;
@@ -128,16 +126,12 @@ function calcCart() {
     discRate = (subTot - totalAmt) / subTot;
   }
 
-  if (new Date().getDay() >= 5) {
+  if (new Date().getDay() === 2) {
     totalAmt *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
-  } else {
-    discRate = Math.max(discRate, 0.1);
   }
-
   sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
-
-  if (itemCnt > 10) {
+  if (discRate > 0) {
     var span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';

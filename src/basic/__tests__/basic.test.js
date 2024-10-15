@@ -23,9 +23,19 @@ describe('basic test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const today = new Date();
+
+      if (today.getDay() === 2) {
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        vi.setSystemTime(new Date(yesterday));
+      }
     });
 
     afterEach(() => {
+      vi.useRealTimers();
       vi.restoreAllMocks();
     });
 

@@ -1,26 +1,35 @@
-var prodList, sel, addBtn, cartDisp, sum, stockInfo;
+var prodList;
+
 var lastSel,
   bonusPts = 0,
   totalAmt = 0,
   itemCnt = 0;
-function main() {
-  prodList = [
-    { id: 'p1', name: '상품1', val: 10000, q: 50 },
-    { id: 'p2', name: '상품2', val: 20000, q: 30 },
-    { id: 'p3', name: '상품3', val: 30000, q: 20 },
-    { id: 'p4', name: '상품4', val: 15000, q: 0 },
-    { id: 'p5', name: '상품5', val: 25000, q: 10 },
-  ];
 
-  var root = document.getElementById('app');
-  let cont = document.createElement('div');
-  var wrap = document.createElement('div');
-  let hTxt = document.createElement('h1');
-  cartDisp = document.createElement('div');
-  sum = document.createElement('div');
-  sel = document.createElement('select');
-  addBtn = document.createElement('button');
-  stockInfo = document.createElement('div');
+function createElement() {
+  const root = document.getElementById('app');
+  const cont = document.createElement('div');
+  const wrap = document.createElement('div');
+  const hTxt = document.createElement('h1');
+  const cartDisp = document.createElement('div');
+  const sum = document.createElement('div');
+  const sel = document.createElement('select');
+  const addBtn = document.createElement('button');
+  const stockInfo = document.createElement('div');
+
+  return {
+    root,
+    cont,
+    wrap,
+    hTxt,
+    cartDisp,
+    sum,
+    sel,
+    addBtn,
+    stockInfo,
+  };
+}
+
+function setElementAttribute(cont, wrap, hTxt, cartDisp, sum, sel, addBtn, stockInfo) {
   cartDisp.id = 'cart-items';
   sum.id = 'cart-total';
   sel.id = 'product-select';
@@ -36,7 +45,9 @@ function main() {
   stockInfo.className = 'text-sm text-gray-500 mt-2';
   hTxt.textContent = '장바구니';
   addBtn.textContent = '추가';
-  updateSelOpts();
+}
+
+function addElement(wrap, cont, root, hTxt, cartDisp, sum, sel, addBtn, stockInfo) {
   wrap.appendChild(hTxt);
   wrap.appendChild(cartDisp);
   wrap.appendChild(sum);
@@ -45,8 +56,18 @@ function main() {
   wrap.appendChild(stockInfo);
   cont.appendChild(wrap);
   root.appendChild(cont);
-  calcCart();
-  setTimeout(function () {
+}
+
+function main() {
+  prodList = [
+    { id: 'p1', name: '상품1', val: 10000, q: 50 },
+    { id: 'p2', name: '상품2', val: 20000, q: 30 },
+    { id: 'p3', name: '상품3', val: 30000, q: 20 },
+    { id: 'p4', name: '상품4', val: 15000, q: 0 },
+    { id: 'p5', name: '상품5', val: 25000, q: 10 },
+  ];
+
+  const handleSurpriseSale = () => {
     setInterval(function () {
       var luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
       if (Math.random() < 0.3 && luckyItem.q > 0) {
@@ -55,8 +76,9 @@ function main() {
         updateSelOpts();
       }
     }, 30000);
-  }, Math.random() * 10000);
-  setTimeout(function () {
+  };
+
+  const handleSuggest = () => {
     setInterval(function () {
       if (lastSel) {
         var suggest = prodList.find(function (item) {
@@ -69,9 +91,26 @@ function main() {
         }
       }
     }, 60000);
-  }, Math.random() * 20000);
+  };
+
+  const { root, cont, wrap, hTxt, cartDisp, sum, sel, addBtn, stockInfo } = createElement();
+
+  setElementAttribute(cont, wrap, hTxt, cartDisp, sum, sel, addBtn, stockInfo);
+
+  updateSelOpts(sel);
+
+  addElement(wrap, cont, root, hTxt, cartDisp, sum, sel, addBtn, stockInfo);
+
+  calcCart(sum, stockInfo, cartDisp);
+
+  setTimeout(() => handleSurpriseSale, Math.random() * 10000);
+  setTimeout(() => handleSuggest, Math.random() * 20000);
+
+  addBtn.addEventListener('click', (e) => handleAddButton(e, sel, cartDisp, sum, stockInfo));
+  cartDisp.addEventListener('click', (e) => handleCartItem(e, sum, stockInfo, cartDisp));
 }
-function updateSelOpts() {
+
+function updateSelOpts(sel) {
   sel.innerHTML = '';
   prodList.forEach(function (item) {
     var opt = document.createElement('option');
@@ -82,7 +121,8 @@ function updateSelOpts() {
     sel.appendChild(opt);
   });
 }
-function calcCart() {
+
+function calcCart(sum, stockInfo, cartDisp) {
   totalAmt = 0;
   itemCnt = 0;
   var cartItems = cartDisp.children;
@@ -137,11 +177,13 @@ function calcCart() {
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
   }
-  updateStockInfo();
-  renderBonusPts();
+  updateStockInfo(stockInfo);
+  renderBonusPts(sum);
 }
-const renderBonusPts = () => {
+
+const renderBonusPts = (sum) => {
   bonusPts += Math.floor(totalAmt / 1000);
+  console.log(bonusPts, totalAmt);
   var ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
     ptsTag = document.createElement('span');
@@ -152,7 +194,7 @@ const renderBonusPts = () => {
   ptsTag.textContent = '(포인트: ' + bonusPts + ')';
 };
 
-function updateStockInfo() {
+function updateStockInfo(stockInfo) {
   var infoMsg = '';
   prodList.forEach(function (item) {
     if (item.q < 5) {
@@ -161,8 +203,8 @@ function updateStockInfo() {
   });
   stockInfo.textContent = infoMsg;
 }
-main();
-addBtn.addEventListener('click', function () {
+
+const handleAddButton = (_, sel, cartDisp, sum, stockInfo) => {
   var selItem = sel.value;
   var itemToAdd = prodList.find(function (p) {
     return p.id === selItem;
@@ -199,11 +241,12 @@ addBtn.addEventListener('click', function () {
       cartDisp.appendChild(newItem);
       itemToAdd.q--;
     }
-    calcCart();
+    calcCart(sum, stockInfo, cartDisp);
     lastSel = selItem;
   }
-});
-cartDisp.addEventListener('click', function (event) {
+};
+
+const handleCartItem = (event, sum, stockInfo, cartDisp) => {
   var tgt = event.target;
 
   if (tgt.classList.contains('quantity-change') || tgt.classList.contains('remove-item')) {
@@ -230,6 +273,8 @@ cartDisp.addEventListener('click', function (event) {
       prod.q += remQty;
       itemElem.remove();
     }
-    calcCart();
+    calcCart(sum, stockInfo, cartDisp);
   }
-});
+};
+
+main();
