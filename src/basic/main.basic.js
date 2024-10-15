@@ -132,13 +132,7 @@ function calcCart() {
     totalAmount *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
-  $cartTotal.textContent = "총액: " + Math.round(totalAmount) + "원";
-  if (discRate > 0) {
-    const span = document.createElement("span");
-    span.className = "text-green-500 ml-2";
-    span.textContent = "(" + (discRate * 100).toFixed(1) + "% 할인 적용)";
-    $cartTotal.appendChild(span);
-  }
+  updateCartTotal(discRate);
   updateStockInfo();
   calculateBonusPoints();
   updateBonusPoints(bonusPoints);
@@ -162,6 +156,16 @@ const calculateDiscount = (product, quantity) => {
     }
   }
   return 0;
+};
+
+const updateCartTotal = (discountRate) => {
+  $cartTotal.textContent = "총액: " + Math.round(totalAmount) + "원";
+  if (discountRate > 0) {
+    const span = document.createElement("span");
+    span.className = "text-green-500 ml-2";
+    span.textContent = "(" + (discountRate * 100).toFixed(1) + "% 할인 적용)";
+    $cartTotal.appendChild(span);
+  }
 };
 
 const calculateBonusPoints = () => {
