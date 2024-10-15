@@ -1,7 +1,7 @@
 import { cartItemState } from '../state.js';
 import { rerenderStockStatus } from './rerenderStockStatus.js';
 
-const createCartItemNode = (item) => `
+const createCartItemTemplate = (item) => `
         <div id="${item.id}" class="flex justify-between items-center mb-2">
           <span>${item.name} - ${item.price}원 x ${item.selectQuantity}</span>
           <div>
@@ -14,31 +14,31 @@ const createCartItemNode = (item) => `
 
 export function rerenderCartItems() {
   const { cartItems } = cartItemState.getState();
-  const $cartItemElements = document.getElementById('cart-items');
-  const existingItemIds = Array.from($cartItemElements.children).map((item) => item.id);
+  const cartItemsContainer = document.getElementById('cart-items');
+  const currentCartItemIds = Array.from(cartItemsContainer.children).map((item) => item.id);
 
   rerenderStockStatus(cartItems);
 
   cartItems.forEach((item) => {
-    const $existingItemElement = document.getElementById(item.id);
+    const $currentCartItemElement = document.getElementById(item.id);
 
-    if ($existingItemElement) {
-      const span = $existingItemElement.querySelector('span');
-      span.textContent = `${item.name} - ${item.price}원 x ${item.selectQuantity}`;
+    if ($currentCartItemElement) {
+      const $cartItemInfoElement = $currentCartItemElement.querySelector('span');
+      $cartItemInfoElement.textContent = `${item.name} - ${item.price}원 x ${item.selectQuantity}`;
 
-      const index = existingItemIds.indexOf(item.id);
+      const index = currentCartItemIds.indexOf(item.id);
       if (index > -1) {
-        existingItemIds.splice(index, 1);
+        currentCartItemIds.splice(index, 1);
       }
     } else {
-      $cartItemElements.insertAdjacentHTML('beforeend', createCartItemNode(item));
+      cartItemsContainer.insertAdjacentHTML('beforeend', createCartItemTemplate(item));
     }
   });
 
-  existingItemIds.forEach((id) => {
-    const $itemToRemove = document.getElementById(id);
-    if ($itemToRemove) {
-      $itemToRemove.remove();
+  currentCartItemIds.forEach((id) => {
+    const $cartItemElement = document.getElementById(id);
+    if ($cartItemElement) {
+      $cartItemElement.remove();
     }
   });
 }
