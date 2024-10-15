@@ -31,14 +31,24 @@ const PRODUCT_DISCOUNT_RULES = {
   },
 };
 
+const WEEKDAY = {
+  SUNDAY: 0,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+};
+
 const WEEKDAY_DISCOUNT_RATE = {
-  0: 0,
-  1: 0,
-  2: 0.1,
-  3: 0,
-  4: 0,
-  5: 0,
-  6: 0,
+  [WEEKDAY.MONDAY]: 0,
+  [WEEKDAY.TUESDAY]: 0.1,
+  [WEEKDAY.WEDNESDAY]: 0,
+  [WEEKDAY.THURSDAY]: 0,
+  [WEEKDAY.FRIDAY]: 0,
+  [WEEKDAY.SATURDAY]: 0,
+  [WEEKDAY.SUNDAY]: 0,
 };
 
 class DiscountController {
@@ -286,9 +296,9 @@ class BonusPointController {
   }
 }
 
-const bonusController = new BonusPointController().getInstance();
-const cartController = new CartController().getInstance();
-const quantityController = new QuantityController(cartController).getInstance();
+const bonusController = new BonusPointController();
+const cartController = new CartController();
+const quantityController = new QuantityController(cartController);
 
 const $select = new Element("select", {
   id: "product-select",
@@ -358,6 +368,7 @@ const removeCartItem = (productId) => {
 
 function main() {
   // DOM 요소 생성 및 초기화
+
   const $root = document.getElementById("app");
   const $select = renderProductSelect(productOptions);
   $wrapper.renderChildren([$header.el, $cartItems.el, $totalPrice.el, $select.el, $addBtn.el, $stockStatus.el]);
@@ -470,7 +481,7 @@ function calculateTotalPrice() {
 
   const discountType = {
     bulk: totalQuantity >= discountController.getBulkSize(),
-    weekday: new Date().getDay() === 2,
+    weekday: new Date().getDay() === WEEKDAY.TUESDAY,
     noItem: cartItems.length === 0,
   };
 
