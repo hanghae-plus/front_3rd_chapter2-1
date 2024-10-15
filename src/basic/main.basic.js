@@ -1,5 +1,17 @@
-import { AMOUNT_PER_LOYALTY_POINT, BULK_DISCOUNT_MINIMUM_ITEM_COUNT, BULK_DISCOUNT_RATE, FLASH_SALE_INTERVAL, LOW_STOCK_THRESHOLD, PRODUCT_SUGGESTION_INTERVAL, TUESDAY_DISCOUNT_RATE } from "./constants";
-import { ADD_CART_BUTTON_TEXT, CART_TITLE_TEXT } from "./constants/testContent";
+import {
+    ADD_CART_BUTTON_TEXT,
+    CART_TITLE_TEXT,
+    AMOUNT_PER_LOYALTY_POINT,
+    BULK_DISCOUNT_MINIMUM_ITEM_COUNT,
+    LOW_STOCK_THRESHOLD,
+    TUESDAY_DISCOUNT_RATE,
+    BULK_DISCOUNT_RATE,
+    FLASH_SALE_INTERVAL,
+    PRODUCT_SUGGESTION_INTERVAL,
+    FLASH_SALE_DISCOUNT_RATE,
+    SUGGESTION_DISCOUNT_RATE,
+    FLASH_SALE_PROBABILITY,
+} from './constants';
 
 let productInventory, productDropdown, addCartButton, cartItemsContainer, cartTotalAmountContainer, productStockStatus;
 
@@ -42,8 +54,8 @@ function main() {
     addCartButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
     productStockStatus.className = 'text-sm text-gray-500 mt-2';
 
-    cartTitle.textContent = CART_TITLE_TEXT
-    addCartButton.textContent = ADD_CART_BUTTON_TEXT
+    cartTitle.textContent = CART_TITLE_TEXT;
+    addCartButton.textContent = ADD_CART_BUTTON_TEXT;
 
     updateProductOptions();
 
@@ -60,12 +72,12 @@ function main() {
     setTimeout(function () {
         setInterval(function () {
             const luckyItem = productInventory[Math.floor(Math.random() * productInventory.length)];
-            if (Math.random() < 0.3 && luckyItem.quantity > 0) {
-                luckyItem.price = Math.round(luckyItem.price * 0.8);
-                console.log(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
+            if (Math.random() < FLASH_SALE_PROBABILITY && luckyItem.quantity > 0) {
+                luckyItem.price = Math.round(luckyItem.price * FLASH_SALE_DISCOUNT_RATE);
+                console.log(`번개세일! ${luckyItem.name}이(가) ${(1 - FLASH_SALE_DISCOUNT_RATE) * 100}% 할인 중입니다!`);
                 updateProductOptions();
             }
-        }, 30000);
+        }, FLASH_SALE_INTERVAL);
     }, Math.random() * FLASH_SALE_INTERVAL);
 
     setTimeout(function () {
@@ -75,12 +87,12 @@ function main() {
                     return item.id !== lastSelectedProductId && item.quantity > 0;
                 });
                 if (suggest) {
-                    console.log(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
-                    suggest.price = Math.round(suggest.price * 0.95);
+                    console.log(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 ${(1 - SUGGESTION_DISCOUNT_RATE) * 100}% 추가 할인!`);
+                    suggest.price = Math.round(suggest.price * SUGGESTION_DISCOUNT_RATE);
                     updateProductOptions();
                 }
             }
-        }, 60000);
+        }, PRODUCT_SUGGESTION_INTERVAL);
     }, Math.random() * PRODUCT_SUGGESTION_INTERVAL);
 }
 
