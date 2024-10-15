@@ -101,7 +101,7 @@ const main = () => {
 
 const renderProductList = () => {
   productSelectDropDown.innerHTML = '';
-  productList.forEach(function (product) {
+  productList.forEach((product) => {
     const option = document.createElement('option');
     option.value = product.id;
 
@@ -122,17 +122,17 @@ const getBulkDiscount = (stockCnt, totalAmount, discountPrevAmount) => {
   return (discountPrevAmount - totalAmount) / discountPrevAmount;
 };
 
-function getCurrentProduct(id) {
+const getCurrentProduct = (id) => {
   return productList.find((product) => product.id === id);
-}
+};
 
 const getProductStock = (cartProduct) => {
   return parseInt(cartProduct.querySelector('span').textContent.split('x ')[1]);
 };
 
-function getDiscountRate(stock, currentProduct) {
+const getDiscountRate = (stock, currentProduct) => {
   return stock >= DISCOUNT_PRODUCT_COUNT ? discountRates[currentProduct.id] : 0;
-}
+};
 
 const calcCart = () => {
   totalAmount = 0;
@@ -231,7 +231,7 @@ const addProductCart = (productToAdd) => {
   calcCart();
 };
 
-addCartBtn.addEventListener('click', function () {
+addCartBtn.addEventListener('click', () => {
   const productToAddId = productSelectDropDown.value;
   const productToAdd = productList.find((product) => product.id === productToAddId);
 
@@ -246,36 +246,36 @@ addCartBtn.addEventListener('click', function () {
   }
 });
 
-renderCart.addEventListener('click', function (event) {
+renderCart.addEventListener('click', (event) => {
   const target = event.target;
 
-  if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
-    const productId = target.dataset.productId;
-    const productIdElement = document.getElementById(productId);
-    const product = productList.find(function (product) {
-      return product.id === productId;
-    });
-    if (target.classList.contains('quantity-change')) {
-      const qtyChange = parseInt(target.dataset.change);
-      const newQty = parseInt(productIdElement.querySelector('span').textContent.split('x ')[1]) + qtyChange;
-      if (
-        newQty > 0 &&
-        newQty <= product.stock + parseInt(productIdElement.querySelector('span').textContent.split('x ')[1])
-      ) {
-        productIdElement.querySelector('span').textContent =
-          productIdElement.querySelector('span').textContent.split('x ')[0] + 'x ' + newQty;
-        product.stock -= qtyChange;
-      } else if (newQty <= 0) {
-        productIdElement.remove();
-        product.stock -= qtyChange;
-      } else {
-        alert(ALERT_SHORT_STOCK);
-      }
-    } else if (target.classList.contains('remove-item')) {
-      const remQty = parseInt(productIdElement.querySelector('span').textContent.split('x ')[1]);
-      product.stock += remQty;
-      productIdElement.remove();
-    }
-    calcCart();
+  if (!target.classList.contains('quantity-change') && !target.classList.contains('remove-item')) {
+    return;
   }
+
+  const productId = target.dataset.productId;
+  const productIdElement = document.getElementById(productId);
+  const product = productList.find((product) => product.id === productId);
+  const currentQty = parseInt(productIdElement.querySelector('span').textContent.split('x ')[1]);
+
+  if (target.classList.contains('quantity-change')) {
+    const qtyChange = parseInt(target.dataset.change);
+    const newQty = currentQty + qtyChange;
+
+    if (newQty > 0 && newQty <= product.stock + currentQty) {
+      productIdElement.querySelector('span').textContent =
+        `${productIdElement.querySelector('span').textContent.split('x ')[0]}x ${newQty}`;
+      product.stock -= qtyChange;
+    } else if (newQty <= 0) {
+      productIdElement.remove();
+      product.stock -= qtyChange;
+    } else {
+      alert(ALERT_SHORT_STOCK);
+    }
+  } else if (target.classList.contains('remove-item')) {
+    product.stock += currentQty;
+    productIdElement.remove();
+  }
+
+  calcCart();
 });
