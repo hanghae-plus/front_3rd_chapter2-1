@@ -114,7 +114,7 @@ const calcCart = () => {
     subTot += productTotalPrice;
     totalAmount += productTotalPrice * (1 - discount);
   }
-  let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
+  const discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
 
   updateCartTotal(discountRate);
   updateStockInfo();
