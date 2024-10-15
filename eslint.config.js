@@ -25,6 +25,7 @@ export default [
       "space-before-function-paren": ["warn", "never"], // 함수 앞 공백 정의
       "object-shorthand": ["warn", "always"], // Object에서 key/value 같을시 value 생략
       "no-trailing-spaces": ["warn"], // 불필요 공백 방지
+      "prefer-template": ["warn"],
     },
   },
 ];
