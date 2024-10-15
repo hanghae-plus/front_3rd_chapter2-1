@@ -5,7 +5,7 @@ describe("basic test", () => {
     { type: "origin", loadFile: () => import("../../main.js") },
     { type: "basic", loadFile: () => import("../main.basic.js") },
   ])("$type 장바구니 시나리오 테스트", ({ loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo, prodList, module;
+    let sel, addBtn, cartDisp, sum, stockInfo, module;
 
     beforeAll(async () => {
       // DOM 초기화
@@ -17,14 +17,6 @@ describe("basic test", () => {
       cartDisp = document.getElementById("cart-items");
       sum = document.getElementById("cart-total");
       stockInfo = document.getElementById("stock-status");
-
-      prodList = [
-        { id: "p1", name: "상품1", val: 10000, q: 50 },
-        { id: "p2", name: "상품2", val: 20000, q: 30 },
-        { id: "p3", name: "상품3", val: 30000, q: 20 },
-        { id: "p4", name: "상품4", val: 15000, q: 0 },
-        { id: "p5", name: "상품5", val: 25000, q: 10 },
-      ];
     });
 
     beforeEach(() => {
