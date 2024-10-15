@@ -25,7 +25,8 @@
 12. 추가하기 버튼을 누르면 callback함수의 실행되기 때문에 handle + add button, handle+cart item
 13. 함수들을 분리하고 나니 실행순서가 눈에 보이기 시작했다. main 실행 후 요소들에 클릭 이벤트를 걸어 놓은걸로 크게 나눌 수 있고, main 함수 안에서 createElement, setElementAttribute, updateSelOpts, addElement, calcCart, setTimeout이 실행된다. 함수 선언부들을 위에 위치시키고 실행부는 밑으로 옮겼다.
 14. 변수명들을 정리하기 전 전역변수들이 이렇게 많이 필요한지 살펴봄(전역 변수를 많이 선언할 경우 메모리를 많이 잡아 먹음. 지역변수일 경우 함수가 실행될 때만 선언됨).
-15.
+15. 함수 안에서만 사용하는 변수들을 할당 이후 값이 바뀐다면 let, 아니면 const로 변경
+16.
 
 <!-- 왜 화살표 함수 안썼는지도 적기 -->
 
