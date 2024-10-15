@@ -11,7 +11,7 @@ import {
     FLASH_SALE_DISCOUNT_RATE,
     SUGGESTION_DISCOUNT_RATE,
     FLASH_SALE_PROBABILITY,
-} from './constants';
+} from './constants/index.js';
 
 let productInventory, productDropdown, addCartButton, cartItemsContainer, cartTotalAmountContainer, productStockStatus;
 
