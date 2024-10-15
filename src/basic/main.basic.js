@@ -1,5 +1,4 @@
-// 간결함 <<< 의미
-
+// import { main } from './mmain.js';
 // 1.변수 표기 통일 let | 변수명 camelCase 사용
 /* 일단 역할 정의
 prodList, : 상품목록 -> productList
@@ -17,7 +16,7 @@ itemCnt = 0; : 총 구매한 상품의 개수 -> totalItem
 
 // 함수로 묶어주기..!!
 
-var productList, productSelect, addBtn, cartList, cartTotal, stockStatus, lastProduct, pointSystem = 0, totalPrice = 0, totalItem = 0;
+let productList, productSelect, addCartBtn, cartList, cartTotal, stockStatus, lastProduct, pointSystem = 0, totalPrice = 0, totalItem = 0;
 var root = document.getElementById('app');
 
 
@@ -59,12 +58,12 @@ productSelect = Object.assign(document.createElement('select'), {
 containerWrap.appendChild(productSelect);
 
 //상품 추가
-addBtn = Object.assign(document.createElement('button'), {
+addCartBtn = Object.assign(document.createElement('button'), {
   id: 'add-to-cart',
   className: 'bg-blue-500 text-white px-4 py-2 rounded',
   textContent: '추가'
 });
-containerWrap.appendChild(addBtn);
+containerWrap.appendChild(addCartBtn);
 
 //재고상태
 stockStatus = Object.assign(document.createElement('div'), {
@@ -262,7 +261,7 @@ function createCartItem(item) {
 
 // 상품을 선택하여 장바구니에 추가하는 기능입니다. 선택한 상품이 이미 장바구니에 있으면 수량을 증가시키고, 새로운 상품이라면 장바구니에 새로 추가
 // 카트 버튼 누를시
-addBtn.addEventListener('click', function () {
+addCartBtn.addEventListener('click', function () {
     var selectedItem = findCartItem(productSelect.value);
     if (!selectedItem || selectedItem.stock <= 0) return;
 
@@ -300,3 +299,20 @@ cartList.addEventListener('click', function (event) {
     calcCart();
   }
 });
+
+
+
+
+// const productList = [
+//   {id: 'p1', name: '상품1', price: 10000, stock: 50},
+//   {id: 'p2', name: '상품2', price: 20000, stock: 30},
+//   {id: 'p3', name: '상품3', price: 30000, stock: 20},
+//   {id: 'p4', name: '상품4', price: 15000, stock: 0},
+//   {id: 'p5', name: '상품5', price: 25000, stock: 10}
+// ];
+
+// const cartList = document.getElementById('cart-items');
+// const productSelect = document.getElementById('product-select');
+// const cartTotal = document.getElementById('cart-total');
+
+// main(productList, cartList, productSelect, cartTotal);
