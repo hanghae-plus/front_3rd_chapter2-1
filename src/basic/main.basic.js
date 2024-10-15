@@ -1,7 +1,7 @@
+import { products } from './data/products';
 import { updateCartInfos } from './services/cart';
 import { addToCart, changeCartItemQuantity, removeCartItem } from './services/cartOperations';
 import { setSuggestDiscount, setSurpriseDiscount } from './services/discount';
-import { products } from './services/product';
 import { getTargetItemElementQuantity } from './utils/cart';
 import { renderProductOptions } from './views/product';
 

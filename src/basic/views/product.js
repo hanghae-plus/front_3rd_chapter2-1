@@ -1,5 +1,6 @@
 import { LACK_OF_STOCK } from '../const/product';
-import { formatLowStocksInfo, products } from '../services/product';
+import { products } from '../data/products';
+import { formatLowStocksInfo } from '../services/product';
 
 import { renderTextContent } from './shared';
 

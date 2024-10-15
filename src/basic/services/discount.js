@@ -11,10 +11,9 @@ import {
   TOTAL_BULK_DISCOUNT_AMOUNT,
   TOTAL_BULK_DISCOUNT_RATE,
 } from '../const/discount';
+import { products } from '../data/products';
 import { calculateDiscountedPrice, calculateDiscountRate } from '../utils/discount';
 import { renderProductOptions } from '../views/product';
-
-import { products } from './product';
 
 const setSurpriseDiscount = () => {
   setTimeout(() => {
