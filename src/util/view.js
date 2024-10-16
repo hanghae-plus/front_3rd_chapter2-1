@@ -1,5 +1,6 @@
 import { appendChildren, createElement, getElementById, setClassName, setId, setTextContent } from './element.js';
 import { PROD_LIST } from '../const/PROD_LIST.js';
+import { ADD_BTN_VIEW_ID, CART_VIEW_ID, SELECT_VIEW_ID, STOCK_VIEW_ID, SUM_VIEW_ID } from '../const/VIEW_ID.js';
 
 // TODO: 기능별로 나누는 것이 좋을까? 아니면 노드별로 나누는 것이 좋을까?
 export function initView() {
@@ -14,11 +15,11 @@ export function initView() {
   const addBtnView = createElement('button');
   const stockView = createElement('div');
 
-  setId(cartView, 'cart-items');
-  setId(sumView, 'cart-total');
-  setId(selectView, 'product-select');
-  setId(addBtnView, 'add-to-cart');
-  setId(stockView, 'stock-status');
+  setId(cartView, CART_VIEW_ID);
+  setId(sumView, SUM_VIEW_ID);
+  setId(selectView, SELECT_VIEW_ID);
+  setId(addBtnView, ADD_BTN_VIEW_ID);
+  setId(stockView, STOCK_VIEW_ID);
 
   setClassName(contents, 'bg-gray-100 p-8');
   setClassName(wrap, 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8');
