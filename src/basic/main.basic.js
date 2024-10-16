@@ -1,12 +1,13 @@
-let products, productSelectElement, cartItemsElement, cartTotalElement, stockStatusElement;
-let lastAddedItemId,
-  loyaltyPoints = 0,
-  finalTotalPrice = 0,
-  totalItemCount = 0,
-  discountRate = 0;
+const global_variable = {
+  products: [],
+  lastAddedItemId: null,
+  loyaltyPoints: 0,
+  totalDiscountRate: 0,
+};
 
 const DISCOUNT_LIST = {
-  bulk: { condition: totalItemCount >= 30, rate: 0.25 },
+  bulk: { condition: (itemCount) => itemCount >= 10, rate: null }, // 아이템에 따라 할인률이 다름
+  totalItemDiscount: { condition: (totalItemCount) => totalItemCount >= 30, rate: 0.25 },
   tuesday: { condition: (date) => date.getDay() === 2, rate: 0.1 },
   flashSale: { condition: (flashSaleItem) => Math.random() < 0.3 && flashSaleItem.quantity > 0, rate: 0.2 },
   instantDiscount: {
@@ -38,7 +39,7 @@ const productOptionTemplate = (item) =>
   `<option value=${item.id} ${item.quantity === 0 && "disabled"}>${item.name} - ${item.price}원</option>`;
 
 const loyaltyPointsTemplate = () =>
-  `<span id="loyalty-points" class="text-blue-500 ml-2">(포인트: ${loyaltyPoints})</span>`;
+  `<span id="loyalty-points" class="text-blue-500 ml-2">(포인트: ${global_variable.loyaltyPoints})</span>`;
 
 const firstAddedItemTemplate = (item) => `<div id=${item.id} class="flex justify-between items-center mb-2">
       <span>${item.name} - ${item.price}원 x 1</span>
@@ -65,7 +66,7 @@ const firstAddedItemTemplate = (item) => `<div id=${item.id} class="flex justify
   </div>`;
 
 const main = () => {
-  products = [
+  global_variable.products = [
     { id: "p1", name: "상품1", price: 10000, quantity: 50, discountRate: 0.1 },
     { id: "p2", name: "상품2", price: 20000, quantity: 30, discountRate: 0.15 },
     { id: "p3", name: "상품3", price: 30000, quantity: 20, discountRate: 0.2 },
@@ -76,13 +77,11 @@ const main = () => {
   const root = document.getElementById("app");
   root.innerHTML = CartPageTemplate();
 
-  productSelectElement = document.getElementById("product-select");
   const addToCartBtnElement = document.getElementById("add-to-cart");
-  cartItemsElement = document.getElementById("cart-items");
-  cartTotalElement = document.getElementById("cart-total");
-  stockStatusElement = document.getElementById("stock-status");
+  const cartItemsElement = document.getElementById("cart-items");
 
   updateProductSelectOptions();
+
   calculateCartTotal();
 
   clickEventListener(addToCartBtnElement, handleClickAddToCartBtn);
@@ -98,7 +97,7 @@ const main = () => {
 };
 
 const alertFlashSaleItem = () => {
-  const flashSaleItem = products[Math.floor(Math.random() * products.length)];
+  const flashSaleItem = global_variable.products[Math.floor(Math.random() * global_variable.products.length)];
 
   if (DISCOUNT_LIST.flashSale.condition(flashSaleItem)) {
     flashSaleItem.price = Math.round(flashSaleItem.price * (1 - DISCOUNT_LIST.flashSale.rate));
@@ -109,11 +108,13 @@ const alertFlashSaleItem = () => {
 };
 
 const alertInstantDiscountItem = () => {
-  if (!lastAddedItemId) {
+  if (!global_variable.lastAddedItemId) {
     return;
   }
 
-  const instantDiscountItem = products.find((item) => item.id !== lastAddedItemId && item.quantity > 0);
+  const instantDiscountItem = global_variable.products.find(
+    (item) => item.id !== global_variable.lastAddedItemId && item.quantity > 0,
+  );
 
   if (DISCOUNT_LIST.instantDiscount.condition(instantDiscountItem)) {
     instantDiscountItem.price = Math.round(instantDiscountItem.price * (1 - DISCOUNT_LIST.instantDiscount.rate));
@@ -126,13 +127,13 @@ const alertInstantDiscountItem = () => {
 };
 
 const calculateCartTotal = () => {
-  finalTotalPrice = 0;
-  totalItemCount = 0;
-  discountRate = 0;
+  let totalItemCount = 0;
+  global_variable.totalDiscountRate = 0;
 
+  const cartItemsElement = document.getElementById("cart-items");
   const cartItemsInElement = Array.from(cartItemsElement.children);
   const cartItems = cartItemsInElement.map((item) => {
-    const _item = products.find((product) => product.id === item.id);
+    const _item = global_variable.products.find((product) => product.id === item.id);
     const _itemCount = parseInt(item.querySelector("span").textContent.split("x ")[1]);
     totalItemCount += _itemCount;
 
@@ -143,68 +144,71 @@ const calculateCartTotal = () => {
     return;
   }
 
-  finalTotalPrice = cartItems.reduce((_finalTotalPrice, currentItem) => {
-    const _discountRate = currentItem.count >= 10 ? currentItem.discountRate : 0;
+  const finalTotalPrice = cartItems.reduce((_finalTotalPrice, currentItem) => {
+    const _discountRate = DISCOUNT_LIST.bulk.condition(currentItem.count) ? currentItem.discountRate : 0;
 
     return (_finalTotalPrice += currentItem.count * currentItem.price * (1 - _discountRate));
   }, 0);
 
-  calculateCartDiscount(cartItems);
+  calculateCartDiscount(cartItems, finalTotalPrice, totalItemCount);
 
-  updateCartTotal();
-  updateStockStatus();
-  updateLoyaltyPoints();
+  updateCartTotal(finalTotalPrice);
+  updateStockStatus(finalTotalPrice);
+  updateLoyaltyPoints(finalTotalPrice);
 };
 
-const calculateCartDiscount = (cartItems) => {
+const calculateCartDiscount = (cartItems, finalTotalPrice, totalItemCount) => {
   const originalTotalPrice = cartItems.reduce(
     (_originalTotalPrice, currentItem) => (_originalTotalPrice += currentItem.count * currentItem.price),
     0,
   );
 
-  // 30개 이상 구매시 25% 할인
-  if (DISCOUNT_LIST.bulk.condition) {
-    finalTotalPrice = originalTotalPrice * (1 - DISCOUNT_LIST.bulk.rate);
+  if (DISCOUNT_LIST.totalItemDiscount.condition(totalItemCount)) {
+    finalTotalPrice = originalTotalPrice * (1 - DISCOUNT_LIST.totalItemDiscount.rate);
   }
 
-  discountRate = 1 - finalTotalPrice / originalTotalPrice;
+  global_variable.totalDiscountRate = 1 - finalTotalPrice / originalTotalPrice;
 
-  // 화요일 - 특별할인 10%
   if (DISCOUNT_LIST.tuesday.condition(new Date())) {
     finalTotalPrice *= 1 - DISCOUNT_LIST.tuesday.rate;
-    discountRate = Math.max(discountRate, DISCOUNT_LIST.tuesday.rate);
+    global_variable.totalDiscountRate = Math.max(global_variable.totalDiscountRate, DISCOUNT_LIST.tuesday.rate);
   }
 };
 
-const updateCartTotal = () => {
+const updateCartTotal = (finalTotalPrice) => {
+  const cartTotalElement = document.getElementById("cart-total");
   cartTotalElement.textContent = `총액: ${Math.round(finalTotalPrice)}원`;
 
-  if (discountRate > 0) {
-    cartTotalElement.innerHTML += discountPercentageTemplate(discountRate * 100);
+  if (global_variable.totalDiscountRate > 0) {
+    cartTotalElement.innerHTML += discountPercentageTemplate(global_variable.totalDiscountRate * 100);
   }
 };
 
 const updateProductSelectOptions = () => {
+  const productSelectElement = document.getElementById("product-select");
   productSelectElement.innerHTML = "";
 
-  products.forEach((item) => {
+  global_variable.products.forEach((item) => {
     productSelectElement.innerHTML += productOptionTemplate(item);
   });
 };
 
-const updateLoyaltyPoints = () => {
-  loyaltyPoints += Math.floor(finalTotalPrice / 1000);
+const updateLoyaltyPoints = (finalTotalPrice) => {
   const loyaltyPointsElement = document.getElementById("loyalty-points");
+  global_variable.loyaltyPoints += Math.floor(finalTotalPrice / 1000);
 
   if (!loyaltyPointsElement) {
+    const cartTotalElement = document.getElementById("cart-total");
+
     cartTotalElement.innerHTML += loyaltyPointsTemplate();
   }
 };
 
 const updateStockStatus = () => {
+  const stockStatusElement = document.getElementById("stock-status");
   let stockStatusMsg = "";
 
-  products.forEach((item) => {
+  global_variable.products.forEach((item) => {
     if (item.quantity < 5) {
       stockStatusMsg += `${item.name}: ${item.quantity > 0 ? `재고 부족 (${item.quantity}개 남음)` : "품절"}\n`;
     }
@@ -217,6 +221,8 @@ const updateCartItems = (addedItem) => {
   const addedItemElement = document.getElementById(addedItem.id);
 
   if (addedItemElement === null) {
+    const cartItemsElement = document.getElementById("cart-items");
+
     cartItemsElement.innerHTML += firstAddedItemTemplate(addedItem);
     addedItem.quantity--;
 
@@ -237,7 +243,7 @@ const updateCartItems = (addedItem) => {
 
 const updateQuantityChangedCartItem = (productId, quantityChange) => {
   const clickedItemElement = document.getElementById(productId);
-  const clickedItem = products.find((product) => product.id === productId);
+  const clickedItem = global_variable.products.find((product) => product.id === productId);
   const existingItemSpan = clickedItemElement.querySelector("span");
 
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
@@ -258,7 +264,7 @@ const updateQuantityChangedCartItem = (productId, quantityChange) => {
 
 const updateRemovedCartItem = (productId) => {
   const removeTargetElement = document.getElementById(productId);
-  const clickedItem = products.find((product) => product.id === productId);
+  const clickedItem = global_variable.products.find((product) => product.id === productId);
   const existingItemSpan = removeTargetElement.querySelector("span");
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
 
@@ -268,8 +274,10 @@ const updateRemovedCartItem = (productId) => {
 };
 
 const handleClickAddToCartBtn = () => {
+  const productSelectElement = document.getElementById("product-select");
+
   const addedItemId = productSelectElement.value;
-  const addedItem = products.find((product) => product.id === addedItemId);
+  const addedItem = global_variable.products.find((product) => product.id === addedItemId);
   const isInStock = addedItem && addedItem.quantity > 0;
 
   if (!isInStock) {
@@ -279,7 +287,7 @@ const handleClickAddToCartBtn = () => {
   updateCartItems(addedItem);
   calculateCartTotal();
 
-  lastAddedItemId = addedItemId;
+  global_variable.lastAddedItemId = addedItemId;
 };
 
 const handleClickCartItems = (event) => {
