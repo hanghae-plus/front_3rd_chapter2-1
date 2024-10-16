@@ -1,20 +1,65 @@
-import {
-  BULK_DISCOUNT_AMOUNT,
-  DISCOUNT_RATE_BY_ID,
-  EXTRA_DISCOUNT_RATE,
-  LUCKY_DISCOUNT_RATE,
-  PRODUCT_LIST,
-  RANDOM_RATE_LIMIT,
-  THIRTY_DISCOUNT_RATE,
-  TUESDAY,
-  TUESDAY_DISCOUNT_RATE,
-} from './constant';
-import {
-  bonusPoints,
-  lastAddedItem,
-  setBonusPoints,
-  setLastAddedItem,
-} from './store';
+import { PRODUCT_LIST } from '../__tests__/productData';
+
+const TUESDAY = 2;
+const BULK_DISCOUNT_AMOUNT = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+const TUESDAY_DISCOUNT_RATE = 0.1;
+const DISCOUNT_RATE_BY_ID = {
+  p1: 0.1,
+  p2: 0.15,
+  p3: 0.2,
+  p4: 0.05,
+  p5: 0.25,
+};
+export let bonusPoints = 0;
+export let lastAddedItem;
+
+export function setBonusPoints(point) {
+  bonusPoints += point;
+}
+
+export function setLastAddedItem(item) {
+  lastAddedItem = item;
+}
+
+export function renderShoppingCartPage() {
+  const $root = document.getElementById('app');
+  const $cartWrapper = document.createElement('div');
+  const $cartContainer = document.createElement('div');
+  const $cartTitle = document.createElement('h1');
+  const $cartItemList = document.createElement('div');
+  const $cartTotal = document.createElement('div');
+  const $productSelectBox = document.createElement('select');
+  const $addToCartBtn = document.createElement('button');
+  const $stockInfo = document.createElement('div');
+
+  $cartItemList.id = 'cart-items';
+  $cartTotal.id = 'cart-total';
+  $productSelectBox.id = 'product-select';
+  $addToCartBtn.id = 'add-to-cart';
+  $stockInfo.id = 'stock-status';
+
+  $cartWrapper.className = 'bg-gray-100 p-8';
+  $cartContainer.className =
+    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
+  $cartTitle.className = 'text-2xl font-bold mb-4';
+  $cartTotal.className = 'text-xl font-bold my-4';
+  $productSelectBox.className = 'border rounded p-2 mr-2';
+  $addToCartBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
+  $stockInfo.className = 'text-sm text-gray-500 mt-2';
+
+  $cartTitle.textContent = '장바구니';
+  $addToCartBtn.textContent = '추가';
+
+  $cartContainer.appendChild($cartTitle);
+  $cartContainer.appendChild($cartItemList);
+  $cartContainer.appendChild($cartTotal);
+  $cartContainer.appendChild($productSelectBox);
+  $cartContainer.appendChild($addToCartBtn);
+  $cartContainer.appendChild($stockInfo);
+  $cartWrapper.appendChild($cartContainer);
+  $root.appendChild($cartWrapper);
+}
 
 export function updateSelectOptionStatus() {
   const $productSelectBox = document.getElementById('product-select');
@@ -66,12 +111,12 @@ export function updateTotalPrice() {
     discountRate =
       (beforeDiscountTotalPrice - totalPrice) / beforeDiscountTotalPrice;
 
-    const bulkDiscount = totalPrice * THIRTY_DISCOUNT_RATE;
+    const bulkDiscount = totalPrice * BULK_DISCOUNT_RATE;
     const itemDiscount = beforeDiscountTotalPrice - totalPrice;
 
     if (quantityCount >= BULK_DISCOUNT_AMOUNT && bulkDiscount > itemDiscount) {
-      totalPrice = beforeDiscountTotalPrice * (1 - THIRTY_DISCOUNT_RATE);
-      discountRate = THIRTY_DISCOUNT_RATE;
+      totalPrice = beforeDiscountTotalPrice * (1 - BULK_DISCOUNT_RATE);
+      discountRate = BULK_DISCOUNT_RATE;
     }
   }
 
@@ -124,37 +169,4 @@ function renderBonusPoint(totalPrice) {
   const points = Math.floor(totalPrice / 1000);
   setBonusPoints(points);
   $pointInfo.textContent = `(포인트: ${bonusPoints})`;
-}
-
-export function setLuckySaleEvent() {
-  setTimeout(() => {
-    setInterval(() => {
-      const luckyRandomIdx = Math.floor(Math.random() * PRODUCT_LIST.length);
-      const luckyItem = PRODUCT_LIST[luckyRandomIdx];
-      const isLuckyTime = Math.random() < RANDOM_RATE_LIMIT;
-
-      if (isLuckyTime && luckyItem.quantity > 0) {
-        luckyItem.val = Math.round(luckyItem.val * (1 - LUCKY_DISCOUNT_RATE));
-        alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateSelectOptionStatus();
-      }
-    }, 30000);
-  }, Math.random() * 10000);
-}
-
-export function setExtraSaleEvent() {
-  setTimeout(() => {
-    setInterval(() => {
-      if (!lastAddedItem) return;
-
-      const product = PRODUCT_LIST.find(
-        (item) => item.id !== lastAddedItem && item.quantity > 0,
-      );
-      if (!product) return;
-
-      alert(`${product.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
-      product.val = Math.round(product.val * (1 - EXTRA_DISCOUNT_RATE));
-      updateSelectOptionStatus();
-    }, 60000);
-  }, Math.random() * 20000);
 }

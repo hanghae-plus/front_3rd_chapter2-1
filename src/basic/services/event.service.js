@@ -1,5 +1,5 @@
-import { PRODUCT_LIST } from './constant';
-import { updateLastAddedItem, updateTotalPrice } from './service';
+import { PRODUCT_LIST } from '../__tests__/productData';
+import { updateLastAddedItem, updateTotalPrice } from './render.service';
 
 export function attatchEventListener() {
   const $addToCartBtn = document.getElementById('add-to-cart');
