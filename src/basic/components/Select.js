@@ -2,12 +2,12 @@ export class Select {
   #productList = [];
 
   constructor({ wrap, prodList }) {
+    this.#productList = prodList;
+
     this.$element = document.createElement('select');
     this.$element.id = 'product-select';
     this.$element.className = 'border rounded p-2 mr-2';
     wrap.appendChild(this.$element);
-
-    this.#productList = prodList;
 
     this.render();
   }
