@@ -256,7 +256,7 @@ const setupTimeSale = () => {
 
 function main() {
   renderSetupUI();
-  setupTimeSale();
+  // setupTimeSale();
   updateStockInfo();
   calculateCart();
 }

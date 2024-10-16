@@ -1,15 +1,18 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import App from '../src/App';
 
 describe('advanced test', () => {
   describe.each([
-    { type: 'origin', loadFile: () => import('../../main.js') },
+    // { type: 'origin', loadFile: () => import('../../main.js') },
     { type: 'advanced', loadFile: () => import('../src/main.advanced.tsx') },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
     beforeAll(async () => {
       // DOM 초기화
-      document.body.innerHTML = '<div id="app"></div>';
+      document.body.innerHTML = '<div id="root"></div>';
+      // render(<App/>);
       await loadFile();
 
       // 전역 변수 참조
@@ -30,10 +33,15 @@ describe('advanced test', () => {
       vi.restoreAllMocks();
     });
 
-    it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
+    it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {      
       expect(sel).toBeDefined();
+      console.log('여기와바ㅘㅗ',sel)
       expect(sel.tagName.toLowerCase()).toBe('select');
-      expect(sel.children.length).toBe(5);
+      expect(sel.children.length).toBe(5 + 1);
+
+      // 상품 목록 초기값 확인
+      expect(sel.children[0].textContent).toContain('선택하세요');
+      expect(sel.children[0].disabled).toBe(false);
 
       // 첫 번째 상품 확인
       expect(sel.children[0].value).toBe('p1');

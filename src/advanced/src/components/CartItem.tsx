@@ -1,14 +1,14 @@
 // src/components/CartItem.tsx
 import React from 'react';
-import { CartItem } from '../types';
+import { CartItem as Item } from '../types';
 
 interface CartItemProps {
-  item: CartItem;
+  item: Item;
   onQuantityChange: (productId: string, change: number) => void;
   onRemoveItem: (productId: string) => void;
 }
 
-const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemoveItem }) => {
+const CartItem: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemoveItem }) => {
   const handleDecrease = () => {
     onQuantityChange(item.id, -1);
   };
@@ -50,4 +50,4 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, on
   );
 };
 
-export default CartItemComponent;
+export default CartItem;

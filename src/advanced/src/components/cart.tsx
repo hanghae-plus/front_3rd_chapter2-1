@@ -1,6 +1,6 @@
 // src/components/Cart.tsx
 import React from 'react';
-import CartItemComponent from './cart-item';
+import CartItemComponent from './CartItem';
 import { CartItem } from '../types';
 
 interface CartProps {

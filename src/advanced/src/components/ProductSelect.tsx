@@ -21,8 +21,8 @@ const ProductSelect: React.FC<ProductSelectProps> = ({ products, onAddToCart }) 
   };
 
   return (
-    <div className="mt-4">
-      <select value={selectedId} onChange={handleChange} className="border rounded p-2 mr-2">
+    <>
+      <select value={selectedId} onChange={handleChange} className="border rounded p-2 mr-2" id="product-select">
         <option value="">상품을 선택하세요</option>
         {products.map((product) => (
           <option key={product.id} value={product.id} disabled={product.stock === 0}>
@@ -37,7 +37,7 @@ const ProductSelect: React.FC<ProductSelectProps> = ({ products, onAddToCart }) 
       >
         추가
       </button>
-    </div>
+    </>
   );
 };
 
