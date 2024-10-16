@@ -21,7 +21,6 @@ const renderProductList = () => {
 };
 
 const renderBonusPoints = (totalAmount) => {
-  totalAmount = totalAmount ? totalAmount : 0;
   let pointsTag = document.getElementById('loyalty-points');
   if (!pointsTag) {
     pointsTag = document.createElement('span');
