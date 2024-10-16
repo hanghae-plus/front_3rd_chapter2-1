@@ -207,7 +207,7 @@ const updateStockInfo = () => {
 
 main();
 
-const addToCart = () => {
+const handleClickAddToCart = () => {
   const selectedItemId = $productSelect.value;
   const itemToAdd = findProductById(selectedItemId);
 
@@ -318,6 +318,6 @@ const removeItem = (cartItem, product) => {
   removeCartItem(cartItem);
 };
 
-$addButton.addEventListener('click', addToCart);
+$addButton.addEventListener('click', handleClickAddToCart);
 
 $cartItems.addEventListener('click', handleClickCartAction);
