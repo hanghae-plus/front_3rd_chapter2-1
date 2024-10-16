@@ -33,7 +33,7 @@ class Main {
     $root.appendChild($container);
 
     // 컴포넌트 초기화
-    this.CartSummary = new CartSummary({ wrap: $cart });
+    this.CartSummary = new CartSummary({ $root: $cart });
 
     this.CartList = new CartList({
       $root: $cart,
@@ -57,10 +57,11 @@ class Main {
     });
 
     this.StockInfo = new StockInfo({
-      wrap: $cart,
+      $root: $cart,
       productList: this.productList,
     });
 
+    // 세일 초기화
     this.startFlashSale();
     this.startSuggestionSale();
   }
@@ -68,6 +69,7 @@ class Main {
   get productList() {
     return this.#productList;
   }
+
   set productList(nextProdList) {
     this.#productList = nextProdList;
 
@@ -75,8 +77,8 @@ class Main {
     this.Select?.render();
   }
 
-  // 우선 단일상품만 업데이트되도록
-  updateProductList(nextProduct) {
+  /** 개별 상품 업데이트 */
+  updateProduct(nextProduct) {
     if (!nextProduct) return;
 
     this.productList = this.productList.map((item) =>
@@ -84,6 +86,7 @@ class Main {
     );
   }
 
+  /** 번개 세일 시작 */
   startFlashSale() {
     setTimeout(() => {
       setInterval(() => {
@@ -91,7 +94,7 @@ class Main {
           this.productList[Math.floor(Math.random() * this.productList.length)];
         if (Math.random() < 0.3 && discountItem.q > 0) {
           alert('번개세일! ' + discountItem.name + '이(가) 20% 할인 중입니다!');
-          this.updateProductList({
+          this.updateProduct({
             ...discountItem,
             val: Math.round(discountItem.val * 0.8),
           });
@@ -100,6 +103,7 @@ class Main {
     }, Math.random() * 10000);
   }
 
+  /** 추천 상품 세일 시작 */
   startSuggestionSale() {
     setTimeout(() => {
       setInterval(() => {
@@ -112,7 +116,7 @@ class Main {
           alert(
             discountItem.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
           );
-          this.updateProductList({
+          this.updateProduct({
             ...discountItem,
             val: Math.round(discountItem.val * 0.95),
           });

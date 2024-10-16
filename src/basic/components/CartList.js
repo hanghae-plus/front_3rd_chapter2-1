@@ -15,15 +15,12 @@ export class CartList {
     this.setProductList = setProductList;
     this.updateSumDetails = updateSumDetails;
 
-    // 카트 렌더링
     this.$element = document.createElement('div');
     this.$element.id = 'cart-items';
     $root.appendChild(this.$element);
 
-    // 카트 초기 계산
     this.#calcCart();
 
-    // 이벤트 리스너 등록
     this.$element.addEventListener('click', (event) =>
       this.#handleCartClick(event)
     );

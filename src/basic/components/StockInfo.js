@@ -1,8 +1,8 @@
 export class StockInfo {
-  constructor({ wrap, productList }) {
+  constructor({ $root, productList }) {
     this.productList = productList;
 
-    this.$root = wrap;
+    this.$root = $root;
     this.$element = document.createElement('div');
     this.$element.id = 'stock-status';
     this.$element.className = 'text-sm text-gray-500 mt-2';

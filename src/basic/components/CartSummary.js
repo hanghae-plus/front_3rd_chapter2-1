@@ -3,11 +3,11 @@ export class CartSummary {
   #discountRate;
   #point = 0;
 
-  constructor({ wrap }) {
+  constructor({ $root }) {
     this.$element = document.createElement('div');
     this.$element.id = 'cart-total';
     this.$element.className = 'text-xl font-bold my-4';
-    wrap.appendChild(this.$element);
+    $root.appendChild(this.$element);
   }
 
   set totalPrice(totalPrice) {
