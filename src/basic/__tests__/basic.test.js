@@ -19,10 +19,12 @@ describe('basic test', () => {
       cartDisp=document.getElementById('cart-items');
       sum=document.getElementById('cart-total');
       stockInfo=document.getElementById('stock-status');
+
+      vi.setSystemTime(new Date('2024-10-16')); // 수요일
     });
 
     beforeEach(() => {
-      vi.useFakeTimers();
+      // vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
