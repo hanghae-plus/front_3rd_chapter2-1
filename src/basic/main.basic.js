@@ -6,92 +6,99 @@ const productList = [
   { id: "p5", name: "상품5", price: 25000, stock: 10 },
 ];
 
-let productSelect, addToCartButton, cartDisplay, totalAmountDisplay, stockInfo;
 let lastSelectedProduct,
   bonusPoints = 0,
   totalAmount = 0,
   itemCount = 0;
 
-function main() {
+const cartDisplay = createElement("div", { id: "cart-items" });
+const totalAmountDisplay = createElement("div", {
+  id: "cart-total",
+  className: "text-xl font-bold my-4",
+});
+const productSelect = createElement("select", {
+  id: "product-select",
+  className: "border rounded p-2 mr-2",
+});
+const addToCartButton = createElement(
+  "button",
+  { id: "add-to-cart", className: "bg-blue-500 text-white px-4 py-2 rounded" },
+  "추가",
+);
+const stockInfoDisplay = createElement("div", {
+  id: "stock-status",
+  className: "text-sm text-gray-500 mt-2",
+});
+
+function createElement(tag, attributes = {}, textContent = "") {
+  const element = document.createElement(tag);
+  Object.keys(attributes).forEach((attr) => (element[attr] = attributes[attr]));
+  if (textContent) element.textContent = textContent;
+  return element;
+}
+
+function initUI() {
   const root = document.getElementById("app");
-  const container = document.createElement("div");
-  const wrapper = document.createElement("div");
-  const headingText = document.createElement("h1");
-  cartDisplay = document.createElement("div");
-  totalAmountDisplay = document.createElement("div");
-  productSelect = document.createElement("select");
-  addToCartButton = document.createElement("button");
-  stockInfo = document.createElement("div");
-
-  cartDisplay.id = "cart-items";
-  totalAmountDisplay.id = "cart-total";
-  productSelect.id = "product-select";
-  addToCartButton.id = "add-to-cart";
-  stockInfo.id = "stock-status";
-
-  container.className = "bg-gray-100 p-8";
-  wrapper.className =
-    "max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8";
-  headingText.className = "text-2xl font-bold mb-4";
-  totalAmountDisplay.className = "text-xl font-bold my-4";
-  productSelect.className = "border rounded p-2 mr-2";
-  addToCartButton.className = "bg-blue-500 text-white px-4 py-2 rounded";
-  stockInfo.className = "text-sm text-gray-500 mt-2";
-
-  headingText.textContent = "장바구니";
-  addToCartButton.textContent = "추가";
-
-  updateSelectOptions();
+  const container = createElement("div", { className: "bg-gray-100 p-8" });
+  const wrapper = createElement("div", {
+    className: "max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8",
+  });
+  const headingText = createElement("h1", { className: "text-2xl font-bold mb-4" }, "장바구니");
 
   wrapper.appendChild(headingText);
   wrapper.appendChild(cartDisplay);
   wrapper.appendChild(totalAmountDisplay);
   wrapper.appendChild(productSelect);
   wrapper.appendChild(addToCartButton);
-  wrapper.appendChild(stockInfo);
+  wrapper.appendChild(stockInfoDisplay);
   container.appendChild(wrapper);
   root.appendChild(container);
+}
 
+function main() {
+  initUI();
+  updateSelectOptions();
   calculateCart();
 
-  setTimeout(function () {
-    setInterval(function () {
-      let SaleProduct = productList[Math.floor(Math.random() * productList.length)];
-      if (Math.random() < 0.3 && SaleProduct.stock > 0) {
-        SaleProduct.price = Math.round(SaleProduct.price * 0.8);
-        alert("번개세일! " + SaleProduct.name + "이(가) 20% 할인 중입니다!");
+  setTimeout(handleLuckySale, Math.random() * 10000);
+  setTimeout(handleProductSuggestion, Math.random() * 20000);
+}
+
+function handleLuckySale() {
+  setInterval(function () {
+    let SaleProduct = productList[Math.floor(Math.random() * productList.length)];
+    if (Math.random() < 0.3 && SaleProduct.stock > 0) {
+      SaleProduct.price = Math.round(SaleProduct.price * 0.8);
+      alert("번개세일! " + SaleProduct.name + "이(가) 20% 할인 중입니다!");
+      updateSelectOptions();
+    }
+  }, 30000);
+}
+
+function handleProductSuggestion() {
+  setInterval(function () {
+    if (lastSelectedProduct) {
+      let suggestedProduct = productList.find(function (item) {
+        return item.id !== lastSelectedProduct && item.stock > 0;
+      });
+      if (suggestedProduct) {
+        alert(suggestedProduct.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
+        suggestedProduct.price = Math.round(suggestedProduct.price * 0.95);
         updateSelectOptions();
       }
-    }, 30000);
-  }, Math.random() * 10000);
-
-  setTimeout(function () {
-    setInterval(function () {
-      if (lastSelectedProduct) {
-        let suggestedProduct = productList.find(function (item) {
-          return item.id !== lastSelectedProduct && item.stock > 0;
-        });
-        if (suggestedProduct) {
-          alert(suggestedProduct.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggestedProduct.price = Math.round(suggestedProduct.price * 0.95);
-          updateSelectOptions();
-        }
-      }
-    }, 60000);
-  }, Math.random() * 20000);
+    }
+  }, 60000);
 }
 
 function updateSelectOptions() {
   productSelect.innerHTML = "";
-  productList.forEach(function (item) {
-    let opt = document.createElement("option");
-    opt.value = item.id;
-
-    opt.textContent = item.name + " - " + item.price + "원";
-    if (item.stock === 0) opt.disabled = true;
-    productSelect.appendChild(opt);
+  productList.forEach((item) => {
+    let option = createElement("option", { value: item.id }, `${item.name} - ${item.price}원`);
+    if (item.stock === 0) option.disabled = true;
+    productSelect.appendChild(option);
   });
 }
+
 function calculateCart() {
   totalAmount = 0;
   itemCount = 0;
@@ -173,7 +180,7 @@ function updateStockInfo() {
         "\n";
     }
   });
-  stockInfo.textContent = infoMsg;
+  stockInfoDisplay.textContent = infoMsg;
 }
 main();
 addToCartButton.addEventListener("click", function () {
