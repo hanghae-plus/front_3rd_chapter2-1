@@ -10,11 +10,12 @@ const useProductSelect = () => {
   };
 
   const cartItems = useStore((state) => state.cartItems);
-  const updateCartItems = useStore((state) => state.updateCartItems);
+  const addStoreCartItems = useStore((state) => state.addStoreCartItems);
+  const updateStoreCartItems = useStore((state) => state.updateStoreCartItems);
 
   const addToCart = (currentCartItem: ICartItem | undefined, targetProduct: IProduct) => {
     if (!currentCartItem) {
-      updateCartItems([...cartItems, { ...targetProduct, cartQuantity: 1, quantity: targetProduct.quantity - 1 }]);
+      addStoreCartItems({ ...targetProduct, cartQuantity: 1, quantity: targetProduct.quantity - 1 });
       return;
     }
 
@@ -23,7 +24,7 @@ const useProductSelect = () => {
         return { ...item, quantity: item.quantity - 1, cartQuantity: item.cartQuantity + 1 };
       } else return item;
     });
-    updateCartItems(updatedCartItems);
+    updateStoreCartItems(updatedCartItems);
   };
 
   const handleAddToCart = () => {
