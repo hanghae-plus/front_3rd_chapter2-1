@@ -1,10 +1,15 @@
-// 장바구니 총액과 할인 표시
+import { createElementWithProps } from './createElement.js';
+import { renderPointSystem } from './pointSystem.js'
+
+// 장바구니 총액과 할인 표시, 표인트 적립
 
 export function calcCart(cartList, productList, cartTotal) {
     let totalPrice = 0;
     let totalItem = 0;
     let subTot = 0;
-  
+    let discRate = 0;
+    
+
     const cartItems = cartList.children;
     
     for (let i = 0; i < cartItems.length; i++) {
@@ -23,7 +28,13 @@ export function calcCart(cartList, productList, cartTotal) {
     }
   
     // 할인율 계산
-    const discRate = calculateDiscountRate(totalItem, subTot, totalPrice);
+    discRate = calculateDiscountRate(totalItem, subTot, totalPrice);
+
+    // 화요일 10% 추가 할인 적용
+    if (new Date().getDay() === 2) {
+      totalPrice *= (1 - 0.1);
+      discRate = Math.max(discRate, 0.1);  // 기존 할인율과 화요일 할인율 중 더 큰 값을 선택
+    }
     
     // 총 금액 및 할인 표시
     cartTotal.textContent = `총액: ${Math.round(totalPrice)}원`;
@@ -35,7 +46,12 @@ export function calcCart(cartList, productList, cartTotal) {
       });
       cartTotal.appendChild(discountText);
     }
+
+    // 포인트 적립 시스템 호출
+    renderPointSystem(totalPrice, cartTotal);
+
   }
+    
   
   function getDiscount(productId) {
     switch (productId) {
@@ -48,6 +64,7 @@ export function calcCart(cartList, productList, cartTotal) {
     }
   }
   
+  // 할인율
   function calculateDiscountRate(totalItem, subTot, totalPrice) {
     let discRate = 0;
     if (totalItem >= 30) {
@@ -63,4 +80,3 @@ export function calcCart(cartList, productList, cartTotal) {
     }
     return discRate;
   }
-  

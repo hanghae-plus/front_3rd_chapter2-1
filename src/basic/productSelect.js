@@ -2,13 +2,16 @@
 import { createElementWithProps } from './createElement.js';
 
 export function updateSelOpts(productList, productSelect) {
+
   productSelect.innerHTML = '';
-  productList.forEach((item) => {
+
+  productList.forEach((product) => {
     const option = createElementWithProps('option', {
-      value: item.id,
-      textContent: `${item.name} - ${item.price}원`,
-      disabled: item.stock === 0
+      value: product.id,
+      textContent: `${product.name} - ${product.price}원`,
+      disabled: product.stock === 0
     });
     productSelect.appendChild(option);
   });
+
 }
