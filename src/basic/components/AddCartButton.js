@@ -1,7 +1,6 @@
 export class AddCartButton {
-  constructor({ $root, productList, $select, handleAddCart }) {
+  constructor({ $root, productList, handleAddCart, getSelectId }) {
     this.productList = productList;
-    this.$select = $select;
 
     // 버튼 렌더링
     this.$element = document.createElement('button');
@@ -12,13 +11,12 @@ export class AddCartButton {
 
     // 버튼 클릭 이벤트 등록
     this.$element.addEventListener('click', () =>
-      handleAddCart(this.#getSelectedItem())
+      handleAddCart(this.#getSelectedItem(getSelectId))
     );
   }
 
   /** 선택한 아이템 반환 */
-  #getSelectedItem() {
-    const selectedItem = this.$select.value;
-    return this.productList.find((p) => p.id === selectedItem);
+  #getSelectedItem(getSelectId) {
+    return this.productList.find((p) => p.id === getSelectId());
   }
 }
