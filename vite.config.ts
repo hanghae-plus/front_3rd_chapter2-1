@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "src/advanced/main.advanced.jsx"),
+        main: resolve(__dirname, "src/advanced/main.advanced.tsx"),
       },
     },
   },
