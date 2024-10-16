@@ -65,6 +65,14 @@
 
 ## 심화과제
 
+- 구현과정
+
+1. react, typescript와 관련된 패키지들을 설치(react, react-dom, @vite/react,@babel/plugin-transform-react-jsx, typescript)
+2. tailwind.config.json을 만들고 config 설정, vite.config.js에 js에서 jsx도 읽을 수 있도록 플러그인 설정
+3. main.advanced.js에 App(root component)를 연결시킴.
+4. basic 과제에서 리팩토링한 코드를 보고 UI부터 구성하기 시작.
+5.
+
 ### 리팩토링 체크리스트
 
 - [ ] 코드가 Prettier를 통해 일관된 포맷팅이 적용되어 있는가?
