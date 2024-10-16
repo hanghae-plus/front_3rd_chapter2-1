@@ -12,6 +12,24 @@ const productList = [
   { id: 'p5', name: '상품5', price: 25000, quantity: 10 },
 ];
 
+const handleTimerFlashSale = () => {
+  const FLASH_SALE_INTERVAL = 30000;
+  const FLASH_SALE_CHANCE = 0.3;
+  const FLASH_SALE_DISCOUNT = 0.8;
+
+  setInterval(() => {
+    const saleItem =
+      productList[Math.floor(Math.random() * productList.length)];
+    const canStartFlashSale =
+      Math.random() < FLASH_SALE_CHANCE && saleItem.quantity > 0;
+    if (canStartFlashSale) {
+      saleItem.price = Math.round(saleItem.price * FLASH_SALE_DISCOUNT);
+      alert(`번개세일! ${saleItem.name}이(가) 20% 할인 중입니다!`);
+      updateProductOptions();
+    }
+  }, FLASH_SALE_INTERVAL);
+};
+
 function main() {
   const $root = document.getElementById('app');
   const $container = document.createElement('div');
@@ -48,17 +66,8 @@ function main() {
   $container.appendChild($innerContainer);
   $root.appendChild($container);
   calcCart();
-  setTimeout(function () {
-    setInterval(function () {
-      const luckyItem =
-        productList[Math.floor(Math.random() * productList.length)];
-      if (Math.random() < 0.3 && luckyItem.quantity > 0) {
-        luckyItem.price = Math.round(luckyItem.price * 0.8);
-        alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateProductOptions();
-      }
-    }, 30000);
-  }, Math.random() * 10000);
+
+  setTimeout(handleTimerFlashSale, Math.random() * 10000);
   setTimeout(function () {
     setInterval(function () {
       if (lastSel) {
