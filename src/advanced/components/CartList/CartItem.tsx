@@ -1,5 +1,5 @@
 import { ProductItem } from '../../model/product';
-import { Button } from '../Button';
+import { Button } from '../Shared/Button';
 
 interface CartItemProps {
   item: ProductItem;

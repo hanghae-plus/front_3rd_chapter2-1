@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CartList } from './components/CartList';
-import { CartTotal } from './components/CartTotal';
+import { CartTotal } from './components/CartTotal/CartTotal';
 import { DEFAULT_CART_TOTAL, CartTotal as TCartTotal } from './model/cartTotal';
 import { ProductList } from './model/product';
 
