@@ -2,10 +2,10 @@ import CartItems from '../components/CartItems';
 import CartTotalPrice from '../components/CartTotalPrice';
 import ProductSelect from '../components/ProductSelect';
 import Title from '../components/Title';
-import useAlertDiscount from '../hooks/useAlertDiscount';
+// import useAlertDiscount from '../hooks/useAlertDiscount';
 
 const CartPage = () => {
-  useAlertDiscount();
+  // useAlertDiscount();
 
   return (
     <main className="bg-gray-100 p-8">
@@ -16,9 +16,6 @@ const CartPage = () => {
         <CartTotalPrice />
 
         <ProductSelect />
-        <button onClick={() => {}} id="add-to-cart" className="bg-blue-500 text-white px-4 py-2 rounded">
-          추가
-        </button>
 
         <div id="stock-status" className="text-sm text-gray-500 mt-2">
           상품4: 품절
