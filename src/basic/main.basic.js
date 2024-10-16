@@ -4,6 +4,7 @@ let lastSelectedProduct,
   totalPrice = 0,
   itemCnt = 0;
 
+// 돔 생성 함수
 const createElementWithAttributes = (tag, attributes) => {
   const element = document.createElement(tag);
   for (let key in attributes) {
@@ -12,6 +13,7 @@ const createElementWithAttributes = (tag, attributes) => {
   return element;
 };
 
+// 세일 이벤트 호출 함수
 const alertSaleItem = (callback, initialDelay, setTime) => {
   setTimeout(function () {
     callback();

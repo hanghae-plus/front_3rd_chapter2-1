@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",                 // 최신 ESNext로 컴파일
+      "module": "ESNext",                 // ESNext 모듈 시스템 사용
+      "jsx": "react",                 // React JSX 지원
+      "esModuleInterop": true,            // ES 모듈 호환성
+      "strict": true,                     // 엄격한 타입 검사 활성화
+      "moduleResolution": "node",         // Node 방식으로 모듈 해석
+      "forceConsistentCasingInFileNames": true, // 대소문자 일관성 검사
+      "skipLibCheck": true,               // 라이브러리 검사 건너뜀
+      "resolveJsonModule": true,          // JSON 모듈을 가져오도록 설정
+      "isolatedModules": true,            // 각 파일을 개별적으로 처리
+      "lib": ["DOM", "DOM.Iterable", "ESNext"]  // DOM 및 최신 기능 라이브러리 사용
+    },
+    "include": ["src"],                   // src 폴더 내 파일들을 포함
+    "exclude": ["node_modules"]           // node_modules 폴더는 제외
+  }
+  
