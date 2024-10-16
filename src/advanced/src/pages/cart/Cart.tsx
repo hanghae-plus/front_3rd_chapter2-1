@@ -1,43 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DEFAULT_PRODUCT_LIST } from './constant/defaultProducts';
+import CartItemList from './component/CartItemList';
+import CartTotalPriceAndPoint from './component/CartTotalPriceAndPoint';
+
+export interface CartItems {
+  price: number;
+  id: string;
+  name: string;
+  quantity: number;
+  selectQuantity: number;
+}
 
 const Cart = () => {
+  const [selectedProductId, setSelectedProductId] = useState('p1');
+  const [cartItems, setCartItems] = useState<CartItems[]>([]);
+
+  const handleSelectChange = (event) => {
+    console.log(event.target.value, 'event.target.value');
+    setSelectedProductId(event.target.value); // 선택된 값으로 상태 업데이트
+  };
+
+  const handleAddCartItem = () => {
+    const selectedProductItem = DEFAULT_PRODUCT_LIST.find(
+      (product) => product.id === selectedProductId,
+    );
+
+    setCartItems((prevState) => {
+      const existingCartItem = prevState.find((cartItem) => cartItem.id === selectedProductItem.id);
+
+      if (existingCartItem) {
+        return prevState.map((cartItem) =>
+          cartItem.id === selectedProductItem.id
+            ? { ...cartItem, selectQuantity: cartItem.selectQuantity + 1 }
+            : cartItem,
+        );
+      }
+
+      return [...prevState, { ...selectedProductItem, selectQuantity: 1 }];
+    });
+  };
+
   return (
     <div className="bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-        <div id="cart-items">
-          {DEFAULT_PRODUCT_LIST.map((item) => (
-            <div key={item.id} className="flex justify-between items-center mb-2">
-              <span>
-                {item.name} - {item.price}원 x {item.selectQuantity || 0}
-              </span>
-              <div>
-                <button className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1">
-                  -
-                </button>
-                <button className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1">
-                  +
-                </button>
-                <button className="remove-item bg-red-500 text-white px-2 py-1 rounded">
-                  삭제
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-xl font-bold my-4">
-          <span>총액: 0원</span>
-          <span className="text-blue-500 ml-2">(포인트: 0)</span>
-        </div>
-        <select className="border rounded p-2 mr-2">
+        <CartItemList cartItems={cartItems} />
+        <CartTotalPriceAndPoint />
+        <select className="border rounded p-2 mr-2" onChange={handleSelectChange}>
           {DEFAULT_PRODUCT_LIST.map((product) => (
             <option key={product.id} disabled={product.quantity === 0} value={product.id}>
               {product.name} - {product.price}원
             </option>
           ))}
         </select>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">추가</button>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleAddCartItem}>
+          추가
+        </button>
         {DEFAULT_PRODUCT_LIST.filter((product) => product.quantity === 0).map((product) => (
           <div key={product.id} className="text-sm text-gray-500 mt-2">
             {product.name}:
