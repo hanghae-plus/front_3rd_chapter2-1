@@ -264,3 +264,53 @@ $cartDisplay.addEventListener("click", function (event) {
     calcCartTotal();
   }
 });
+
+// 수량변경
+const handleChangeQuantity = ($clickedElement, $productItem, clickedProduct) => {
+  let changeInQuantity = parseInt($clickedElement.dataset.change);
+  let updatedQuantity = parseInt($productItem.querySelector("span").textContent.split("x ")[1]) + changeInQuantity;
+
+  if (updatedQuantity > 0 && updatedQuantity <= clickedProduct.q + parseInt($productItem.querySelector("span").textContent.split("x ")[1])) {
+    //1. 업데이트된 수량 > 0 && 업데이트된 수량 <= 재고 + 현재수량
+
+    $productItem.querySelector("span").textContent = $productItem.querySelector("span").textContent.split("x ")[0] + "x " + updatedQuantity;
+    clickedProduct.q -= changeInQuantity;
+  } else if (updatedQuantity <= 0) {
+    //2. 업데이트된 수량 0 이되면 productItem을 삭제
+    $productItem.remove();
+    clickedProduct.q -= changeInQuantity;
+  } else {
+    alert(OUT_OF_STOCK_MESSAGE);
+  }
+};
+
+// 아이템 삭제
+const handleRemoveProductItem = ($productItem, clickedProduct) => {
+  let removedQuantity = parseInt($productItem.querySelector("span").textContent.split("x ")[1]);
+  clickedProduct.q += removedQuantity;
+  $productItem.remove();
+};
+
+const handleClickCartItem = (event) => {
+  let $clickedElement = event.target;
+
+  //1. 어떤 아이템(수량변경 or 삭제)을 클릭했는지 분기
+  if ($clickedElement.classList.contains("quantity-change") || $clickedElement.classList.contains("remove-item")) {
+    let productId = $clickedElement.dataset.productId;
+    let $productItem = document.getElementById(productId);
+
+    var clickedProduct = productList.find(function (p) {
+      return p.id === productId;
+    });
+
+    if ($clickedElement.classList.contains("quantity-change")) {
+      handleChangeQuantity($clickedElement, $productItem, clickedProduct);
+    } else if ($clickedElement.classList.contains("remove-item")) {
+      handleRemoveProductItem($productItem, clickedProduct);
+    }
+    calcCartTotal();
+  }
+};
+
+// 장바구니 안에 아이템 클릭시 (+,-,삭제)
+$cartDisplay.addEventListener("click", handleClickCartItem);
