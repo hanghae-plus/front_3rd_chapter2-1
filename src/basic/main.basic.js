@@ -1,5 +1,5 @@
 import { AddCartButton } from './components/AddCartButton';
-import { CartDisp } from './components/CartDisp';
+import { CartList } from './components/CartList';
 import { Select } from './components/Select';
 import { StockInfo } from './components/StockInfo';
 import { Sum } from './components/Sum';
@@ -41,15 +41,15 @@ class Main {
     // 컴포넌트 초기화
     this.stockInfo = new StockInfo({ wrap, productList: this.prodList });
     const sum = new Sum({ wrap });
-    const cartDisp = new CartDisp({
-      wrap,
-      prodList: this.#prodList,
+    const cartDisp = new CartList({
+      $root: wrap,
+      productList: this.#prodList,
+      setProductList: (productList) => {
+        this.prodList = productList;
+      },
       updateSumDetails: ({ totalPrice, discount }) => {
         sum.totalPrice = totalPrice;
         sum.discountRate = discount;
-      },
-      updateStockInfo: (productList) => {
-        this.prodList = productList;
       },
     });
     this.select = new Select({ wrap, prodList: this.#prodList });

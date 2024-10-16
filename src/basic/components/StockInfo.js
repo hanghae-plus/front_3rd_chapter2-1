@@ -1,8 +1,6 @@
 export class StockInfo {
-  #productList = [];
-
   constructor({ wrap, productList }) {
-    this.#productList = productList;
+    this.productList = productList;
 
     this.$root = wrap;
     this.$element = document.createElement('div');
@@ -15,7 +13,7 @@ export class StockInfo {
   }
 
   render() {
-    const lowStockItems = this.#productList.filter((product) => product.q < 5);
+    const lowStockItems = this.productList.filter((product) => product.q < 5);
     this.$element.textContent = lowStockItems
       .map(
         (item) =>

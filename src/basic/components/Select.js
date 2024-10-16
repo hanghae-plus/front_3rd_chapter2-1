@@ -1,8 +1,6 @@
 export class Select {
-  #productList = [];
-
   constructor({ wrap, prodList }) {
-    this.#productList = prodList;
+    this.productList = prodList;
 
     this.$element = document.createElement('select');
     this.$element.id = 'product-select';
@@ -13,7 +11,7 @@ export class Select {
   }
 
   render() {
-    this.$element.innerHTML = this.#productList
+    this.$element.innerHTML = this.productList
       .map((item) => {
         const disabled = item.q === 0 ? 'disabled' : '';
         const label = `${item.name} - ${item.val}원`;
