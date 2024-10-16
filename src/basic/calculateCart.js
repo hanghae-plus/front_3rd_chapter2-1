@@ -1,22 +1,12 @@
 import { createSpan } from './createElements';
+import { cartList, productList } from './global';
 import renderBonusPoints from './renderBonusPoints';
 
-const mapCartItems = (cartsDiv, productList) => {
-  const elements = Array.from(cartsDiv.children);
-  const ids = elements.map((item) => item.id);
-  const mapProducts = ids.map((id) => productList.find((prod) => prod.id === id));
-  const cartItems = mapProducts.map((item, i) => ({
-    ...item,
-    q: parseInt(elements[i].querySelector('span').textContent.split('x ')[1]),
-  }));
-
-  return cartItems;
-};
 const getDiscountRate = (cart) => {
-  const { id, q } = cart;
+  const { id, quantity } = cart;
   let rate = 0;
 
-  if (q >= 10)
+  if (quantity >= 10)
     if (id === 'p1') rate = 0.1;
     else if (id === 'p2') rate = 0.15;
     else if (id === 'p3') rate = 0.2;
@@ -25,7 +15,13 @@ const getDiscountRate = (cart) => {
 
   return rate;
 };
-const applyBulkDiscount = (totalCount, totalOriginPrice, totalDiscountPrice) => {
+
+const applyBulkDiscount = () => {
+  const totalCount = cartList.getTotalQuantity();
+  const totalOriginPrice = cartList.getTotalPrice();
+  let totalDiscountPrice = cartList
+    .toObject()
+    .reduce((acc, item) => acc + item.price * item.quantity * (1 - getDiscountRate(item)), 0);
   let rate = 0;
 
   if (totalCount >= 30) {
@@ -42,6 +38,7 @@ const applyBulkDiscount = (totalCount, totalOriginPrice, totalDiscountPrice) => 
 
   return [rate, totalDiscountPrice];
 };
+
 const getSpecialDiscountRate = (rate, totalPrice) => {
   if (new Date().getDay() === 2) {
     totalPrice *= 1 - 0.1;
@@ -52,30 +49,26 @@ const getSpecialDiscountRate = (rate, totalPrice) => {
 
   return [rate, totalPrice];
 };
-function updateStockInfo(productList, stockInfoDiv) {
+
+function updateStock() {
+  const $stock = document.getElementById('stock-status');
   let infoMsg = '';
 
-  productList.forEach(function (item) {
-    if (item.q < 5)
-      infoMsg +=
-        item.name + ': ' + (item.q > 0 ? '재고 부족 (' + item.q + '개 남음)' : '품절') + '\n';
+  productList.toObject().forEach(function (item) {
+    const quantity = item.quantity;
+    const name = item.name;
+
+    if (quantity < 5)
+      infoMsg += `${name}: ${quantity > 0 ? `재고 부족 (${quantity}개 남음)` : '품절'}\n\n`;
   });
 
-  stockInfoDiv.textContent = infoMsg;
+  $stock.textContent = infoMsg;
 }
 
-function calculateCart({ productList, $sum, $cartList, $stock }) {
-  const carts = mapCartItems($cartList, productList);
-  const count = carts.reduce((acc, item) => acc + item.q, 0);
-  const totalOriginPrice = carts.reduce((acc, item) => acc + item.val * item.q, 0);
-  const totalDiscountPrice = carts.reduce(
-    (acc, item) => acc + item.val * item.q * (1 - getDiscountRate(item)),
-    0
-  );
+function calculateCart() {
+  const $sum = document.getElementById('cart-total');
 
-  let rate = 0;
-  let totalPrice = 0;
-  [rate, totalPrice] = applyBulkDiscount(count, totalOriginPrice, totalDiscountPrice);
+  let [rate, totalPrice] = applyBulkDiscount();
   [rate, totalPrice] = getSpecialDiscountRate(rate, totalPrice);
 
   $sum.textContent = `총액: ${Math.round(totalPrice)}원`;
@@ -88,7 +81,7 @@ function calculateCart({ productList, $sum, $cartList, $stock }) {
     $sum.appendChild(span);
   }
 
-  updateStockInfo(productList, $stock);
+  updateStock();
   renderBonusPoints(totalPrice, $sum);
 }
 

@@ -1,12 +1,14 @@
 import { createOption } from './createElements';
+import { productList } from './global';
 
-function updateSelectOptions($select, productList) {
+function updateSelectOptions() {
+  const $select = document.getElementById('product-select');
   if (!$select) return null;
 
   $select.innerHTML = '';
-  productList.forEach((item) => {
-    const { id, name, val, q } = item;
-    const opt = createOption({ val: id, text: `${name} - ${val}원`, disabled: q === 0 });
+  productList.toObject().forEach((item) => {
+    const { id, name, price, quantity } = item;
+    const opt = createOption({ val: id, text: `${name} - ${price}원`, disabled: quantity === 0 });
 
     $select.appendChild(opt);
   });
