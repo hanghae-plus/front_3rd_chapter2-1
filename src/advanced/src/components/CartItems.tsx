@@ -3,12 +3,11 @@ import CartItem from './CartItem';
 
 const CartItems = () => {
   const cartItems = useStore((state) => state.cartItems);
-  console.log(cartItems);
 
   return (
     <div id="cart-items">
       {cartItems.map((cartItem) => (
-        <CartItem />
+        <CartItem key={cartItem.id} cartItem={cartItem} />
       ))}
     </div>
   );
