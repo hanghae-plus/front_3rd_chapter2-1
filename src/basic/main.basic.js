@@ -104,11 +104,6 @@ function updateProductOptions() {
     $productSelect.appendChild(opt);
   });
 }
-
-const getProductById = (productId) => {
-  return productList.find((product) => product.id === productId);
-};
-
 const calcCart = () => {
   totalAmount = 0;
   itemCnt = 0;
@@ -116,7 +111,9 @@ const calcCart = () => {
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
     const cartItem = cartItems[i];
-    const currentProduct = getProductById(cartItem.id);
+    const currentProduct = productList.find(
+      (product) => product.id === cartItem.id,
+    );
 
     if (!currentProduct) return;
 
@@ -303,8 +300,10 @@ const updateItemQuantity = (button, cartItem, product) => {
   const quantityChange = parseInt(button.dataset.change);
   const currentQuantity = getCurrentQuantity(cartItem);
   const newQuantity = currentQuantity + quantityChange;
+  const isValidQuantityChange =
+    newQuantity > 0 && newQuantity <= product.quantity + currentQuantity;
 
-  if (isValidQuantityChange(newQuantity, product, currentQuantity)) {
+  if (isValidQuantityChange) {
     updateCartItemQuantity(cartItem, product, newQuantity);
     product.quantity -= quantityChange;
   } else if (newQuantity <= 0) {
@@ -317,9 +316,6 @@ const updateItemQuantity = (button, cartItem, product) => {
 
 const getCurrentQuantity = (cartItem) =>
   parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
-
-const isValidQuantityChange = (newQuantity, product, currentQuantity) =>
-  newQuantity > 0 && newQuantity <= product.quantity + currentQuantity;
 
 const updateCartItemQuantity = (cartItem, product, newQuantity) => {
   const spanElement = cartItem.querySelector('span');
