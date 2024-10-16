@@ -30,6 +30,28 @@ const handleTimerFlashSale = () => {
   }, FLASH_SALE_INTERVAL);
 };
 
+const handleTimerSuggestion = () => {
+  const SUGGESTION_INTERVAL = 60000;
+  const SUGGESTION_DISCOUNT = 0.95;
+
+  setInterval(() => {
+    if (lastSel) {
+      const suggestedProduct = productList.find(
+        (product) => product.id !== lastSel && product.quantity > 0,
+      );
+      if (suggestedProduct) {
+        alert(
+          `${suggestedProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`,
+        );
+        suggestedProduct.price = Math.round(
+          suggestedProduct.price * SUGGESTION_DISCOUNT,
+        );
+        updateProductOptions();
+      }
+    }
+  }, SUGGESTION_INTERVAL);
+};
+
 function main() {
   const $root = document.getElementById('app');
   const $container = document.createElement('div');
@@ -68,22 +90,7 @@ function main() {
   calcCart();
 
   setTimeout(handleTimerFlashSale, Math.random() * 10000);
-  setTimeout(function () {
-    setInterval(function () {
-      if (lastSel) {
-        const suggest = productList.find(function (item) {
-          return item.id !== lastSel && item.quantity > 0;
-        });
-        if (suggest) {
-          alert(
-            suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!',
-          );
-          suggest.price = Math.round(suggest.price * 0.95);
-          updateProductOptions();
-        }
-      }
-    }, 60000);
-  }, Math.random() * 20000);
+  setTimeout(handleTimerSuggestion, Math.random() * 20000);
 }
 
 function updateProductOptions() {
