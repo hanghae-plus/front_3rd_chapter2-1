@@ -36,7 +36,7 @@ const useCartTotalPrice = () => {
     if (new Date().getDay() === SALE_DAY) return SALE_DAY_DISCOUNT_RATE;
     return 0;
   };
-  const updateBonusPoints = (points: number, totalPrice: number) => {
+  const updatePoints = (points: number, totalPrice: number) => {
     return points + Math.floor(totalPrice / 1000);
   };
 
@@ -65,7 +65,7 @@ const useCartTotalPrice = () => {
 
     discountRate = Math.max(discountRate, calculateDayDiscountRate());
     discountedTotalPrice = calculateDiscountedPrice(totalPrice, discountRate);
-    const finalPoints = updateBonusPoints(points, discountedTotalPrice);
+    const finalPoints = updatePoints(points, discountedTotalPrice);
 
     // 최종 setState
     setTotalPrice(discountedTotalPrice);

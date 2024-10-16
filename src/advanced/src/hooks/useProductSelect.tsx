@@ -13,7 +13,9 @@ const useProductSelect = () => {
   const storeCartItems = useCartStore((state) => state.cartItems);
   const addStoreCartItems = useCartStore((state) => state.addStoreCartItems);
   const updateStoreCartItems = useCartStore((state) => state.updateStoreCartItems);
-  const updateStoreProductQuantity = useProductStore((state) => state.updateStoreProductQuantity);
+
+  const updateStoreProductQuantity = useProductStore((state) => state.updateProductQuantity);
+  const updateLastAddedProduct = useProductStore((state) => state.updateLastAddedProduct);
 
   const addToCart = (currentCartItem: CartItemModel | undefined, targetProduct: ProductModel) => {
     if (!currentCartItem) {
@@ -51,6 +53,7 @@ const useProductSelect = () => {
     }
 
     addToCart(currentCartItem, targetProduct);
+    updateLastAddedProduct(targetProduct);
   };
 
   return { selectedProduct, handleSelectProduct, handleAddToCart };

@@ -13,6 +13,7 @@ type Action = {
 
 export const useCartStore = create<State & Action>((set) => ({
   cartItems: [],
+
   addStoreCartItems: (targetCartItem) => set((state) => ({ cartItems: [...state.cartItems, targetCartItem] })),
   updateStoreCartItems: (updatedCartItems) => set(() => ({ cartItems: updatedCartItems })),
   removeStoreCartItem: (targetCartItem) =>

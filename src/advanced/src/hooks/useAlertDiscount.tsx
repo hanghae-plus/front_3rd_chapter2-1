@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useProductStore } from '../stores';
 
 const useEvents = () => {
+  const storeLastAddedProduct = useProductStore((state) => state.lastAddedProduct);
   const storeProducts = useProductStore((state) => state.products);
 
   const setSurpriseDiscount = () => {
@@ -18,22 +19,20 @@ const useEvents = () => {
         if (Math.random() < SURPRISE_DISCOUNT_PROBABILITY && luckyItem.quantity > 0) {
           luckyItem.price = Math.round(luckyItem.price * SURPRISE_DISCOUNT_RATE);
           alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
-          //   renderProductOptions();
         }
       }, SURPRISE_TIME_INTERVAL);
     }, Math.random() * 10000);
   };
-  const setSuggestDiscount = (lastAddedProduct) => {
+  const setSuggestDiscount = () => {
     setTimeout(() => {
       setInterval(() => {
-        if (lastAddedProduct) {
+        if (storeLastAddedProduct) {
           const suggest = storeProducts.find((product) => {
-            return product.id !== lastAddedProduct && product.quantity > 0;
+            return product.id !== storeLastAddedProduct.id && product.quantity > 0;
           });
           if (suggest) {
             alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
             suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
-            // renderProductOptions();
           }
         }
       }, SUGGEST_TIME_INTERVAL);
@@ -42,7 +41,7 @@ const useEvents = () => {
 
   useEffect(() => {
     setSurpriseDiscount();
-    setSuggestDiscount(null);
+    setSuggestDiscount();
   });
 };
 

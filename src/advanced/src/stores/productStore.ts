@@ -4,15 +4,19 @@ import { products } from '../data/products';
 
 type State = {
   products: ProductModel[];
+  lastAddedProduct: ProductModel | null;
 };
 
 type Action = {
-  updateStoreProductQuantity: (targetProduct: ProductModel, newQuantity: number) => void;
+  updateProductQuantity: (targetProduct: ProductModel, newQuantity: number) => void;
+  updateLastAddedProduct: (targetProduct: ProductModel) => void;
 };
 
 export const useProductStore = create<State & Action>((set) => ({
   products: products,
-  updateStoreProductQuantity: (targetProduct: ProductModel, newQuantity: number) =>
+  lastAddedProduct: null,
+
+  updateProductQuantity: (targetProduct, newQuantity) =>
     set((state) => ({
       products: state.products.map((product) => {
         if (product.id === targetProduct.id) {
@@ -22,4 +26,5 @@ export const useProductStore = create<State & Action>((set) => ({
         }
       }),
     })),
+  updateLastAddedProduct: (product) => set(() => ({ lastAddedProduct: product })),
 }));

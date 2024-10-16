@@ -6,8 +6,10 @@ const useCartOperations = () => {
   const storeCartItems = useCartStore((state) => state.cartItems);
   const updateStoreCartItems = useCartStore((state) => state.updateStoreCartItems);
   const removeStoreCartItem = useCartStore((state) => state.removeStoreCartItem);
-  const updateStoreProductQuantity = useProductStore((state) => state.updateStoreProductQuantity);
+
   const storeProducts = useProductStore((state) => state.products);
+  const updateStoreProductQuantity = useProductStore((state) => state.updateProductQuantity);
+  const updateLastAddedProduct = useProductStore((state) => state.updateLastAddedProduct);
 
   const updateCartItemQuantity = (cartItem: CartItemModel, newQuantity: number) => {
     const updatedCartItems = storeCartItems.map((item) => {
@@ -33,9 +35,8 @@ const useCartOperations = () => {
     updateCartItemQuantity(cartItem, newQuantity);
     updateStoreProductQuantity(targetProduct, updatedStock);
 
-    if (newQuantity <= 0) {
-      removeStoreCartItem(cartItem);
-    }
+    if (changeAmount > 0) updateLastAddedProduct(targetProduct);
+    if (newQuantity <= 0) removeStoreCartItem(cartItem);
   };
 
   return { handleCartItemQuantity };
