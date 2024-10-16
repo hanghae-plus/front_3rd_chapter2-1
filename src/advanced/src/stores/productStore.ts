@@ -7,13 +7,19 @@ type State = {
 };
 
 type Action = {
-  //   updateStoreCartItems: (updatedCartItems: State['cartItems']) => void;
+  updateStoreProductQuantity: (targetProduct: IProduct, newQuantity: number) => void;
 };
 
 export const useProductStore = create<State & Action>((set) => ({
   products: products,
-  //   addStoreCartItems: (targetCartItem) => set((state) => ({ cartItems: [...state.cartItems, targetCartItem] })),
-  //   updateStoreCartItems: (updatedCartItems) => set(() => ({ cartItems: updatedCartItems })),
-  //   removeStoreCartItem: (targetCartItem) =>
-  //     set((state) => ({ cartItems: state.cartItems.filter((cartItem) => cartItem.id !== targetCartItem.id) })),
+  updateStoreProductQuantity: (targetProduct: IProduct, newQuantity: number) =>
+    set((state) => ({
+      products: state.products.map((product) => {
+        if (product.id === targetProduct.id) {
+          return { ...product, quantity: newQuantity };
+        } else {
+          return product;
+        }
+      }),
+    })),
 }));

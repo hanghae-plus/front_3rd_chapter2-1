@@ -1,8 +1,10 @@
 import { LACK_OF_STOCK } from '../constants';
-import { products } from '../data/products';
+import { useProductStore } from '../stores/productStore';
 
 const StockStatus = () => {
-  const formatLowStocksInfo = products
+  const storeProducts = useProductStore((state) => state.products);
+
+  const formatLowStocksInfo = storeProducts
     .map((product) => {
       if (product.quantity >= LACK_OF_STOCK) return;
       if (product.quantity === 0) return `${product.name}: 품절`;

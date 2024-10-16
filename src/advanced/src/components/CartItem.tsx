@@ -1,5 +1,5 @@
 import useCartOperations from '../hooks/useCartOperations';
-import { useStore } from '../stores/store';
+import { useStore } from '../stores/cartStore';
 import { ICartItem } from '../types/cart';
 import OperationButton from './OperationButton';
 

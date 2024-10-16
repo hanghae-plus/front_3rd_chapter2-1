@@ -1,4 +1,3 @@
-import { products } from '../data/products';
 import {
   SURPRISE_DISCOUNT_PROBABILITY,
   SURPRISE_DISCOUNT_RATE,
@@ -7,12 +6,15 @@ import {
   SUGGEST_TIME_INTERVAL,
 } from '../constants';
 import { useEffect } from 'react';
+import { useProductStore } from '../stores/productStore';
 
 const useEvents = () => {
+  const storeProducts = useProductStore((state) => state.products);
+
   const setSurpriseDiscount = () => {
     setTimeout(() => {
       setInterval(() => {
-        const luckyItem = products[Math.floor(Math.random() * products.length)];
+        const luckyItem = storeProducts[Math.floor(Math.random() * storeProducts.length)];
         if (Math.random() < SURPRISE_DISCOUNT_PROBABILITY && luckyItem.quantity > 0) {
           luckyItem.price = Math.round(luckyItem.price * SURPRISE_DISCOUNT_RATE);
           alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
@@ -25,7 +27,7 @@ const useEvents = () => {
     setTimeout(() => {
       setInterval(() => {
         if (lastAddedProduct) {
-          const suggest = products.find((product) => {
+          const suggest = storeProducts.find((product) => {
             return product.id !== lastAddedProduct && product.quantity > 0;
           });
           if (suggest) {

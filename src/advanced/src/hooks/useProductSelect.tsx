@@ -1,42 +1,51 @@
 import { ChangeEvent, useState } from 'react';
-import { products } from '../data/products';
-import { useStore } from '../stores/store';
+import { useStore } from '../stores/cartStore';
 import { ICartItem, IProduct } from '../types/cart';
+import { useProductStore } from '../stores/productStore';
 
 const useProductSelect = () => {
+  const storeProducts = useProductStore((state) => state.products);
   const [selected, setSelected] = useState('p1');
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelected(e.target.value);
   };
 
-  const cartItems = useStore((state) => state.cartItems);
+  const storeCartItems = useStore((state) => state.cartItems);
   const addStoreCartItems = useStore((state) => state.addStoreCartItems);
   const updateStoreCartItems = useStore((state) => state.updateStoreCartItems);
+  const updateStoreProductQuantity = useProductStore((state) => state.updateStoreProductQuantity);
 
   const addToCart = (currentCartItem: ICartItem | undefined, targetProduct: IProduct) => {
     if (!currentCartItem) {
-      addStoreCartItems({ ...targetProduct, cartQuantity: 1, quantity: targetProduct.quantity - 1 });
+      addStoreCartItems({
+        id: targetProduct.id,
+        name: targetProduct.name,
+        price: targetProduct.price,
+        cartQuantity: 1,
+      });
+      updateStoreProductQuantity(targetProduct, targetProduct.quantity - 1);
       return;
     }
 
-    const updatedCartItems = cartItems.map((item) => {
+    const updatedCartItems = storeCartItems.map((item) => {
       if (item.id === targetProduct.id) {
-        return { ...item, quantity: item.quantity - 1, cartQuantity: item.cartQuantity + 1 };
+        return { ...item, cartQuantity: item.cartQuantity + 1 };
       } else return item;
     });
     updateStoreCartItems(updatedCartItems);
+    updateStoreProductQuantity(targetProduct, targetProduct.quantity - 1);
   };
 
   const handleAddToCart = () => {
-    const targetProduct = products.find((product) => {
+    const targetProduct = storeProducts.find((product) => {
       return product.id === selected;
     });
 
     if (!targetProduct) return; // 상품 자체가 존재하지 않음
 
-    const currentCartItem = cartItems.find((item) => item.id === targetProduct.id);
+    const currentCartItem = storeCartItems.find((item) => item.id === targetProduct.id);
 
-    if (currentCartItem && currentCartItem.quantity === 0) {
+    if (currentCartItem && targetProduct.quantity === 0) {
       alert('재고가 부족합니다.');
       return;
     }
