@@ -70,6 +70,28 @@ export function createStockStatusDiv() {
   });
 }
 
+export function createNewItemDiv(selectedProduct) {
+  return createElement('div', {
+    id: selectedProduct.id,
+    className: 'flex justify-between items-center mb-2',
+    innerHTML:
+      '<span>' +
+      selectedProduct.name +
+      ' - ' +
+      selectedProduct.price +
+      '원 x 1</span><div>' +
+      '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
+      selectedProduct.id +
+      '" data-change="-1">-</button>' +
+      '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
+      selectedProduct.id +
+      '" data-change="1">+</button>' +
+      '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
+      selectedProduct.id +
+      '">삭제</button></div>',
+  });
+}
+
 export function renderOptionList($productSelect) {
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
