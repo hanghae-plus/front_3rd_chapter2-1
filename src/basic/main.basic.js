@@ -87,15 +87,18 @@ function createUI() {
   $root.appendChild($container);
 }
 
+// 상품 select 업데이트
 function updateProductSelectOption() {
   $productSelect.innerHTML = "";
-  productList.forEach(function (item) {
-    var opt = document.createElement("option");
-    opt.value = item.id;
 
-    opt.textContent = item.name + " - " + item.val + "원";
-    if (item.q === 0) opt.disabled = true;
-    $productSelect.appendChild(opt);
+  productList.forEach(function (item) {
+    let $option = createElement("option", null, null, item.name + " - " + item.val + "원");
+    $option.value = item.id;
+
+    if (item.q === 0) {
+      $option.disabled = true;
+    }
+    $productSelect.appendChild($option);
   });
 }
 
