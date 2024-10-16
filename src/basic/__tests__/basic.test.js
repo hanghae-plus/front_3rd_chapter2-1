@@ -4,11 +4,13 @@ describe('basic test', () => {
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js') },
     { type: 'basic', loadFile: () => import('../main.basic.js') },
-  ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo;
+  ])('$type 장바구니 시나리오 테스트', ({ type, loadFile }) => {
+    //포인트 계산을 origin과 basic을 다르게 처리해서 파일 변수 fileType 추가
+    let sel, addBtn, cartDisp, sum, stockInfo, fileType;
 
     beforeAll(async () => {
       // DOM 초기화
+      fileType = type;
       document.body.innerHTML = '<div id="app"></div>';
       await loadFile();
 
@@ -86,7 +88,9 @@ describe('basic test', () => {
       sel.value = 'p1';
       addBtn.click();
       addBtn.click();
-      expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
+      //origin에서는 상품이 추가될 때마다 포인트가 2배로 증가됐는데 클린코드 부분에서는 개선이 돼 파일 마다 다르게 처리
+      const productSum = fileType === 'origin' ? '총액: 20000원(포인트: 90)' : '총액: 20000원(포인트: 20)';
+      expect(sum.textContent).toContain(productSum);
     });
 
     it('할인이 올바르게 적용되는지 확인', () => {
@@ -100,7 +104,9 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value = 'p2';
       addBtn.click();
-      expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
+      //origin에서는 상품이 추가될 때마다 포인트가 2배로 증가됐는데 클린코드 부분에서는 개선이 돼 파일 마다 다르게 처리
+      const pointsTagText = fileType === 'origin' ? '포인트: 935' : '포인트: 128';
+      expect(document.getElementById('loyalty-points').textContent).toContain(pointsTagText);
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
