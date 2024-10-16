@@ -1,17 +1,29 @@
 import { ChangeEvent, useState } from 'react';
 import { products } from '../data/products';
-import { useStore } from '../stores/useStore';
+import { useStore } from '../stores/store';
+import { Product } from '../types/cart';
 
 const ProductSelect = () => {
-  let bonusPoints = 0;
-  let lastAddedProduct = '';
+  //   let bonusPoints = 0;
+  //   let lastAddedProduct = '';
 
-  const addToCart = ($targetCartItem, targetProduct) => {
-    // if (!$targetCartItem) {
-    //   createNewCartItem(targetProduct);
-    //   targetProduct.quantity--;
-    //   return;
-    // }
+  const cartItems = useStore((state) => state.cartItems);
+  const updateCartItems = useStore((state) => state.updateCartItems);
+
+  const addToCart = (targetProduct: Product) => {
+    const currentCartItem = cartItems.find((item) => item.id === targetProduct.id);
+
+    if (currentCartItem) {
+      const updatedCartItems = cartItems.map((item) => {
+        if (item.id === targetProduct.id) {
+          return { ...item, quantity: item.quantity - 1, cartQuantity: item.cartQuantity + 1 };
+        } else return item;
+      });
+      updateCartItems(updatedCartItems);
+    } else {
+      updateCartItems([...cartItems, { ...targetProduct, cartQuantity: 1, quantity: targetProduct.quantity - 1 }]);
+    }
+
     // const currentItemQuantity = getTargetItemElementQuantity($targetCartItem);
     // const newItemQuantity = currentItemQuantity + 1;
     // BUG: 로직 개선
@@ -29,10 +41,10 @@ const ProductSelect = () => {
       return product.id === selected;
     });
 
-    useStore((state) => state.addCartItems(targetProduct));
+    if (!targetProduct) return; // 상품 자체가 존재하지 않음
 
+    addToCart(targetProduct);
     // if (targetProduct && targetProduct.quantity > 0) {
-    //   console.log(targetProduct);
     //   // const $targetCartItem = document.getElementById(targetProduct.id);
     //   addToCart($targetCartItem, targetProduct);
     //   // bonusPoints = updateCartInfos(bonusPoints);
