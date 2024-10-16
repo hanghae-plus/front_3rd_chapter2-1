@@ -3,11 +3,12 @@ import {
   DISCOUNT_PRODUCT_COUNT,
   DISCOUNT_RATES,
   DISCOUNT_10_PERCENT,
+  DISCOUNT_25_PERCENT,
   DISCOUNT_25_PERCENT_PRODUCT_COUNT,
   ALERT_SHORT_STOCK,
 } from './constants.js';
 import { addCartBtn, productSelectDropDown, productSum, renderCart, stockInfo } from './layout.js';
-import { renderProductList, renderCartProductElement, renderBonusPoints, renderTotalAmount } from './render.js';
+import { renderProductList, renderCartProductElement, renderBonusPoints } from './render.js';
 
 let lastSelectedProductId;
 
@@ -57,7 +58,6 @@ const calcCart = () => {
     stockCnt += stock;
     discountPrevAmount += productAmount;
     totalAmount += productAmount * (1 - discountRate);
-    renderBonusPoints(totalAmount);
   }
 
   let discountRate = getBulkDiscount(stockCnt, totalAmount, discountPrevAmount);
