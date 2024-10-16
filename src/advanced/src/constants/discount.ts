@@ -6,7 +6,7 @@ export const SUGGEST_DISCOUNT_RATE = 0.95;
 export const SUGGEST_TIME_INTERVAL = 60000;
 
 export const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
-export const PRODUCT_BULK_DISCOUNT_RATE = {
+export const PRODUCT_BULK_DISCOUNT_RATE: Record<string, number> = {
   p1: 0.1,
   p2: 0.15,
   p3: 0.2,

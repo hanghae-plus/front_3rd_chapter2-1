@@ -33,8 +33,6 @@ const calculateCartTotals = () => {
   let totalPrice = 0;
   let discountedTotalPrice = 0;
 
-  const cartItems = document.getElementById('cart-items').children;
-
   for (let $cartItem of cartItems) {
     const currentProduct = products.find((product) => product.id === $cartItem.id);
     const quantity = getTargetItemElementQuantity($cartItem);

@@ -4,6 +4,7 @@ import type { CartItemModel, ProductModel } from '../types/cart';
 
 const useProductSelect = () => {
   const storeProducts = useProductStore((state) => state.products);
+
   const [selectedProduct, setSelectedProduct] = useState('p1');
   const handleSelectProduct = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedProduct(e.target.value);
