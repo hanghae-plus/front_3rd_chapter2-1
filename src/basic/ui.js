@@ -23,6 +23,29 @@ export function setupElements() {
   updateSelOptions()
 }
 
+export function updateStockInfo(prodList) {
+  let infoMsg = prodList
+    ?.filter((item) => item.stock < 5)
+    .map(
+      ({ name, stock }) =>
+        `${name}: ${stock > 0 ? '재고 부족 (' + stock + '개 남음)' : '품절'}`,
+    )
+    .join('\n')
+
+  document.getElementById('stock-status').textContent = infoMsg
+}
+
+export function renderBonusPts(bonusPts) {
+  let ptsTag = document.getElementById('loyalty-points')
+  if (!ptsTag) {
+    ptsTag = document.createElement('span')
+    ptsTag.id = 'loyalty-points'
+    ptsTag.className = 'text-blue-500 ml-2'
+    sum.appendChild(ptsTag)
+  }
+  ptsTag.textContent = `(포인트: ${bonusPts})`
+}
+
 function updateSelOptions() {
   sel.innerHTML = prodList
     .map(

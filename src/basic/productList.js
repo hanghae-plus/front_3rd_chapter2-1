@@ -4,4 +4,15 @@ export const prodList = [
   { id: 'p3', name: '상품3', price: 30000, stock: 20 },
   { id: 'p4', name: '상품4', price: 15000, stock: 0 },
   { id: 'p5', name: '상품5', price: 25000, stock: 10 },
-];
+]
+
+export function getProductById(id) {
+  return prodList.find((item) => item.id === id)
+}
+
+export function updateProductStock(id, amount) {
+  const product = getProductById(id)
+  if (product) {
+    product.stock += amount
+  }
+}
