@@ -1,4 +1,4 @@
-import { AddBtn } from './components/AddBtn';
+import { AddCartButton } from './components/AddCartButton';
 import { CartDisp } from './components/CartDisp';
 import { Select } from './components/Select';
 import { StockInfo } from './components/StockInfo';
@@ -53,18 +53,12 @@ class Main {
       },
     });
     this.select = new Select({ wrap, prodList: this.#prodList });
-    new AddBtn({
-      wrap,
-      prodList: this.#prodList,
-      setProdList: (prodList) => {
-        this.prodList = prodList;
-      },
+
+    new AddCartButton({
+      $root: wrap,
       $select: this.select.$element,
-      cartDisp: cartDisp.$element,
-      calcCart: (selItem) => {
-        cartDisp.calcCart();
-        this.#lastSel = selItem;
-      },
+      productList: this.#prodList,
+      handleAddCart: (itemToAdd) => cartDisp.handleAddToCart(itemToAdd),
     });
 
     this.stockInfo.mount();
