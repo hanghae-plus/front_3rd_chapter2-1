@@ -4,7 +4,7 @@ export type CartTotal = {
   point: number;
 };
 
-export const DEFAULT_CART_TOTAL = {
+export const DEFAULT_CART_TOTAL: CartTotal = {
   discountRate: 0,
   point: 0,
   totalPrice: 0,
