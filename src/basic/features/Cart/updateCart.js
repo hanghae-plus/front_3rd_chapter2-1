@@ -52,12 +52,6 @@ const handleRemoveItem = (product, cartItem) => {
   cartItem.remove();
 };
 
-// 상품 재고 업데이트
-const updateProductQuantity = (product, quantityChange) => {
-  product.quantity -= quantityChange;
-  updateProductQuantity(product.id, product.quantity);
-};
-
 // 상품 재고 복원
 const restoreProductQuantity = (product, quantity) => {
   product.quantity += quantity;
