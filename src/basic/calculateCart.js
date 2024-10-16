@@ -1,10 +1,10 @@
 import { createSpan } from './createElements';
-import renderBonusPts from './renderBonusPts';
+import renderBonusPoints from './renderBonusPoints';
 
-const mapCartItems = (cartsDiv, prodList) => {
+const mapCartItems = (cartsDiv, productList) => {
   const elements = Array.from(cartsDiv.children);
   const ids = elements.map((item) => item.id);
-  const mapProducts = ids.map((id) => prodList.find((prod) => prod.id === id));
+  const mapProducts = ids.map((id) => productList.find((prod) => prod.id === id));
   const cartItems = mapProducts.map((item, i) => ({
     ...item,
     q: parseInt(elements[i].querySelector('span').textContent.split('x ')[1]),
@@ -52,10 +52,10 @@ const getSpecialDiscountRate = (rate, totalPrice) => {
 
   return [rate, totalPrice];
 };
-function updateStockInfo(prodList, stockInfoDiv) {
+function updateStockInfo(productList, stockInfoDiv) {
   let infoMsg = '';
 
-  prodList.forEach(function (item) {
+  productList.forEach(function (item) {
     if (item.q < 5)
       infoMsg +=
         item.name + ': ' + (item.q > 0 ? '재고 부족 (' + item.q + '개 남음)' : '품절') + '\n';
@@ -64,8 +64,8 @@ function updateStockInfo(prodList, stockInfoDiv) {
   stockInfoDiv.textContent = infoMsg;
 }
 
-function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
-  const carts = mapCartItems(cartsDiv, prodList);
+function calculateCart({ productList, $sum, $cartList, $stock }) {
+  const carts = mapCartItems($cartList, productList);
   const count = carts.reduce((acc, item) => acc + item.q, 0);
   const totalOriginPrice = carts.reduce((acc, item) => acc + item.val * item.q, 0);
   const totalDiscountPrice = carts.reduce(
@@ -78,18 +78,18 @@ function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   [rate, totalPrice] = applyBulkDiscount(count, totalOriginPrice, totalDiscountPrice);
   [rate, totalPrice] = getSpecialDiscountRate(rate, totalPrice);
 
-  sumDiv.textContent = `총액: ${Math.round(totalPrice)}원`;
+  $sum.textContent = `총액: ${Math.round(totalPrice)}원`;
 
   if (rate > 0) {
     let span = createSpan({
       text: `(${(rate * 100).toFixed(1)}% 할인 적용)`,
       className: 'text-green-500 ml-2',
     });
-    sumDiv.appendChild(span);
+    $sum.appendChild(span);
   }
 
-  updateStockInfo(prodList, stockInfoDiv);
-  renderBonusPts(totalPrice, sumDiv);
+  updateStockInfo(productList, $stock);
+  renderBonusPoints(totalPrice, $sum);
 }
 
 export default calculateCart;

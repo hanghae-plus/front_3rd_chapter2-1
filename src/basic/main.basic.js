@@ -2,10 +2,10 @@ import calculateCart from './calculateCart';
 import { setLuckySale, setSuggestSale } from './eventManager';
 import renderCartItem from './renderCartItem';
 import renderHome from './renderHome';
-import updateSelOpts from './updateSelOpts';
+import updateSelectOptions from './updateSelectOptions';
 
-let productList, $select, $addBtn, $cartList, $sum, $stockInfo;
-let lastSelectedProductId;
+let productList, $select, $addBtn, $cartList, $sum, $stock;
+let lastSelectedId;
 
 function main() {
   productList = [
@@ -23,19 +23,14 @@ function main() {
   $addBtn = document.getElementById('add-to-cart');
   $cartList = document.getElementById('cart-items');
   $sum = document.getElementById('cart-total');
-  $stockInfo = document.getElementById('stock-status');
+  $stock = document.getElementById('stock-status');
 
-  updateSelOpts($select, productList);
+  updateSelectOptions($select, productList);
 
-  calculateCart({
-    prodList: productList,
-    sumDiv: $sum,
-    cartsDiv: $cartList,
-    stockInfoDiv: $stockInfo,
-  });
+  calculateCart({ productList, $sum, $cartList, $stock });
 
   setLuckySale(productList, $select);
-  setSuggestSale(productList, $select, lastSelectedProductId);
+  setSuggestSale(productList, $select, lastSelectedId);
 }
 
 main();
@@ -67,14 +62,9 @@ $addBtn.addEventListener('click', function () {
     selectedProduct.q--;
   }
 
-  calculateCart({
-    prodList: productList,
-    sumDiv: $sum,
-    cartsDiv: $cartList,
-    stockInfoDiv: $stockInfo,
-  });
+  calculateCart({ productList, $sum, $cartList, $stock });
 
-  lastSelectedProductId = selectedId;
+  lastSelectedId = selectedId;
 });
 
 $cartList.addEventListener('click', function (event) {
@@ -109,10 +99,5 @@ $cartList.addEventListener('click', function (event) {
     $item.remove();
   }
 
-  calculateCart({
-    prodList: productList,
-    sumDiv: $sum,
-    cartsDiv: $cartList,
-    stockInfoDiv: $stockInfo,
-  });
+  calculateCart({ productList, $sum, $cartList, $stock });
 });
