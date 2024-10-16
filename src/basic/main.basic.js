@@ -96,7 +96,7 @@ const main = () => {
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
   productList.forEach((item) => {
-    let opt = document.createElement('option');
+    const opt = document.createElement('option');
     opt.value = item.id;
 
     opt.textContent = item.name + ' - ' + item.price + '원';
