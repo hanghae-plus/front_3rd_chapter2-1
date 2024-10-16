@@ -7,7 +7,7 @@ let lastAddedItemId,
 
 const DISCOUNT_LIST = {
   bulk: { condition: totalItemCount >= 30, rate: 0.25 },
-  tuesday: { condition: new Date().getDay() === 2, rate: 0.1 },
+  tuesday: { condition: (date) => date.getDay() === 2, rate: 0.1 },
 };
 
 const CartPageTemplate = () => `<div class="bg-gray-100 p-8">
@@ -107,6 +107,7 @@ const main = () => {
 const calculateCartTotal = () => {
   finalTotalPrice = 0;
   totalItemCount = 0;
+  discountRate = 0;
 
   const cartItemsInElement = Array.from(cartItemsElement.children);
   const cartItems = cartItemsInElement.map((item) => {
@@ -148,7 +149,7 @@ const calculateCartDiscount = (cartItems) => {
   discountRate = 1 - finalTotalPrice / originalTotalPrice;
 
   // 화요일 - 특별할인 10%
-  if (DISCOUNT_LIST.tuesday.condition) {
+  if (DISCOUNT_LIST.tuesday.condition(new Date())) {
     finalTotalPrice *= 1 - DISCOUNT_LIST.tuesday.rate;
     discountRate = Math.max(discountRate, DISCOUNT_LIST.tuesday.rate);
   }
