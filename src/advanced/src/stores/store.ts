@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { CartItem } from '../types/cart';
+import { ICartItem } from '../types/cart';
 
 type State = {
-  cartItems: CartItem[];
+  cartItems: ICartItem[];
 };
 
 type Action = {

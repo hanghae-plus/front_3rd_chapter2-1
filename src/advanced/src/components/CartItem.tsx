@@ -1,8 +1,8 @@
-import { CartItem } from '../types/cart';
+import { ICartItem } from '../types/cart';
 import OperationButton from './OperationButton';
 
 interface CartItemProps {
-  cartItem: CartItem;
+  cartItem: ICartItem;
 }
 
 const CartItem = ({ cartItem }: CartItemProps) => {

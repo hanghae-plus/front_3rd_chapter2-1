@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { products } from '../data/products';
 import { useStore } from '../stores/store';
-import { Product } from '../types/cart';
+import { IProduct } from '../types/cart';
 
 const ProductSelect = () => {
   //   let bonusPoints = 0;
@@ -10,7 +10,7 @@ const ProductSelect = () => {
   const cartItems = useStore((state) => state.cartItems);
   const updateCartItems = useStore((state) => state.updateCartItems);
 
-  const addToCart = (targetProduct: Product) => {
+  const addToCart = (targetProduct: IProduct) => {
     const currentCartItem = cartItems.find((item) => item.id === targetProduct.id);
 
     if (currentCartItem) {
