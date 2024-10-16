@@ -7,6 +7,8 @@ import { Sum } from './components/Sum';
 let lastSel;
 
 class Main {
+  #prodList = [];
+
   constructor() {
     /**
      * TODO:
@@ -37,26 +39,26 @@ class Main {
     cont.appendChild(wrap);
     root.appendChild(cont);
 
-    const stockInfo = new StockInfo({ wrap });
+    this.stockInfo = new StockInfo({ wrap, productList: this.prodList });
 
     const sum = new Sum({ wrap });
     const cartDisp = new CartDisp({
       wrap,
-      prodList: this.prodList,
+      prodList: this.#prodList,
 
       updateSumDetails: ({ totalPrice, discount }) => {
         sum.totalPrice = totalPrice;
         sum.discountRate = discount;
       },
       updateStockInfo: (productList) => {
-        stockInfo.productList = productList;
+        this.prodList = productList;
       },
     });
-    const select = new Select({ wrap, prodList: this.prodList });
+    const select = new Select({ wrap, prodList: this.#prodList });
 
     new AddBtn({
       wrap,
-      prodList: this.prodList,
+      prodList: this.#prodList,
       $select: select.$element,
       cartDisp: cartDisp.$element,
       calcCart: (selItem) => {
@@ -65,7 +67,7 @@ class Main {
       },
     });
 
-    stockInfo.mount();
+    this.stockInfo.mount();
 
     setTimeout(function () {
       setInterval(function () {
@@ -95,6 +97,15 @@ class Main {
         }
       }, 60000);
     }, Math.random() * 20000);
+  }
+
+  get prodList() {
+    return this.#prodList;
+  }
+  set prodList(nextProdList) {
+    this.#prodList = nextProdList;
+
+    this.stockInfo?.render();
   }
 }
 
