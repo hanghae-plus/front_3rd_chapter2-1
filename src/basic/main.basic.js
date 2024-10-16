@@ -191,35 +191,46 @@ const updateStockStatus = () => {
   stockStatusElement.textContent = stockStatusMsg;
 };
 
+const updateCartItems = (addedItem) => {
+  const addedItemElement = document.getElementById(addedItem.id);
+
+  if (addedItemElement === null) {
+    cartItemsElement.innerHTML += firstAddedItemTemplate(addedItem);
+    addedItem.quantity--;
+
+    return;
+  }
+
+  const existingItemSpan = addedItemElement.querySelector("span");
+  const currentItemQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]) + 1;
+
+  if (currentItemQuantity <= addedItem.quantity) {
+    existingItemSpan.textContent = `${addedItem.name} - ${addedItem.price}원 x ${currentItemQuantity}`;
+
+    addedItem.quantity--;
+  } else {
+    alert("재고가 부족합니다.");
+  }
+};
+
+const handleClickAddToCartBtn = () => {
+  const addedItemId = productSelectElement.value;
+  const addedItem = products.find((product) => product.id === addedItemId);
+  const isInStock = addedItem && addedItem.quantity > 0;
+
+  if (!isInStock) {
+    return;
+  }
+
+  updateCartItems(addedItem);
+  calculateCartTotal();
+
+  lastAddedItemId = addedItemId;
+};
+
 main();
 
-addToCartBtnElement.addEventListener("click", () => {
-  const addedProductId = productSelectElement.value;
-  const addedItem = products.find((p) => p.id === addedProductId);
-
-  if (addedItem && addedItem.quantity > 0) {
-    const addedItemElement = document.getElementById(addedItem.id);
-
-    if (addedItemElement) {
-      const addedItemQuantity = parseInt(addedItemElement.querySelector("span").textContent.split("x ")[1]) + 1;
-
-      if (addedItemQuantity <= addedItem.quantity) {
-        addedItemElement.querySelector("span").textContent =
-          `${addedItem.name} - ${addedItem.price}원 x ${addedItemQuantity}`;
-
-        addedItem.quantity--;
-      } else {
-        alert("재고가 부족합니다.");
-      }
-    } else {
-      cartItemsElement.innerHTML += firstAddedItemTemplate(addedItem);
-      addedItem.quantity--;
-    }
-
-    calculateCartTotal();
-    lastAddedItemId = addedProductId;
-  }
-});
+addToCartBtnElement.addEventListener("click", handleClickAddToCartBtn);
 
 cartItemsElement.addEventListener("click", (event) => {
   const buttonEventTarget = event.target;
