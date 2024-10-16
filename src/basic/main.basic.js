@@ -26,7 +26,7 @@ const init = () => {
 
   const title = Title('장바구니');
   const cart = Cart();
-  const total = Total(0, 0);
+  const total = Total();
   const select = Select();
   const button = Button('추가');
   const stockInfo = StockInfo();
