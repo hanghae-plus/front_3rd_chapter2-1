@@ -1,0 +1,1 @@
+export const SOLD_OUT = 0;
