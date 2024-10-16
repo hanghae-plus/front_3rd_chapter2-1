@@ -1,4 +1,4 @@
-let products, productSelectElement, addToCartBtnElement, cartItemsElement, cartTotalElement, stockStatusElement;
+let products, productSelectElement, cartItemsElement, cartTotalElement, stockStatusElement;
 let lastAddedItemId,
   loyaltyPoints = 0,
   finalTotalPrice = 0,
@@ -77,13 +77,16 @@ const main = () => {
   root.innerHTML = CartPageTemplate();
 
   productSelectElement = document.getElementById("product-select");
-  addToCartBtnElement = document.getElementById("add-to-cart");
+  const addToCartBtnElement = document.getElementById("add-to-cart");
   cartItemsElement = document.getElementById("cart-items");
   cartTotalElement = document.getElementById("cart-total");
   stockStatusElement = document.getElementById("stock-status");
 
   updateProductSelectOptions();
   calculateCartTotal();
+
+  clickEventListener(addToCartBtnElement, handleClickAddToCartBtn);
+  clickEventListener(cartItemsElement, handleClickCartItems);
 
   setTimeout(() => {
     setInterval(alertFlashSaleItem, FLASH_SALE_INTERVAL_MS);
@@ -296,7 +299,8 @@ const handleClickCartItems = (event) => {
   calculateCartTotal();
 };
 
-main();
+const clickEventListener = (element, listener) => {
+  element.addEventListener("click", listener);
+};
 
-addToCartBtnElement.addEventListener("click", handleClickAddToCartBtn);
-cartItemsElement.addEventListener("click", handleClickCartItems);
+main();
