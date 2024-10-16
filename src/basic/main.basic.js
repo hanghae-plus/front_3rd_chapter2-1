@@ -39,8 +39,8 @@ class Main {
     root.appendChild(cont);
 
     // 컴포넌트 초기화
-    this.StockInfo = new StockInfo({ wrap, productList: this.prodList });
     this.CartSummary = new CartSummary({ wrap });
+
     this.CartList = new CartList({
       $root: wrap,
       productList: this.#prodList,
@@ -52,6 +52,7 @@ class Main {
         this.CartSummary.discountRate = discount;
       },
     });
+
     this.Select = new Select({ wrap, prodList: this.#prodList });
 
     new AddCartButton({
@@ -61,7 +62,7 @@ class Main {
       handleAddCart: (itemToAdd) => this.CartList.handleAddToCart(itemToAdd),
     });
 
-    this.StockInfo.mount();
+    this.StockInfo = new StockInfo({ wrap, productList: this.prodList });
 
     this.startFlashSale();
     this.startSuggestionSale();

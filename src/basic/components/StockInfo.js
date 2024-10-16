@@ -6,9 +6,6 @@ export class StockInfo {
     this.$element = document.createElement('div');
     this.$element.id = 'stock-status';
     this.$element.className = 'text-sm text-gray-500 mt-2';
-  }
-
-  mount() {
     this.$root.appendChild(this.$element);
   }
 
