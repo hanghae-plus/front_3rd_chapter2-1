@@ -132,9 +132,9 @@ const calculateCartTotal = () => {
 
   const cartItemsElement = document.getElementById("cart-items");
   const cartItemsInElement = Array.from(cartItemsElement.children);
-  const cartItems = cartItemsInElement.map((item) => {
-    const _item = global_variable.products.find((product) => product.id === item.id);
-    const _itemCount = parseInt(item.querySelector("span").textContent.split("x ")[1]);
+  const cartItems = cartItemsInElement.map((cartItem) => {
+    const _item = global_variable.products.find((item) => item.id === cartItem.id);
+    const _itemCount = parseInt(cartItem.querySelector("span").textContent.split("x ")[1]);
     totalItemCount += _itemCount;
 
     return { ..._item, count: _itemCount };
@@ -241,9 +241,9 @@ const updateCartItems = (addedItem) => {
   }
 };
 
-const updateQuantityChangedCartItem = (productId, quantityChange) => {
-  const clickedItemElement = document.getElementById(productId);
-  const clickedItem = global_variable.products.find((product) => product.id === productId);
+const updateQuantityChangedCartItem = (itemId, quantityChange) => {
+  const clickedItemElement = document.getElementById(itemId);
+  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const existingItemSpan = clickedItemElement.querySelector("span");
 
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
@@ -262,9 +262,9 @@ const updateQuantityChangedCartItem = (productId, quantityChange) => {
   }
 };
 
-const updateRemovedCartItem = (productId) => {
-  const removeTargetElement = document.getElementById(productId);
-  const clickedItem = global_variable.products.find((product) => product.id === productId);
+const updateRemovedCartItem = (itemId) => {
+  const removeTargetElement = document.getElementById(itemId);
+  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const existingItemSpan = removeTargetElement.querySelector("span");
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
 
@@ -277,7 +277,7 @@ const handleClickAddToCartBtn = () => {
   const productSelectElement = document.getElementById("product-select");
 
   const addedItemId = productSelectElement.value;
-  const addedItem = global_variable.products.find((product) => product.id === addedItemId);
+  const addedItem = global_variable.products.find((item) => item.id === addedItemId);
   const isInStock = addedItem && addedItem.quantity > 0;
 
   if (!isInStock) {
@@ -295,13 +295,13 @@ const handleClickCartItems = (event) => {
   const isClickedAddBtn = classList.contains("quantity-change");
   const isClickedRemoveBtn = classList.contains("remove-item");
 
-  const clickedProductId = dataset.productId;
+  const clickedItemId = dataset.productId;
 
   if (isClickedAddBtn) {
     const quantityChange = parseInt(dataset.change);
-    updateQuantityChangedCartItem(clickedProductId, quantityChange);
+    updateQuantityChangedCartItem(clickedItemId, quantityChange);
   } else if (isClickedRemoveBtn) {
-    updateRemovedCartItem(clickedProductId);
+    updateRemovedCartItem(clickedItemId);
   }
 
   calculateCartTotal();
