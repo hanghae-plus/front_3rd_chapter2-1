@@ -30,6 +30,9 @@
 17. 화살표 함수로 만들 수 있는건 화살표 함수로 만들기
 18. 변수들의 변수명 변경. 직관적이고 어떤 값인지 알 수 있도록 지향. 변수는 명사로 짓기.(cont -> container, hTxt -> cart(장바구니를 나타내기 때문), sum -> totalAmount) 변수명이 너무 길지 않다면(15글자 이하 -> 여기에 대한 근거는? 아직 없다) 축약형을 쓰지 말자(addBtn -> addButton, prodList -> productList). element 요소들에게는 이름뒤에 element를 붙여줌(다른 변수값들과 쉽게 구분하기 위해)
 19. 수량은 quantity, 합산한 금액은 amount, 물건의 가격은 price로 이름지음.
+20. createUI안에서 createElement, setElementAttribute, addElement의 중복들을 피하기 위해 하나의 함수로 변경.
+21. if문 안에 early return을 할 수 있는 것들은 early return 할 수 있도록 수정.
+22. UI를 업데이트하는 로직과 비지니스 로직 분리.
 
 <!-- 왜 화살표 함수 안썼는지도 적기 -->
 
