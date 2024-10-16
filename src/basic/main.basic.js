@@ -96,14 +96,15 @@ const main = () => {
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
   productList.forEach((item) => {
-    const opt = document.createElement('option');
-    opt.value = item.id;
+    const $option = document.createElement('option');
+    $option.value = item.id;
 
-    opt.textContent = item.name + ' - ' + item.price + '원';
-    if (item.quantity === 0) opt.disabled = true;
-    $productSelect.appendChild(opt);
+    $option.textContent = item.name + ' - ' + item.price + '원';
+    if (item.quantity === 0) $option.disabled = true;
+    $productSelect.appendChild($option);
   });
 };
+
 const calcCart = () => {
   totalAmount = 0;
   itemCount = 0;
