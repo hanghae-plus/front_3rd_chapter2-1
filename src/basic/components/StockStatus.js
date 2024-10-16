@@ -1,4 +1,4 @@
-export class StockInfo {
+export class StockStatus {
   constructor({ $root, productList }) {
     this.productList = productList;
 
