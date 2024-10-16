@@ -6,6 +6,8 @@ const productList = [
   { id: "p5", name: "상품5", val: 25000, q: 10 },
 ];
 
+const OUT_OF_STOCK_MESSAGE = "재고가 부족합니다.";
+
 let $productSelect, $addToCartButton, $cartDisplay, $cartTotalDisplay, $stockMessage;
 
 let lastSelectedProductId,
@@ -181,7 +183,9 @@ function updateStockInfo() {
   });
   $stockMessage.textContent = infoMsg;
 }
+
 main();
+
 $addToCartButton.addEventListener("click", function () {
   var selItem = $productSelect.value;
   var itemToAdd = productList.find(function (p) {
@@ -195,7 +199,7 @@ $addToCartButton.addEventListener("click", function () {
         item.querySelector("span").textContent = itemToAdd.name + " - " + itemToAdd.val + "원 x " + newQty;
         itemToAdd.q--;
       } else {
-        alert("재고가 부족합니다.");
+        alert(OUT_OF_STOCK_MESSAGE);
       }
     } else {
       var newItem = document.createElement("div");
@@ -223,6 +227,7 @@ $addToCartButton.addEventListener("click", function () {
     lastSelectedProductId = selItem;
   }
 });
+
 $cartDisplay.addEventListener("click", function (event) {
   var tgt = event.target;
 
@@ -242,7 +247,7 @@ $cartDisplay.addEventListener("click", function (event) {
         itemElem.remove();
         prod.q -= qtyChange;
       } else {
-        alert("재고가 부족합니다.");
+        alert(OUT_OF_STOCK_MESSAGE);
       }
     } else if (tgt.classList.contains("remove-item")) {
       var remQty = parseInt(itemElem.querySelector("span").textContent.split("x ")[1]);
