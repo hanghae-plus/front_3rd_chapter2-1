@@ -173,7 +173,7 @@ function calcCartPrice() {
     discRate = (subTot - totalPrice) / subTot;
   }
 
-  if (new Date().getDay() === 1) {
+  if (new Date().getDay() === 2) {
     totalPrice *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
