@@ -11,7 +11,7 @@ export default [
     },
     rules: {
       'no-console': 'error', // console.log 사용 금지
-      'no-use-before-define': ['error', { functions: false }], // 함수 선언 전 사용 금지
+      'no-use-before-define': ['error', { functions: false, classes: true }], // 함수 선언 전 사용 가능, 클래스는 선언전에 사용할 수 없게 설정
       'comma-dangle': ['error', 'never'], // 마지막 요소 뒤에 쉼표 사용 x
       indent: ['error', 2], // 들여쓰기 2칸
       quotes: ['error', 'single'], // 문자열 '' 사용

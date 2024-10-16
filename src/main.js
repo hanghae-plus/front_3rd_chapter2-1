@@ -1,63 +1,20 @@
+/* eslint-disable no-use-before-define */
 let productList, productSelect, addBtn, cartDisplay, selectSum, stockInfo
 let lastSel,
   bonusPoints = 0,
-  totalAmt = 0,
-  itemCnt = 0
+  totalAmount = 0,
+  itemCount = 0
 
 function main() {
-  productList = [
-    { id: 'p1', name: '상품1', val: 10000, q: 50 },
-    { id: 'p2', name: '상품2', val: 20000, q: 30 },
-    { id: 'p3', name: '상품3', val: 30000, q: 20 },
-    { id: 'p4', name: '상품4', val: 15000, q: 0 },
-    { id: 'p5', name: '상품5', val: 25000, q: 10 }
-  ]
+  // eslint-disable-next-line no-use-before-define
+  initializeProducts()
+  settingUI()
 
-  const root = document.getElementById('app')
-  const container = document.createElement('div')
-  const wrapper = document.createElement('div')
-  const headerText = document.createElement('h1')
-
-  cartDisplay = document.createElement('div')
-  selectSum = document.createElement('div')
-  productSelect = document.createElement('select')
-  addBtn = document.createElement('button')
-  stockInfo = document.createElement('div')
-
-  cartDisplay.id = 'cart-items'
-  selectSum.id = 'cart-total'
-  productSelect.id = 'product-select'
-  addBtn.id = 'add-to-cart'
-  stockInfo.id = 'stock-status'
-
-  container.className = 'bg-gray-100 p-8'
-  wrapper.className =
-    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8'
-  headerText.className = 'text-2xl font-bold mb-4'
-  selectSum.className = 'text-xl font-bold my-4'
-  productSelect.className = 'border rounded p-2 mr-2'
-  addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded'
-  stockInfo.className = 'text-sm text-gray-500 mt-2'
-
-  headerText.textContent = '장바구니'
-  addBtn.textContent = '추가'
-
-  updateSelOpts()
-  wrapper.appendChild(headerText)
-  wrapper.appendChild(cartDisplay)
-  wrapper.appendChild(selectSum)
-  wrapper.appendChild(productSelect)
-  wrapper.appendChild(addBtn)
-  wrapper.appendChild(stockInfo)
-  container.appendChild(wrapper)
-  root.appendChild(container)
-
-  calcCart()
+  calculateCart()
 
   setTimeout(function () {
     setInterval(function () {
-      const luckyItem =
-        productList[Math.floor(Math.random() * productList.length)]
+      const luckyItem = productList[Math.floor(Math.random() * productList.length)]
 
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8)
@@ -83,23 +40,68 @@ function main() {
   }, Math.random() * 20000)
 }
 
-function updateSelOpts() {
+const initializeProducts = () => {
+  productList = [
+    { id: 'p1', name: '상품1', val: 10000, q: 50 },
+    { id: 'p2', name: '상품2', val: 20000, q: 30 },
+    { id: 'p3', name: '상품3', val: 30000, q: 20 },
+    { id: 'p4', name: '상품4', val: 15000, q: 0 },
+    { id: 'p5', name: '상품5', val: 25000, q: 10 }
+  ]
+}
+
+// UI 세팅함수
+function settingUI() {
+  const root = document.getElementById('app')
+  const container = createElement('div', 'bg-gray-100 p-8')
+  const wrapper = createElement(
+    'div',
+    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8'
+  )
+  const headerText = createElement('h1', 'text-2xl font-bold mb-4')
+  headerText.textContent = '장바구니'
+
+  cartDisplay = createElement('div', '', 'cart-items')
+  selectSum = createElement('div', 'text-xl font-bold my-4', 'cart-total')
+  productSelect = createElement('select', 'border rounded p-2 mr-2', 'product-select')
+  addBtn = createElement('button', 'bg-blue-500 text-white px-4 py-2 rounded', 'add-to-cart')
+  stockInfo = createElement('div', 'text-sm text-gray-500 mt-2', 'stock-status')
+
+  addBtn.textContent = '추가'
+
+  wrapper.append(headerText, cartDisplay, selectSum, productSelect, addBtn, stockInfo)
+  container.appendChild(wrapper)
+  root.appendChild(container)
+
+  updateSelectOptions()
+}
+
+const createElement = (tag, className = '', id = '') => {
+  const element = document.createElement(tag)
+  if (className) element.className = className
+  if (id) element.id = id
+
+  return element
+}
+
+function updateSelectOptions() {
   productSelect.innerHTML = ''
+
   productList.forEach(function (item) {
-    const option = document.createElement('option')
+    const option = createElement('option')
     option.value = item.id
 
     option.textContent = `${item.name} - ${item.val}원`
-    if (item.q === 0) option.disabled = true
+    if (item.quantity === 0) option.disabled = true
     productSelect.appendChild(option)
   })
 }
 
-function calcCart() {
-  totalAmt = 0
-  itemCnt = 0
+function calculateCart() {
+  totalAmount = 0
+  itemCount = 0
   const cartItems = cartDisplay.children
-  let subTot = 0
+  let subTotal = 0
 
   for (let i = 0; i < cartItems.length; i++) {
     ;(function () {
@@ -112,16 +114,14 @@ function calcCart() {
         }
       }
 
-      const q = parseInt(
-        cartItems[i].querySelector('span').textContent.split('x ')[1]
-      )
+      const quantity = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1])
 
-      const itemTot = curItem.val * q
+      const itemTotal = curItem.val * quantity
       let disc = 0
-      itemCnt += q
-      subTot += itemTot
+      itemCount += quantity
+      subTotal += itemTotal
 
-      if (q >= 10) {
+      if (quantity >= 10) {
         if (curItem.id === 'p1') disc = 0.1
         else if (curItem.id === 'p2') disc = 0.15
         else if (curItem.id === 'p3') disc = 0.2
@@ -129,31 +129,31 @@ function calcCart() {
         else if (curItem.id === 'p5') disc = 0.25
       }
 
-      totalAmt += itemTot * (1 - disc)
+      totalAmount += itemTotal * (1 - disc)
     })()
   }
 
   let discRate = 0
-  if (itemCnt >= 30) {
-    const bulkDisc = totalAmt * 0.25
-    const itemDisc = subTot - totalAmt
+  if (itemCount >= 30) {
+    const bulkDisc = totalAmount * 0.25
+    const itemDisc = subTotal - totalAmount
 
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25)
+      totalAmount = subTotal * (1 - 0.25)
       discRate = 0.25
     } else {
-      discRate = (subTot - totalAmt) / subTot
+      discRate = (subTotal - totalAmount) / subTotal
     }
   } else {
-    discRate = (subTot - totalAmt) / subTot
+    discRate = (subTotal - totalAmount) / subTotal
   }
 
   if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1
+    totalAmount *= 1 - 0.1
     discRate = Math.max(discRate, 0.1)
   }
 
-  selectSum.textContent = `총액:${Math.round(totalAmt)}원`
+  selectSum.textContent = `총액:${Math.round(totalAmount)}원`
 
   if (discRate > 0) {
     const span = document.createElement('span')
@@ -167,7 +167,7 @@ function calcCart() {
 }
 
 const renderbonusPoints = () => {
-  bonusPoints += Math.floor(totalAmt / 1000)
+  bonusPoints += Math.floor(totalAmount / 1000)
   let pointsTag = document.getElementById('loyalty-points')
 
   if (!pointsTag) {
@@ -181,18 +181,14 @@ const renderbonusPoints = () => {
 }
 
 function updateStockInfo() {
-  let infoMsg = ''
+  let infoMessage = ''
   productList.forEach(function (item) {
-    if (item.q < 5) {
-      infoMsg +=
-        item.name +
-        ': ' +
-        (item.q > 0 ? `재고 부족 (${item.q}개 남음)` : '품절') +
-        '\n'
+    if (item.quantity < 5) {
+      infoMessage += `${item.name}: ${item.quantity > 0 ? `재고 부족 (${item.quantity}개 남음)` : '품절'}\n`
     }
   })
 
-  stockInfo.textContent = infoMsg
+  stockInfo.textContent = infoMessage
 }
 
 main()
@@ -208,8 +204,7 @@ addBtn.addEventListener('click', function () {
     const item = document.getElementById(itemToAdd.id)
 
     if (item) {
-      const newQuantity =
-        parseInt(item.querySelector('span').textContent.split('x ')[1]) + 1
+      const newQuantity = parseInt(item.querySelector('span').textContent.split('x ')[1]) + 1
 
       if (newQuantity <= itemToAdd.q) {
         item.querySelector('span').textContent =
@@ -240,7 +235,7 @@ addBtn.addEventListener('click', function () {
       cartDisplay.appendChild(newItem)
       itemToAdd.q--
     }
-    calcCart()
+    calculateCart()
     lastSel = selItem
   }
 })
@@ -261,18 +256,14 @@ cartDisplay.addEventListener('click', function (event) {
     if (targetEvent.classList.contains('quantity-change')) {
       const quantityChange = parseInt(targetEvent.dataset.change)
       const newQuantity =
-        parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) +
-        quantityChange
+        parseInt(itemElem.querySelector('span').textContent.split('x ')[1]) + quantityChange
       if (
         newQuantity > 0 &&
         newQuantity <=
-          product.q +
-            parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
+          product.q + parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
       ) {
         itemElem.querySelector('span').textContent =
-          itemElem.querySelector('span').textContent.split('x ')[0] +
-          'x ' +
-          newQuantity
+          itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + newQuantity
         product.q -= quantityChange
       } else if (newQuantity <= 0) {
         itemElem.remove()
@@ -281,9 +272,7 @@ cartDisplay.addEventListener('click', function (event) {
         alert('재고가 부족합니다.')
       }
     } else if (targetEvent.classList.contains('remove-item')) {
-      const remQty = parseInt(
-        itemElem.querySelector('span').textContent.split('x ')[1]
-      )
+      const remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1])
       product.q += remQty
       itemElem.remove()
     }
