@@ -1,3 +1,9 @@
+import BonusPoints from './components/BonusPoints.js';
+import Cart from './components/Cart.js';
+import CartItem from './components/CartItem.js';
+import DiscountInfo from './components/DiscountInfo.js';
+import ItemOption from './components/ItemOption.js';
+
 let $productSelect, $addButton, $cartItems, $cartTotal, $stockStatus;
 let lastSelectedProductId,
   bonusPoints = 0,
@@ -53,31 +59,9 @@ const handleTimerSuggestion = () => {
   }, SUGGESTION_INTERVAL);
 };
 
-const cartHTML = () => {
-  return /* HTML */ `
-    <div class="bg-gray-100 p-8">
-      <div
-        class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8"
-      >
-        <h1 class="text-2xl font-bold mb-4">장바구니</h1>
-        <div id="cart-items"></div>
-        <div id="cart-total" class="text-xl font-bold my-4"></div>
-        <select id="product-select" class="border rounded p-2 mr-2"></select>
-        <button
-          id="add-to-cart"
-          class="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          추가
-        </button>
-        <div id="stock-status" class="text-sm text-gray-500 mt-2"></div>
-      </div>
-    </div>
-  `;
-};
-
 const main = () => {
   const $root = document.getElementById('app');
-  $root.innerHTML = cartHTML();
+  $root.innerHTML = Cart();
   $cartItems = document.getElementById('cart-items');
   $cartTotal = document.getElementById('cart-total');
   $productSelect = document.getElementById('product-select');
@@ -94,9 +78,7 @@ const main = () => {
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
-    const productOptionHTML =
-      /* HTML */ `<option value="${product.id}" ${product.quantity === 0 ? 'disabled' : ''}>${product.name} - ${product.price}원</option>`.trim();
-    $productSelect.innerHTML += productOptionHTML;
+    $productSelect.innerHTML += ItemOption(product);
   });
 };
 
@@ -176,12 +158,7 @@ const getDiscountRate = (itemCount, subtotal, totalAmount) => {
 const updateCartTotal = (discountRate) => {
   $cartTotal.textContent = '총액: ' + Math.round(totalAmount) + '원';
   if (discountRate > 0) {
-    const discountInfoHTML = /* HTML */ `
-      <span class="text-green-500 ml-2"
-        >(${(discountRate * 100).toFixed(1)}% 할인 적용)</span
-      >
-    `;
-    $cartTotal.innerHTML += discountInfoHTML;
+    $cartTotal.innerHTML += DiscountInfo(discountRate);
   }
 };
 
@@ -192,12 +169,7 @@ const calculateBonusPoints = () => {
 const updateBonusPoints = (bonusPoints) => {
   let pointsTag = document.getElementById('loyalty-points');
   if (!pointsTag) {
-    const pointsTagHTML = /* HTML */ `
-      <span id="loyalty-points" class="text-blue-500 ml-2"
->(포인트: ${bonusPoints})</span
-      >
-    `.trim();
-    $cartTotal.innerHTML += pointsTagHTML;
+    $cartTotal.innerHTML += BonusPoints(bonusPoints);
   }
 };
 
@@ -253,40 +225,9 @@ const updateExistingCartItem = (cartItem, product) => {
 };
 
 const addNewCartItem = (product) => {
-  const newItem = updateCartItem(product);
+  const newItem = CartItem(product);
   $cartItems.innerHTML += newItem;
   product.quantity--;
-};
-
-const updateCartItem = (product) => {
-  return /* HTML */ `<div
-    class="flex justify-between items-center mb-2"
-    id="${product.id}"
-  >
-    <span>${product.name} - ${product.price}원 x 1</span>
-    <div>
-      <button
-        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-        data-product-id="${product.id}"
-        data-change="-1"
-      >
-        -
-      </button>
-      <button
-        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-        data-product-id="${product.id}"
-        data-change="1"
-      >
-        +
-      </button>
-      <button
-        class="remove-item bg-red-500 text-white px-2 py-1 rounded"
-        data-product-id="${product.id}"
-      >
-        삭제
-      </button>
-    </div>
-  </div> `;
 };
 
 const handleClickCartAction = (event) => {
