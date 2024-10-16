@@ -257,23 +257,39 @@ const updateExistingCartItem = (cartItem, product) => {
 
 const addNewCartItem = (product) => {
   const newItem = updateCartItem(product);
-  $cartItems.appendChild(newItem);
+  $cartItems.innerHTML += newItem;
   product.quantity--;
 };
 
 const updateCartItem = (product) => {
-  const newItem = document.createElement('div');
-  newItem.id = product.id;
-  newItem.className = 'flex justify-between items-center mb-2';
-  newItem.innerHTML = `
+  return /* HTML */ `<div
+    class="flex justify-between items-center mb-2"
+    id="${product.id}"
+  >
     <span>${product.name} - ${product.price}원 x 1</span>
     <div>
-      <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${product.id}" data-change="-1">-</button>
-      <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${product.id}" data-change="1">+</button>
-      <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${product.id}">삭제</button>
+      <button
+        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+        data-product-id="${product.id}"
+        data-change="-1"
+      >
+        -
+      </button>
+      <button
+        class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+        data-product-id="${product.id}"
+        data-change="1"
+      >
+        +
+      </button>
+      <button
+        class="remove-item bg-red-500 text-white px-2 py-1 rounded"
+        data-product-id="${product.id}"
+      >
+        삭제
+      </button>
     </div>
-  `;
-  return newItem;
+  </div> `;
 };
 
 const handleClickCartAction = (event) => {
