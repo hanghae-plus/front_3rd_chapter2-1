@@ -95,12 +95,12 @@ const main = () => {
 
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
-  productList.forEach((item) => {
+  productList.forEach((product) => {
     const $option = document.createElement('option');
-    $option.value = item.id;
+    $option.value = product.id;
 
-    $option.textContent = item.name + ' - ' + item.price + '원';
-    if (item.quantity === 0) $option.disabled = true;
+    $option.textContent = product.name + ' - ' + product.price + '원';
+    if (product.quantity === 0) $option.disabled = true;
     $productSelect.appendChild($option);
   });
 };
