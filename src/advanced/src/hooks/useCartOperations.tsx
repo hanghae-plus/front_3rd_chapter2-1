@@ -1,16 +1,15 @@
 import { MouseEvent } from 'react';
-import { ICartItem } from '../types/cart';
-import { useStore } from '../stores/cartStore';
-import { useProductStore } from '../stores/productStore';
+import type { CartItemModel } from '../types/cart';
+import { useCartStore, useProductStore } from '../stores';
 
 const useCartOperations = () => {
-  const storeCartItems = useStore((state) => state.cartItems);
-  const updateStoreCartItems = useStore((state) => state.updateStoreCartItems);
-  const removeStoreCartItem = useStore((state) => state.removeStoreCartItem);
+  const storeCartItems = useCartStore((state) => state.cartItems);
+  const updateStoreCartItems = useCartStore((state) => state.updateStoreCartItems);
+  const removeStoreCartItem = useCartStore((state) => state.removeStoreCartItem);
   const updateStoreProductQuantity = useProductStore((state) => state.updateStoreProductQuantity);
   const storeProducts = useProductStore((state) => state.products);
 
-  const updateCartItemQuantity = (cartItem: ICartItem, newQuantity: number) => {
+  const updateCartItemQuantity = (cartItem: CartItemModel, newQuantity: number) => {
     const updatedCartItems = storeCartItems.map((item) => {
       if (item.id === cartItem.id) {
         return { ...item, cartQuantity: newQuantity };
@@ -19,7 +18,7 @@ const useCartOperations = () => {
     updateStoreCartItems(updatedCartItems);
   };
 
-  const handleCartItemQuantity = (event: MouseEvent<HTMLButtonElement>, cartItem: ICartItem) => {
+  const handleCartItemQuantity = (event: MouseEvent<HTMLButtonElement>, cartItem: CartItemModel) => {
     const targetProduct = storeProducts.find((product) => product.id === cartItem.id)!;
     const changeAmount = Number((event.target as HTMLButtonElement).value);
 

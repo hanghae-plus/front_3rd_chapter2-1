@@ -1,9 +1,6 @@
-import CartItems from '../components/CartItems';
-import CartTotalPrice from '../components/CartTotalPrice';
-import ProductSelect from '../components/ProductSelect';
-import StockStatus from '../components/StockStatus';
-import Title from '../components/Title';
-// import useAlertDiscount from '../hooks/useAlertDiscount';
+import { CartItems, CartTotalPrice, ProductSelect, StockStatus, Title } from '../components';
+
+// import { useAlertDiscount } from '../hooks';
 
 const CartPage = () => {
   // useAlertDiscount();

@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from 'react';
-import { useStore } from '../stores/cartStore';
-import { ICartItem, IProduct } from '../types/cart';
-import { useProductStore } from '../stores/productStore';
+import { useCartStore, useProductStore } from '../stores';
+import type { CartItemModel, ProductModel } from '../types/cart';
 
 const useProductSelect = () => {
   const storeProducts = useProductStore((state) => state.products);
@@ -10,12 +9,12 @@ const useProductSelect = () => {
     setSelectedProduct(e.target.value);
   };
 
-  const storeCartItems = useStore((state) => state.cartItems);
-  const addStoreCartItems = useStore((state) => state.addStoreCartItems);
-  const updateStoreCartItems = useStore((state) => state.updateStoreCartItems);
+  const storeCartItems = useCartStore((state) => state.cartItems);
+  const addStoreCartItems = useCartStore((state) => state.addStoreCartItems);
+  const updateStoreCartItems = useCartStore((state) => state.updateStoreCartItems);
   const updateStoreProductQuantity = useProductStore((state) => state.updateStoreProductQuantity);
 
-  const addToCart = (currentCartItem: ICartItem | undefined, targetProduct: IProduct) => {
+  const addToCart = (currentCartItem: CartItemModel | undefined, targetProduct: ProductModel) => {
     if (!currentCartItem) {
       addStoreCartItems({
         id: targetProduct.id,

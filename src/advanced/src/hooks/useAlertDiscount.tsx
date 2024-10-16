@@ -6,7 +6,7 @@ import {
   SUGGEST_TIME_INTERVAL,
 } from '../constants';
 import { useEffect } from 'react';
-import { useProductStore } from '../stores/productStore';
+import { useProductStore } from '../stores';
 
 const useEvents = () => {
   const storeProducts = useProductStore((state) => state.products);

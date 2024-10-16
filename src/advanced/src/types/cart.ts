@@ -1,13 +1,13 @@
-export interface IProduct {
+export type ProductModel = {
   id: string;
   name: string;
   price: number;
   quantity: number;
-}
+};
 
-export interface ICartItem {
+export type CartItemModel = {
   id: string;
   name: string;
   price: number;
   cartQuantity: number;
-}
+};

@@ -1,14 +1,14 @@
-import useCartOperations from '../hooks/useCartOperations';
-import { useStore } from '../stores/cartStore';
-import { ICartItem } from '../types/cart';
+import { useCartOperations } from '../hooks';
+import { useCartStore } from '../stores';
+import type { CartItemModel } from '../types/cart';
 import OperationButton from './OperationButton';
 
-interface CartItemProps {
-  cartItem: ICartItem;
-}
+type Props = {
+  cartItem: CartItemModel;
+};
 
-const CartItem = ({ cartItem }: CartItemProps) => {
-  const removeStoreCartItem = useStore((state) => state.removeStoreCartItem);
+const CartItem = ({ cartItem }: Props) => {
+  const removeStoreCartItem = useCartStore((state) => state.removeStoreCartItem);
   const { handleCartItemQuantity } = useCartOperations();
 
   return (

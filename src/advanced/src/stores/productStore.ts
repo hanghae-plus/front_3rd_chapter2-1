@@ -1,18 +1,18 @@
 import { create } from 'zustand';
-import { IProduct } from '../types/cart';
+import type { ProductModel } from '../types/cart';
 import { products } from '../data/products';
 
 type State = {
-  products: IProduct[];
+  products: ProductModel[];
 };
 
 type Action = {
-  updateStoreProductQuantity: (targetProduct: IProduct, newQuantity: number) => void;
+  updateStoreProductQuantity: (targetProduct: ProductModel, newQuantity: number) => void;
 };
 
 export const useProductStore = create<State & Action>((set) => ({
   products: products,
-  updateStoreProductQuantity: (targetProduct: IProduct, newQuantity: number) =>
+  updateStoreProductQuantity: (targetProduct: ProductModel, newQuantity: number) =>
     set((state) => ({
       products: state.products.map((product) => {
         if (product.id === targetProduct.id) {

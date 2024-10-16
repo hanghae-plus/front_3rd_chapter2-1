@@ -1,5 +1,5 @@
 import { LACK_OF_STOCK } from '../constants';
-import { useProductStore } from '../stores/productStore';
+import { useProductStore } from '../stores';
 
 const StockStatus = () => {
   const storeProducts = useProductStore((state) => state.products);

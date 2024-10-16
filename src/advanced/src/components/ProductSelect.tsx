@@ -1,5 +1,5 @@
-import useProductSelect from '../hooks/useProductSelect';
-import { useProductStore } from '../stores/productStore';
+import { useProductSelect } from '../hooks';
+import { useProductStore } from '../stores';
 
 const ProductSelect = () => {
   const products = useProductStore((state) => state.products);

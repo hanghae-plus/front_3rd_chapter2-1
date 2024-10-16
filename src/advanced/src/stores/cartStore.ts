@@ -1,17 +1,17 @@
 import { create } from 'zustand';
-import { ICartItem } from '../types/cart';
+import type { CartItemModel } from '../types/cart';
 
 type State = {
-  cartItems: ICartItem[];
+  cartItems: CartItemModel[];
 };
 
 type Action = {
-  addStoreCartItems: (targetCartItem: ICartItem) => void;
+  addStoreCartItems: (targetCartItem: CartItemModel) => void;
   updateStoreCartItems: (updatedCartItems: State['cartItems']) => void;
-  removeStoreCartItem: (targetCartItem: ICartItem) => void;
+  removeStoreCartItem: (targetCartItem: CartItemModel) => void;
 };
 
-export const useStore = create<State & Action>((set) => ({
+export const useCartStore = create<State & Action>((set) => ({
   cartItems: [],
   addStoreCartItems: (targetCartItem) => set((state) => ({ cartItems: [...state.cartItems, targetCartItem] })),
   updateStoreCartItems: (updatedCartItems) => set(() => ({ cartItems: updatedCartItems })),

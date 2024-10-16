@@ -1,8 +1,8 @@
-import { useStore } from '../stores/cartStore';
+import { useCartStore } from '../stores';
 import CartItem from './CartItem';
 
 const CartItems = () => {
-  const storeCartItems = useStore((state) => state.cartItems);
+  const storeCartItems = useCartStore((state) => state.cartItems);
 
   return (
     <div id="cart-items">
