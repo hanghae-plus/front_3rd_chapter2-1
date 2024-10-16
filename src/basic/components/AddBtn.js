@@ -1,4 +1,11 @@
-export function AddBtn({ wrap, prodList, $select, cartDisp, calcCart }) {
+export function AddBtn({
+  wrap,
+  prodList,
+  setProdList,
+  $select,
+  cartDisp,
+  calcCart,
+}) {
   const addBtn = document.createElement('button');
   addBtn.id = 'add-to-cart';
   addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';

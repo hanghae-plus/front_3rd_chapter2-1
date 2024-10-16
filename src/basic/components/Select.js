@@ -1,22 +1,24 @@
-export function Select({ wrap, prodList }) {
-  const sel = document.createElement('select');
-  sel.id = 'product-select';
-  sel.className = 'border rounded p-2 mr-2';
-  wrap.appendChild(sel);
+export class Select {
+  #productList = [];
 
-  this.$element = sel;
+  constructor({ wrap, prodList }) {
+    this.$element = document.createElement('select');
+    this.$element.id = 'product-select';
+    this.$element.className = 'border rounded p-2 mr-2';
+    wrap.appendChild(this.$element);
 
-  this.updateSelOpts = () => {
-    sel.innerHTML = '';
-    prodList.forEach(function (item) {
-      const opt = document.createElement('option');
-      opt.value = item.id;
+    this.#productList = prodList;
 
-      opt.textContent = item.name + ' - ' + item.val + '원';
-      if (item.q === 0) opt.disabled = true;
-      sel.appendChild(opt);
-    });
-  };
+    this.render();
+  }
 
-  this.updateSelOpts();
+  render() {
+    this.$element.innerHTML = this.#productList
+      .map((item) => {
+        const disabled = item.q === 0 ? 'disabled' : '';
+        const label = `${item.name} - ${item.val}원`;
+        return `<option value="${item.id}" ${disabled}>${label}</option>`;
+      })
+      .join('');
+  }
 }

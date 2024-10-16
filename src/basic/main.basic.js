@@ -54,12 +54,15 @@ class Main {
         this.prodList = productList;
       },
     });
-    const select = new Select({ wrap, prodList: this.#prodList });
+    this.select = new Select({ wrap, prodList: this.#prodList });
 
     new AddBtn({
       wrap,
       prodList: this.#prodList,
-      $select: select.$element,
+      setProdList: (prodList) => {
+        this.prodList = prodList;
+      },
+      $select: this.select.$element,
       cartDisp: cartDisp.$element,
       calcCart: (selItem) => {
         cartDisp.calcCart();
@@ -76,7 +79,7 @@ class Main {
         if (Math.random() < 0.3 && luckyItem.q > 0) {
           luckyItem.val = Math.round(luckyItem.val * 0.8);
           alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-          select.updateSelOpts();
+          this.updateProductList(luckyItem);
         }
       }, 30000);
     }, Math.random() * 10000);
@@ -92,7 +95,7 @@ class Main {
               suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
             );
             suggest.val = Math.round(suggest.val * 0.95);
-            select.updateSelOpts();
+            this.updateProductList(suggest);
           }
         }
       }, 60000);
@@ -106,6 +109,16 @@ class Main {
     this.#prodList = nextProdList;
 
     this.stockInfo?.render();
+    this.select?.render();
+  }
+
+  // 우선 단일상품만 업데이트되도록
+  updateProductList(nextProduct) {
+    if (!nextProduct) return;
+
+    this.prodList = this.prodList.map((item) =>
+      item.id === nextProduct.id ? nextProduct : item
+    );
   }
 }
 
