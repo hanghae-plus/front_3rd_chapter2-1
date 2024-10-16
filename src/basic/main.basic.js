@@ -1,8 +1,8 @@
 import { AddCartButton } from './components/AddCartButton';
 import { CartList } from './components/CartList';
+import { CartSummary } from './components/CartSummary';
 import { Select } from './components/Select';
 import { StockInfo } from './components/StockInfo';
-import { Sum } from './components/Sum';
 
 class Main {
   #prodList = [];
@@ -39,29 +39,29 @@ class Main {
     root.appendChild(cont);
 
     // 컴포넌트 초기화
-    this.stockInfo = new StockInfo({ wrap, productList: this.prodList });
-    const sum = new Sum({ wrap });
-    const cartDisp = new CartList({
+    this.StockInfo = new StockInfo({ wrap, productList: this.prodList });
+    this.CartSummary = new CartSummary({ wrap });
+    this.CartList = new CartList({
       $root: wrap,
       productList: this.#prodList,
       setProductList: (productList) => {
         this.prodList = productList;
       },
       updateSumDetails: ({ totalPrice, discount }) => {
-        sum.totalPrice = totalPrice;
-        sum.discountRate = discount;
+        this.CartSummary.totalPrice = totalPrice;
+        this.CartSummary.discountRate = discount;
       },
     });
-    this.select = new Select({ wrap, prodList: this.#prodList });
+    this.Select = new Select({ wrap, prodList: this.#prodList });
 
     new AddCartButton({
       $root: wrap,
-      $select: this.select.$element,
+      $select: this.Select.$element,
       productList: this.#prodList,
-      handleAddCart: (itemToAdd) => cartDisp.handleAddToCart(itemToAdd),
+      handleAddCart: (itemToAdd) => this.CartList.handleAddToCart(itemToAdd),
     });
 
-    this.stockInfo.mount();
+    this.StockInfo.mount();
 
     this.startFlashSale();
     this.startSuggestionSale();
@@ -73,8 +73,8 @@ class Main {
   set prodList(nextProdList) {
     this.#prodList = nextProdList;
 
-    this.stockInfo?.render();
-    this.select?.render();
+    this.StockInfo?.render();
+    this.Select?.render();
   }
 
   // 우선 단일상품만 업데이트되도록
