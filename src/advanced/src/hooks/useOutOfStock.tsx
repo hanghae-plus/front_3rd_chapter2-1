@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 
-import { ProductOption } from "../types/cart";
+import { ProductOption } from "@/types/cart";
 
 const useOutOfStock = (items: ProductOption[], options: ProductOption[]) => {
   const memorizedItems = useMemo(() => items, [items]);

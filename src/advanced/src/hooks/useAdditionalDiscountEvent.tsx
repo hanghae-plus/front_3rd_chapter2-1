@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-import { productOptions } from "../constants/product";
-import { ProductOption } from "../types/cart";
+import { productOptions } from "@/constants/product";
+import { ProductOption } from "@/types/cart";
 
 function useAdditionalDiscountEvent(callback: (data: ProductOption) => void) {
   const lastSelectedIdRef = useRef<string | null>(null);

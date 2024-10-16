@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
-import { productOptions } from "../constants/product";
-import type { ProductOption } from "../types/cart";
+import { productOptions } from "@/constants/product";
+import type { ProductOption } from "@/types/cart";
 
 type SelectSectionProps = {
   onSelect?: (data: ProductOption) => void;

@@ -1,5 +1,5 @@
-import { QUANTITY_CHANGE } from "../constants/product";
-import { ProductOption } from "../types/cart";
+import { QUANTITY_CHANGE } from "@/constants/product";
+import { ProductOption } from "@/types/cart";
 
 type CartItemProps = {
   data: ProductOption;

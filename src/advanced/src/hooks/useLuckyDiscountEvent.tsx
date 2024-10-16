@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-import { productOptions } from "../constants/product";
-import { ProductOption } from "../types/cart";
+import { productOptions } from "@/constants/product";
+import { ProductOption } from "@/types/cart";
 
 function useLuckyDiscountEvent(callback: (data: ProductOption) => void) {
   useEffect(() => {
