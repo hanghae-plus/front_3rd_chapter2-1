@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DEFAULT_PRODUCT_LIST } from './constant/defaultProducts';
 import CartItemList from './component/CartItemList';
 import CartTotalPriceAndPoint from './component/CartTotalPriceAndPoint';
+import OutOfStockItems from './component/OutOfStockItems';
 
 export interface CartItems {
   price: number;
@@ -79,12 +80,7 @@ const Cart = () => {
         <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleAddCartItem}>
           추가
         </button>
-        {DEFAULT_PRODUCT_LIST.filter((product) => product.quantity === 0).map((product) => (
-          <div key={product.id} className="text-sm text-gray-500 mt-2">
-            {product.name}:
-            {product.quantity > 0 ? '재고 부족' + ` (${product.quantity}개 남음)` : '품절'}
-          </div>
-        ))}
+        <OutOfStockItems />
       </div>
     </div>
   );
