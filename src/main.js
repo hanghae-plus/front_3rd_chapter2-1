@@ -6,6 +6,33 @@ const PRODUCT_LIST = [
   { id: "p5", name: "상품5", price: 25000, quantity: 10 },
 ];
 
+const TWICE = 2;
+const TEN = 10;
+const SECOND_BY_MILLISECOND = 1000;
+const SECOND_TO_MINUTE = 60;
+
+const LUCKY_SALE_RANGE_TERM = SECOND_BY_MILLISECOND * SECOND_TO_MINUTE;
+const LUCKY_SALE_END_TERM = SECOND_BY_MILLISECOND * TEN * Math.random();
+const SUGGEST_RANGE_TERM = (SECOND_BY_MILLISECOND * SECOND_TO_MINUTE) / TWICE;
+const SUGGEST_END_TERM = SECOND_BY_MILLISECOND * TWICE * TEN * Math.random();
+
+const LUCKY_SALE_SUCCESS_RATE = 0.3;
+const LUCKY_SALE_DISCOUNT_RATE = 0.8;
+const SUGGEST_DISCOUNT_RATE = 0.95;
+const DISCOUNT_START_QUANTITY = 10;
+
+const PRODUCT_DISCOUNT_RATE = { p1: 0.1, p2: 0.15, p3: 0.2, p4: 0.05, p5: 0.25 };
+
+const BULK_DISCOUNT_START_QUANTITY = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+
+const TUESDAY = new Date().getDay() === TWICE;
+const TUESDAY_DISCOUNT_RATE = 0.1;
+const RATE_TO_PERCENT = 100;
+
+const POINT_PER_AMOUNT = 1000;
+const STOCK_QUANTITY_TO_INFO = 5;
+
 const $app = document.getElementById("app");
 
 const $container = document.createElement("div");
@@ -58,13 +85,13 @@ const main = () => {
     setInterval(() => {
       const luckyItem = PRODUCT_LIST[Math.floor(Math.random() * PRODUCT_LIST.length)];
 
-      if (Math.random() < 0.3 && luckyItem.quantity > 0) {
-        luckyItem.price = Math.round(luckyItem.price * 0.8);
+      if (Math.random() < LUCKY_SALE_SUCCESS_RATE && luckyItem.quantity > 0) {
+        luckyItem.price = Math.round(luckyItem.price * LUCKY_SALE_DISCOUNT_RATE);
         alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
         selectProductOption();
       }
-    }, 30000);
-  }, Math.random() * 10000);
+    }, LUCKY_SALE_RANGE_TERM);
+  }, LUCKY_SALE_END_TERM);
   setTimeout(() => {
     setInterval(() => {
       if (lastSelectedItem) {
@@ -73,12 +100,12 @@ const main = () => {
         );
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
-          suggest.price = Math.round(suggest.price * 0.95);
+          suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
           selectProductOption();
         }
       }
-    }, 60000);
-  }, Math.random() * 20000);
+    }, SUGGEST_RANGE_TERM);
+  }, SUGGEST_END_TERM);
 };
 
 const selectProductOption = () => {
@@ -122,30 +149,21 @@ const calculateCartTotal = () => {
     let discount = 0;
     itemCount += quantity;
     subAmount += itemTotalPrice;
-    if (quantity >= 10) {
-      if (currentItem.id === "p1") {
-        discount = 0.1;
-      } else if (currentItem.id === "p2") {
-        discount = 0.15;
-      } else if (currentItem.id === "p3") {
-        discount = 0.2;
-      } else if (currentItem.id === "p4") {
-        discount = 0.05;
-      } else if (currentItem.id === "p5") {
-        discount = 0.25;
-      }
+
+    if (quantity >= DISCOUNT_START_QUANTITY) {
+      discount = PRODUCT_DISCOUNT_RATE[currentItem.id];
     }
     totalAmount += itemTotalPrice * (1 - discount);
   }
 
   let discountRate = 0;
 
-  if (itemCount >= 30) {
-    const bulkDiscount = totalAmount * 0.25;
+  if (itemCount >= BULK_DISCOUNT_START_QUANTITY) {
+    const bulkDiscount = totalAmount * BULK_DISCOUNT_RATE;
     const itemDiscount = subAmount - totalAmount;
     if (bulkDiscount > itemDiscount) {
-      totalAmount = subAmount * (1 - 0.25);
-      discountRate = 0.25;
+      totalAmount = subAmount * (1 - BULK_DISCOUNT_RATE);
+      discountRate = BULK_DISCOUNT_RATE;
     } else {
       discountRate = (subAmount - totalAmount) / subAmount;
     }
@@ -153,23 +171,26 @@ const calculateCartTotal = () => {
     discountRate = (subAmount - totalAmount) / subAmount;
   }
 
-  if (new Date().getDay() === 2) {
-    totalAmount *= 1 - 0.1;
-    discountRate = Math.max(discountRate, 0.1);
+  if (TUESDAY) {
+    totalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
+    discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_RATE);
   }
+
   $cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
+
   if (discountRate > 0) {
     const span = document.createElement("span");
     span.className = "text-green-500 ml-2";
-    span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
+    span.textContent = `(${(discountRate * RATE_TO_PERCENT).toFixed(1)}% 할인 적용)`;
     $cartTotal.appendChild(span);
   }
+
   updateStockInfo();
   renderBonusPts();
 };
 
 const renderBonusPts = () => {
-  bonusPoint += Math.floor(totalAmount / 1000);
+  bonusPoint += Math.floor(totalAmount / POINT_PER_AMOUNT);
 
   let $loyaltyPoint = document.getElementById("loyalty-points");
 
@@ -186,7 +207,7 @@ const updateStockInfo = () => {
   let infoMessage = "";
 
   PRODUCT_LIST.forEach(product => {
-    if (product.quantity < 5) {
+    if (product.quantity < STOCK_QUANTITY_TO_INFO) {
       infoMessage += `${product.name}: ${product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : "품절"}\n`;
     }
   });
