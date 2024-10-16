@@ -1,13 +1,13 @@
 import { updateSelOpts } from './productSelect.js';
 import { calcCart } from './cartTotal.js';
 import { createCartItem, updateCartItem } from './cartItem.js';
-import { updateStockStatus } from './stockStatus.js';
+import { updateStockStatus } from './stockStatus.js'
+
 
 export function main(productList, cartList, productSelect, cartTotal, stockStatus) {
 
     updateSelOpts(productList, productSelect);
     calcCart(cartList, productList, cartTotal);
-    updateStockStatus(productList, stockStatus);
   
     // 상품 추가 이벤트
     document.getElementById('add-to-cart').addEventListener('click', function () {
@@ -21,7 +21,12 @@ export function main(productList, cartList, productSelect, cartTotal, stockStatu
         cartList.appendChild(createCartItem(selectedItem));
         selectedItem.stock--;
       }
+      
       calcCart(cartList, productList, cartTotal);
+
+      // 품절 표시
+      updateStockStatus(productList, stockStatus);
+      
     });
 
     // 수량변경 및 삭제
@@ -40,8 +45,12 @@ export function main(productList, cartList, productSelect, cartTotal, stockStatu
           product.stock += parseInt(cartItemElement.querySelector('span').textContent.split('x ')[1]);
           cartItemElement.remove();
         }
-  
+        
         calcCart(cartList, productList, cartTotal);  // 장바구니 총액 재계산
+
+        // 품절 표시
+        updateStockStatus(productList, stockStatus);
+
       }
     });
     

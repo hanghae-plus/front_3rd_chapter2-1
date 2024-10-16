@@ -1,5 +1,6 @@
 import { createElementWithProps } from './createElement.js';
 import { renderPointSystem } from './pointSystem.js'
+// import { updateStockStatus } from './stockStatus.js';
 
 // 장바구니 총액과 할인 표시, 표인트 적립
 
@@ -9,7 +10,6 @@ export function calcCart(cartList, productList, cartTotal) {
     let subTot = 0;
     let discRate = 0;
     
-
     const cartItems = cartList.children;
     
     for (let i = 0; i < cartItems.length; i++) {
@@ -49,9 +49,9 @@ export function calcCart(cartList, productList, cartTotal) {
 
     // 포인트 적립 시스템 호출
     renderPointSystem(totalPrice, cartTotal);
-
   }
     
+
   
   function getDiscount(productId) {
     switch (productId) {
