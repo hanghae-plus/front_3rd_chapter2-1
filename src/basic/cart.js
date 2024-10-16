@@ -3,17 +3,56 @@ import {
   cartDisp,
   renderBonusPts,
   renderCartDetails,
+  updateSelOptions,
   updateStockInfo,
 } from './ui.js'
 import { sel } from './ui.js'
 
 let bonusPts = 0
+let lastSel = null
 
 export function initializeCart() {
   const cartState = calcCart()
   renderCartDetails(cartState)
   updateStockInfo(prodList)
   renderBonusPts(bonusPts)
+}
+
+function startLightningSale() {
+  setTimeout(() => {
+    setInterval(() => {
+      const luckyItem = prodList[Math.floor(Math.random() * prodList.length)]
+      if (Math.random() < 0.3 && luckyItem.stock > 0) {
+        luckyItem.price = Math.round(luckyItem.price * 0.8)
+        alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`)
+        updateSelOptions()
+      }
+    }, 30000)
+  }, Math.random() * 10000)
+}
+
+function startProductSuggestions() {
+  setTimeout(() => {
+    setInterval(() => {
+      if (lastSel) {
+        const suggestion = prodList.find(
+          (item) => item.id !== lastSel && item.stock > 0,
+        )
+        if (suggestion) {
+          alert(
+            `${suggestion.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`,
+          )
+          suggestion.price = Math.round(suggestion.price * 0.95)
+          updateSelOptions()
+        }
+      }
+    }, 60000)
+  }, Math.random() * 20000)
+}
+
+export function initializeTimedEvents() {
+  startLightningSale()
+  startProductSuggestions()
 }
 
 function calcItemTotals(cartItem) {

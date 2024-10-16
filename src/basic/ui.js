@@ -46,7 +46,7 @@ export function renderBonusPts(bonusPts) {
   ptsTag.textContent = `(포인트: ${bonusPts})`
 }
 
-function updateSelOptions() {
+export function updateSelOptions() {
   sel.innerHTML = prodList
     .map(
       ({ id, name, price, stock }) => `
