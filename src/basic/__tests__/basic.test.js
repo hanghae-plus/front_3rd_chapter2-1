@@ -98,6 +98,7 @@ describe("basic test", () => {
       sel.value = "p1";
       addBtn.click();
       addBtn.click();
+      console.log(sum.textContent);
       expect(sum.textContent).toContain("총액: 20000원(포인트: 90)");
     });
 
