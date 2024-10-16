@@ -4,28 +4,21 @@ import CartItem from "./CartItem";
 
 type CartItemsProps = {
   items: ProductOption[];
-  onClick?: (productId: string, quantity: number) => void;
+  onClick?: (data: ProductOption) => void;
 };
 
 export default function CartItems({ items, onClick }: CartItemsProps) {
-  const handleClick = (productId: string, originalQuantity: number) => (quantity: number) => {
-    onClick?.(productId, quantity === QUANTITY_CHANGE.REMOVE ? -originalQuantity : quantity);
+  const handleClick = (item: ProductOption) => (quantity: number) => {
+    const data = {
+      ...item,
+      q: quantity === QUANTITY_CHANGE.REMOVE ? -item.q : quantity,
+    };
+    onClick?.(data);
   };
 
   return (
     <div id="cart-items">
-      {items.map((item) =>
-        item.q === 0 ? null : (
-          <CartItem
-            key={item.id}
-            id={item.id}
-            name={item.name}
-            quantity={item.q}
-            price={item.val}
-            onClick={handleClick(item.id, item.q)}
-          />
-        ),
-      )}
+      {items.map((item) => (item.q === 0 ? null : <CartItem key={item.id} data={item} onClick={handleClick(item)} />))}
     </div>
   );
 }

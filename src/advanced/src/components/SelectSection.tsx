@@ -4,7 +4,7 @@ import { productOptions } from "../constants/product";
 import type { ProductOption } from "../types/cart";
 
 type SelectSectionProps = {
-  onSelect?: (productId: string, quantity: number) => void;
+  onSelect?: (data: ProductOption) => void;
   options: ProductOption[];
 };
 
@@ -18,7 +18,10 @@ export default function SelectSection({ onSelect, options }: SelectSectionProps)
   };
 
   const addProduct = () => {
-    onSelect?.(selectedProductId, 1);
+    const selectedOption = options.find((option) => option.id === selectedProductId);
+    if (selectedOption) {
+      onSelect?.({ ...selectedOption, q: 1 });
+    }
   };
 
   useEffect(() => {

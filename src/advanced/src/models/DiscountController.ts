@@ -1,5 +1,6 @@
 import { PRODUCT_DISCOUNT_RULES, WEEKDAY_DISCOUNT_RATE } from "../constants/discount";
 import { ProductOption } from "../types/cart";
+import { DiscountType } from "../types/discount";
 
 //? 베이스가 되는 클래스를 만들어서 다형성있게?
 //? 각 할인 타입에 따라 class를 생성해야 할까?
@@ -75,7 +76,7 @@ class DiscountController {
     };
   }
 
-  calculate(type?: "bulk" | "weekday" | "noItem" | "default") {
+  calculate(type?: DiscountType) {
     switch (type) {
       case "bulk":
         return this._calculateBulk();

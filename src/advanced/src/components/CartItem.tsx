@@ -1,22 +1,21 @@
 import { QUANTITY_CHANGE } from "../constants/product";
+import { ProductOption } from "../types/cart";
 
 type CartItemProps = {
-  name: string;
-  quantity: number;
-  price: number;
+  data: ProductOption;
   onClick?: (quantity: number) => void;
-  id: string;
 };
 
 //TODO: 일단 관련 이벤트들 여기에다가 만들어보고 구리다 싶으면 개선하기
 
-export default function CartItem({ name, quantity, price, onClick, id }: CartItemProps) {
+export default function CartItem({ data, onClick }: CartItemProps) {
+  const { id, name, val: price, q: quantity } = data;
   const controlQuantity = (type: "MINUS" | "PLUS" | "REMOVE") => {
     onClick?.(QUANTITY_CHANGE[type]);
   };
 
   return (
-    <div className="flex justify-between items-center mb-2" id={id} data-testId={id}>
+    <div className="flex justify-between items-center mb-2" id={id} data-testid={id}>
       <span>{`${name} - ${price}원 x ${quantity}`}</span>
       <div>
         <button

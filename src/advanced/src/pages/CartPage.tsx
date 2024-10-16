@@ -5,8 +5,10 @@ import { WEEKDAY } from "../constants/discount";
 import { productOptions } from "../constants/product";
 import useAdditionalDiscountEvent from "../hooks/useAdditionalDiscountEvent";
 import useLuckyDiscountEvent from "../hooks/useLuckyDiscountEvent";
+import useOutOfStock from "../hooks/useOutOfStock";
 import DiscountController from "../models/DiscountController";
 import { ProductOption } from "../types/cart";
+import { DiscountType } from "../types/discount";
 
 export default function CartPage() {
   return (
@@ -45,27 +47,33 @@ const Test = () => {
 
   const lastSelectedIdRef = useAdditionalDiscountEvent(updateOptionPrice);
   useLuckyDiscountEvent(updateOptionPrice);
+  const { alert } = useOutOfStock(cartItems, options);
 
-  const manageQuantity = useCallback(
-    (productId: string, quantity: number) => {
-      //TODO: 업데이트된 상품 가격도 반영해줘야함
-      lastSelectedIdRef.current = productId;
+  const updateQuantity = useCallback(
+    (data: ProductOption) => {
       setCartItems((prev) =>
         prev.map((item) => {
-          if (item.id === productId) {
-            const stock = remainingStock(productId, item.q + quantity);
+          if (item.id === data.id) {
+            const stock = remainingStock(data.id, item.q + data.q);
             if (stock < 0) {
-              alert("재고가 부족합니다.");
               return item;
             }
-
-            return { ...item, q: item.q + quantity };
+            return { ...data, q: item.q + data.q };
           }
           return item;
         }),
       );
     },
-    [remainingStock, lastSelectedIdRef],
+    [remainingStock],
+  );
+
+  const manageProduct = useCallback(
+    (data: ProductOption) => {
+      lastSelectedIdRef.current = data.id;
+      alert();
+      updateQuantity(data);
+    },
+    [updateQuantity, lastSelectedIdRef, alert],
   );
 
   const calculateTotalPrice = useMemo(() => {
@@ -78,7 +86,7 @@ const Test = () => {
       default: true,
     };
     const typeKey = Object.entries(discountType).find(({ 1: value }) => !!value)?.[0];
-    return discountController.calculate(typeKey as "bulk" | "weekday" | "noItem" | "default");
+    return discountController.calculate(typeKey as DiscountType);
   }, [cartItems]);
 
   const renderStockStatus = () => {
@@ -95,12 +103,12 @@ const Test = () => {
 
   return (
     <>
-      <CartItems items={cartItems} onClick={manageQuantity} />
+      <CartItems items={cartItems} onClick={manageProduct} />
       <PriceSection
         totalPrice={calculateTotalPrice.discountedTotalPrice}
         discountRate={calculateTotalPrice.discountRate}
       />
-      <SelectSection options={options} onSelect={manageQuantity} />
+      <SelectSection options={options} onSelect={manageProduct} />
       <div id="stock-status" className="text-sm text-gray-500 mt-2 whitespace-pre-wrap">
         {renderStockStatus()}
       </div>
