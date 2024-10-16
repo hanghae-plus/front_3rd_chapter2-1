@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { CartItems } from '../Cart';
+import { CartItem } from '../Cart';
 
 interface Props {
-  cartItems: CartItems[];
-  handleQuantityUpdate: (id: string, changeDirection: 'increase' | 'decrease') => void;
-  handleRemoveCartItem: (id: string) => void;
+  cartItems: CartItem[];
+  handleQuantityUpdate: (productId: string, changeDirection: 'increase' | 'decrease') => void;
+  handleRemoveCartItem: (productId: string) => void;
 }
 
 const CartItemList: React.FC<Props> = ({

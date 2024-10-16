@@ -3,8 +3,11 @@ import { DEFAULT_PRODUCT_LIST } from './constant/defaultProducts';
 import CartItemList from './component/CartItemList';
 import CartTotalPriceAndPoint from './component/CartTotalPriceAndPoint';
 import OutOfStockItems from './component/OutOfStockItems';
+import { updateCartItemQuantity } from './module/updateCartItemQuantity';
+import AddCartItemButton from './component/AddCartItemButton';
+import ProductSelect from './component/ProductSelect';
 
-export interface CartItems {
+export interface CartItem {
   price: number;
   id: string;
   name: string;
@@ -12,52 +15,65 @@ export interface CartItems {
   selectQuantity: number;
 }
 
+const findProductById = (productId: string) => {
+  return DEFAULT_PRODUCT_LIST.find((product) => product.id === productId);
+};
+
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItems[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductId, setSelectedProductId] = useState('p1');
 
-  const handleSelectChange = (event) => {
-    setSelectedProductId(event.target.value);
-  };
-
   const handleAddCartItem = () => {
-    const selectedProductItem = DEFAULT_PRODUCT_LIST.find(
-      (product) => product.id === selectedProductId,
+    const selectedProductItem = findProductById(selectedProductId);
+
+    if (selectedProductItem.quantity === 0) {
+      return;
+    }
+
+    const updatedCartItems = updateCartItemQuantity(
+      cartItems,
+      1,
+      findProductById(selectedProductId),
     );
 
     setCartItems((prevState) => {
       const existingCartItem = prevState.find((cartItem) => cartItem.id === selectedProductItem.id);
 
       if (existingCartItem) {
-        return prevState.map((cartItem) =>
-          cartItem.id === selectedProductItem.id
-            ? { ...cartItem, selectQuantity: cartItem.selectQuantity + 1 }
-            : cartItem,
-        );
+        return updatedCartItems;
       }
 
-      return [...prevState, { ...selectedProductItem, selectQuantity: 1 }];
+      return [
+        ...prevState,
+        {
+          ...selectedProductItem,
+          selectQuantity: 1,
+          quantity: selectedProductItem.quantity - 1,
+        },
+      ];
     });
   };
 
-  const handleQuantityUpdate = (id: string, changeDirection: 'increase' | 'decrease') => {
+  const handleQuantityUpdate = (productId: string, changeDirection: 'increase' | 'decrease') => {
     const quantityChange = changeDirection === 'increase' ? 1 : -1;
 
+    const updatedCartItems = updateCartItemQuantity(
+      cartItems,
+      quantityChange,
+      findProductById(productId),
+    );
+
+    setCartItems(updatedCartItems);
+  };
+
+  const handleRemoveCartItem = (productId: string) => {
     setCartItems((prevState) => {
-      return prevState
-        .map((cartItem) =>
-          cartItem.id === id
-            ? { ...cartItem, selectQuantity: cartItem.selectQuantity + quantityChange }
-            : cartItem,
-        )
-        .filter((cartItem) => cartItem.selectQuantity > 0);
+      return prevState.filter((cartItem) => cartItem.id !== productId);
     });
   };
 
-  const handleRemoveCartItem = (id: string) => {
-    setCartItems((prevState) => {
-      return prevState.filter((cartItem) => cartItem.id !== id);
-    });
+  const handleSelectChange = (event) => {
+    setSelectedProductId(event.target.value);
   };
 
   return (
@@ -69,18 +85,10 @@ const Cart = () => {
           handleQuantityUpdate={handleQuantityUpdate}
           handleRemoveCartItem={handleRemoveCartItem}
         />
-        <CartTotalPriceAndPoint />
-        <select className="border rounded p-2 mr-2" onChange={handleSelectChange}>
-          {DEFAULT_PRODUCT_LIST.map((product) => (
-            <option key={product.id} disabled={product.quantity === 0} value={product.id}>
-              {product.name} - {product.price}원
-            </option>
-          ))}
-        </select>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleAddCartItem}>
-          추가
-        </button>
-        <OutOfStockItems />
+        <CartTotalPriceAndPoint cartItems={cartItems} />
+        <ProductSelect handleSelectChange={handleSelectChange} />
+        <AddCartItemButton handleAddCartItem={handleAddCartItem} />
+        <OutOfStockItems cartItems={cartItems} />
       </div>
     </div>
   );

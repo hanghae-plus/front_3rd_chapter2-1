@@ -9,7 +9,7 @@ describe('advanced test', () => {
 
     beforeAll(async () => {
       // DOM 초기화
-      document.body.innerHTML = '<div id="app"></div>';
+      document.body.innerHTML = '<div id="root"></div>';
       await loadFile();
 
       // 전역 변수 참조
@@ -64,7 +64,7 @@ describe('advanced test', () => {
       addBtn.click();
       expect(cartDisp.children.length).toBe(1);
       expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 1'
+        '상품1 - 10000원 x 1',
       );
     });
 
@@ -72,7 +72,7 @@ describe('advanced test', () => {
       const increaseBtn = cartDisp.querySelector('.quantity-change[data-change="1"]');
       increaseBtn.click();
       expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 2'
+        '상품1 - 10000원 x 2',
       );
     });
 
