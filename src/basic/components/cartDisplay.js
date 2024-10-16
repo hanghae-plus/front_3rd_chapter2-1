@@ -1,3 +1,3 @@
 export const CartDisplay = () => {
-  return `<div id="cart-items"></div>`
-}
+  return `<div id="cart-items"></div>`;
+};

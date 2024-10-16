@@ -1,11 +1,11 @@
 import {
+  LUCK_DISCOUNT_PROBABILITY,
+  LUCK_DISCOUNT_RATE,
+  LUCK_TIME_INTERVAL,
   PRODUCT_BULK_DISCOUNT_AMOUNT,
   PRODUCT_BULK_DISCOUNT_RATE,
   SUGGEST_DISCOUNT_RATE,
   SUGGEST_TIME_INTERVAL,
-  SURPRISE_DISCOUNT_PROBABILITY,
-  SURPRISE_DISCOUNT_RATE,
-  SURPRISE_TIME_INTERVAL,
 } from '../constants';
 import { productList } from '../data';
 import { getCartInfo } from '../state';
@@ -29,19 +29,19 @@ const setLuckItemDiscount = () => {
   setTimeout(() => {
     setInterval(() => {
       const luckyItem = productList[Math.floor(Math.random() * productList.length)];
-      if (Math.random() < SURPRISE_DISCOUNT_PROBABILITY && luckyItem.quantity > 0) {
-        luckyItem.price = Math.round(luckyItem.price * SURPRISE_DISCOUNT_RATE);
+      if (Math.random() < LUCK_DISCOUNT_PROBABILITY && luckyItem.quantity > 0) {
+        luckyItem.price = Math.round(luckyItem.price * LUCK_DISCOUNT_RATE);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
 
         updateSelectOptions();
       }
-    }, SURPRISE_TIME_INTERVAL);
+    }, LUCK_TIME_INTERVAL);
   }, Math.random() * 10000);
 };
 
 const setSuggestItemDiscount = () => {
-  setTimeout(function () {
-    setInterval(function () {
+  setTimeout(() => {
+    setInterval(() => {
       if (cartInfo.lastAddedProduct) {
         const suggest = productList.find((product) => {
           return product.id !== cartInfo.lastAddedProduct && product.quantity > 0;

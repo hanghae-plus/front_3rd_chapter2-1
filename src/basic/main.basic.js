@@ -4,7 +4,6 @@ import {
   calculatorCart,
   handleClickItem,
   scheduleDiscount,
-  updateSelectOptions,
 } from './utils';
 import { initCartInfo } from './state';
 

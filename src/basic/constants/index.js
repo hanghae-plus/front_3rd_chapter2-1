@@ -1,2 +1,2 @@
-export * from "./discountConstant"
-export * from "./productConstant"
+export * from './discountConstant';
+export * from './productConstant';
