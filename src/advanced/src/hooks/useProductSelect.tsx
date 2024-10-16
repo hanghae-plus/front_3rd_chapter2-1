@@ -5,9 +5,9 @@ import { useProductStore } from '../stores/productStore';
 
 const useProductSelect = () => {
   const storeProducts = useProductStore((state) => state.products);
-  const [selected, setSelected] = useState('p1');
-  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelected(e.target.value);
+  const [selectedProduct, setSelectedProduct] = useState('p1');
+  const handleSelectProduct = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedProduct(e.target.value);
   };
 
   const storeCartItems = useStore((state) => state.cartItems);
@@ -38,7 +38,7 @@ const useProductSelect = () => {
 
   const handleAddToCart = () => {
     const targetProduct = storeProducts.find((product) => {
-      return product.id === selected;
+      return product.id === selectedProduct;
     });
 
     if (!targetProduct) return; // 상품 자체가 존재하지 않음
@@ -53,7 +53,7 @@ const useProductSelect = () => {
     addToCart(currentCartItem, targetProduct);
   };
 
-  return { selected, handleSelect, handleAddToCart };
+  return { selectedProduct, handleSelectProduct, handleAddToCart };
 };
 
 export default useProductSelect;
