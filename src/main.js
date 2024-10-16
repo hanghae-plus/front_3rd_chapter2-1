@@ -112,7 +112,9 @@ function calcCart() {
       totalAmt += itemTot * (1 - disc);
     })();
   }
+
   let discRate = 0;
+
   if (itemCnt >= 30) {
     var bulkDisc = totalAmt * 0.25;
     var itemDisc = subTot - totalAmt;
@@ -130,13 +132,16 @@ function calcCart() {
     totalAmt *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
+
   sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
+
   if (discRate > 0) {
     var span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
   }
+
   updateStockInfo();
   renderBonusPts();
 }
