@@ -32,6 +32,7 @@ export default [
         clearTimeout: 'readonly',
         clearInterval: 'readonly',
         alert: 'readonly',
+        console: 'readonly',
       },
     },
     rules: {
