@@ -34,6 +34,7 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      vi.useRealTimers();
       vi.restoreAllMocks();
     });
 
