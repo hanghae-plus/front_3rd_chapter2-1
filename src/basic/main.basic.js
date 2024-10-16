@@ -1,5 +1,5 @@
 let $productSelect, $addButton, $cartItems, $cartTotal, $stockStatus;
-let lastSel,
+let lastSelectedItemId,
   bonusPoints = 0,
   totalAmount = 0,
   itemCnt = 0;
@@ -35,9 +35,9 @@ const handleTimerSuggestion = () => {
   const SUGGESTION_DISCOUNT = 0.95;
 
   setInterval(() => {
-    if (lastSel) {
+    if (lastSelectedItemId) {
       const suggestedProduct = productList.find(
-        (product) => product.id !== lastSel && product.quantity > 0,
+        (product) => product.id !== lastSelectedItemId && product.quantity > 0,
       );
       if (suggestedProduct) {
         alert(
@@ -235,7 +235,7 @@ const handleClickAddToCart = () => {
   }
 
   calcCart();
-  lastSel = selectedItemId;
+  lastSelectedItemId = selectedItemId;
 };
 
 const findProductById = (id) => productList.find((p) => p.id === id);
