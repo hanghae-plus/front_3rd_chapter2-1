@@ -6,12 +6,13 @@ const getDiscountRate = (cart) => {
   const { id, quantity } = cart;
   let rate = 0;
 
-  if (quantity >= 10)
+  if (quantity >= 10) {
     if (id === 'p1') rate = 0.1;
     else if (id === 'p2') rate = 0.15;
     else if (id === 'p3') rate = 0.2;
     else if (id === 'p4') rate = 0.05;
     else if (id === 'p5') rate = 0.25;
+  }
 
   return rate;
 };
