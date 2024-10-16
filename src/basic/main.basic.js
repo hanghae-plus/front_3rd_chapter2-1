@@ -289,35 +289,48 @@
   // 장바구니 항목의 수량을 업데이트하는 버튼 클릭 시 실행되는 함수
   const onClickUpdateCount = (e) => {
     const eventTarget = e.target;
-    const countChangeBtn = 'quantity-change';
-    const deleteBtn = 'remove-item';
+    const isCountChangeBtn = containsClass(eventTarget, 'quantity-change');
+    const isDeleteBtn = containsClass(eventTarget, 'remove-item');
 
-    if (containsClass(eventTarget, countChangeBtn) || containsClass(eventTarget, deleteBtn)) {
-      let targetId = eventTarget.dataset.productId;
-      let targetElement = document.getElementById(targetId);
-      let targetProduct = productList.find((product) => product.id === targetId);
-      let targetCount = getItemCount(targetElement);
+    if (isCountChangeBtn || isDeleteBtn) {
+      const targetId = eventTarget.dataset.productId;
+      const targetElement = document.getElementById(targetId);
+      const targetProduct = productList.find(product => product.id === targetId);
+      const targetCount = getItemCount(targetElement);
 
-      if (containsClass(eventTarget, countChangeBtn)) {
-        let countChange = parseInt(eventTarget.dataset.change);
-        let updatedCount = targetCount + countChange;
-
-        if (updatedCount > 0 && updatedCount <= targetProduct.count + targetCount) {
-          targetProduct.count -= countChange;
-          targetElement.querySelector('span').textContent =
-            targetElement.querySelector('span').textContent.split('x ')[0] + 'x ' + updatedCount;
-        } else if (updatedCount <= 0) {
-          targetElement.remove();
-          targetProduct.count -= countChange;
-        } else {
-          alert('재고가 부족합니다.');
-        }
-      } else if (containsClass(eventTarget, deleteBtn)) {
-        targetProduct.count += targetCount;
-        targetElement.remove();
+      if (isCountChangeBtn) {
+        handleCountChange(eventTarget, targetProduct, targetElement, targetCount);
+      } else if (isDeleteBtn) {
+        handleDelete(targetProduct, targetElement, targetCount);
       }
+      
       calcCart();
     }
+  };
+
+  const handleCountChange = (eventTarget, targetProduct, targetElement, targetCount) => {
+    const countChange = parseInt(eventTarget.dataset.change);
+    const updatedCount = targetCount + countChange;
+
+    if (updatedCount > 0 && updatedCount <= targetProduct.count + targetCount) {
+      updateProductCount(targetElement, updatedCount);
+      targetProduct.count -= countChange;
+    } else if (updatedCount <= 0) {
+      targetElement.remove();
+      targetProduct.count -= targetCount; // 재고 수량을 정확히 반영
+    } else {
+      alert('재고가 부족합니다.');
+    }
+  };
+
+  const handleDelete = (targetProduct, targetElement, targetCount) => {
+    targetProduct.count += targetCount;
+    targetElement.remove();
+  };
+
+  const updateProductCount = (targetElement, updatedCount) => {
+    const countTextElement = targetElement.querySelector('span');
+    countTextElement.textContent = `${countTextElement.textContent.split('x ')[0]}x ${updatedCount}`;
   };
 
   // 클래스 포함 여부 확인
