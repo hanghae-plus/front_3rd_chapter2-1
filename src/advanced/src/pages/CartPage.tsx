@@ -1,9 +1,8 @@
 import { CartItems, CartTotalPrice, ProductSelect, StockStatus, Title } from '../components';
-
-// import { useAlertDiscount } from '../hooks';
+import { useAlertDiscount } from '../hooks';
 
 const CartPage = () => {
-  // useAlertDiscount();
+  useAlertDiscount();
 
   return (
     <main className="bg-gray-100 p-8">
