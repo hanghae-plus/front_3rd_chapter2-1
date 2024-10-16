@@ -2,7 +2,7 @@ let $productSelect, $addButton, $cartItems, $cartTotal, $stockStatus;
 let lastSelectedItemId,
   bonusPoints = 0,
   totalAmount = 0,
-  itemCnt = 0;
+  itemCount = 0;
 
 const productList = [
   { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
@@ -106,7 +106,7 @@ function updateProductOptions() {
 }
 const calcCart = () => {
   totalAmount = 0;
-  itemCnt = 0;
+  itemCount = 0;
   const cartItems = $cartItems.children;
   let subTot = 0;
   for (let i = 0; i < cartItems.length; i++) {
@@ -123,11 +123,11 @@ const calcCart = () => {
     const productTotalPrice = currentProduct.price * quantity;
     const discount = getDiscount(currentProduct, quantity);
 
-    itemCnt += quantity;
+    itemCount += quantity;
     subTot += productTotalPrice;
     totalAmount += productTotalPrice * (1 - discount);
   }
-  let discountRate = getDiscountRate(itemCnt, subTot, totalAmount);
+  let discountRate = getDiscountRate(itemCount, subTot, totalAmount);
   discountRate = applyTuesdayDiscount(totalAmount, discountRate);
 
   updateCartTotal(discountRate);
@@ -164,8 +164,8 @@ const applyTuesdayDiscount = (totalAmount, discountRate) => {
   return discountRate;
 };
 
-const getDiscountRate = (itemCnt, subtotal, totalAmount) => {
-  if (itemCnt >= 30) {
+const getDiscountRate = (itemCount, subtotal, totalAmount) => {
+  if (itemCount >= 30) {
     const bulkDiscount = subtotal * 0.25;
     const itemDiscount = subtotal - totalAmount;
     if (bulkDiscount > itemDiscount) {
