@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+      "jsx": "react-jsx", // React JSX 지원
+      "esModuleInterop": true, // ES 모듈 호환성
+    }
+  }
