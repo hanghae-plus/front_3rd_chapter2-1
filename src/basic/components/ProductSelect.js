@@ -1,4 +1,4 @@
-export class Select {
+export class ProductSelect {
   constructor({ wrap, prodList }) {
     this.productList = prodList;
 

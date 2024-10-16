@@ -1,4 +1,4 @@
-export class CartSummary {
+export class CartTotal {
   #totalPrice;
   #discountRate;
   #point = 0;
