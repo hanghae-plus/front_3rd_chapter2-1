@@ -52,7 +52,7 @@ const handleTimerSuggestion = () => {
   }, SUGGESTION_INTERVAL);
 };
 
-function main() {
+const main = () => {
   const $root = document.getElementById('app');
   const $container = document.createElement('div');
   const $innerContainer = document.createElement('div');
@@ -91,11 +91,11 @@ function main() {
 
   setTimeout(handleTimerFlashSale, Math.random() * 10000);
   setTimeout(handleTimerSuggestion, Math.random() * 20000);
-}
+};
 
-function updateProductOptions() {
+const updateProductOptions = () => {
   $productSelect.innerHTML = '';
-  productList.forEach(function (item) {
+  productList.forEach((item) => {
     let opt = document.createElement('option');
     opt.value = item.id;
 
@@ -103,7 +103,7 @@ function updateProductOptions() {
     if (item.quantity === 0) opt.disabled = true;
     $productSelect.appendChild(opt);
   });
-}
+};
 const calcCart = () => {
   totalAmount = 0;
   itemCount = 0;
@@ -204,7 +204,7 @@ const updateBonusPoints = (bonusPoints) => {
 
 const updateStockInfo = () => {
   let infoMessage = '';
-  productList.forEach(function (product) {
+  productList.forEach((product) => {
     if (product.quantity < 5) {
       infoMessage +=
         product.name +
