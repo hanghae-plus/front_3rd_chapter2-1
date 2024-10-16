@@ -10,7 +10,7 @@ export const MESSAGE = {
   STOCK_STATUS: {
     EMPTY: '품절',
     INSUFFICIENT: '재고가 부족합니다.',
-    LOW: (quantity: string) => `재고 부족 (${quantity}개 남음)`,
+    LOW: (quantity: number) => `재고 부족 (${quantity}개 남음)`,
   },
   PROMOTION: {
     FLASH_SALE: (name: string) => `번개세일! ${name}이(가) 20% 할인 중입니다!`,
