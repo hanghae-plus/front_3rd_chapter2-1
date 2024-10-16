@@ -3,9 +3,15 @@ import { CartItems } from '../Cart';
 
 interface Props {
   cartItems: CartItems[];
+  handleQuantityUpdate: (id: string, changeDirection: 'increase' | 'decrease') => void;
+  handleRemoveCartItem: (id: string) => void;
 }
 
-const CartItemList: React.FC<Props> = ({ cartItems }) => {
+const CartItemList: React.FC<Props> = ({
+  cartItems,
+  handleQuantityUpdate,
+  handleRemoveCartItem,
+}) => {
   return (
     <div>
       {cartItems.map(({ price, id, name, selectQuantity }) => (
@@ -14,13 +20,24 @@ const CartItemList: React.FC<Props> = ({ cartItems }) => {
             {name} - {price}원 x {selectQuantity || 0}
           </span>
           <div>
-            <button className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1">
+            <button
+              className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+              onClick={() => handleQuantityUpdate(id, 'decrease')}
+            >
               -
             </button>
-            <button className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1">
+            <button
+              className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+              onClick={() => handleQuantityUpdate(id, 'increase')}
+            >
               +
             </button>
-            <button className="remove-item bg-red-500 text-white px-2 py-1 rounded">삭제</button>
+            <button
+              className="remove-item bg-red-500 text-white px-2 py-1 rounded"
+              onClick={() => handleRemoveCartItem(id)}
+            >
+              삭제
+            </button>
           </div>
         </div>
       ))}

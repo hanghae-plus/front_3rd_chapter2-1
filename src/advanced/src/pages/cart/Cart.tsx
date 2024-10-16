@@ -12,12 +12,11 @@ export interface CartItems {
 }
 
 const Cart = () => {
-  const [selectedProductId, setSelectedProductId] = useState('p1');
   const [cartItems, setCartItems] = useState<CartItems[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState('p1');
 
   const handleSelectChange = (event) => {
-    console.log(event.target.value, 'event.target.value');
-    setSelectedProductId(event.target.value); // 선택된 값으로 상태 업데이트
+    setSelectedProductId(event.target.value);
   };
 
   const handleAddCartItem = () => {
@@ -40,11 +39,35 @@ const Cart = () => {
     });
   };
 
+  const handleQuantityUpdate = (id: string, changeDirection: 'increase' | 'decrease') => {
+    const quantityChange = changeDirection === 'increase' ? 1 : -1;
+
+    setCartItems((prevState) => {
+      return prevState
+        .map((cartItem) =>
+          cartItem.id === id
+            ? { ...cartItem, selectQuantity: cartItem.selectQuantity + quantityChange }
+            : cartItem,
+        )
+        .filter((cartItem) => cartItem.selectQuantity > 0);
+    });
+  };
+
+  const handleRemoveCartItem = (id: string) => {
+    setCartItems((prevState) => {
+      return prevState.filter((cartItem) => cartItem.id !== id);
+    });
+  };
+
   return (
     <div className="bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-        <CartItemList cartItems={cartItems} />
+        <CartItemList
+          cartItems={cartItems}
+          handleQuantityUpdate={handleQuantityUpdate}
+          handleRemoveCartItem={handleRemoveCartItem}
+        />
         <CartTotalPriceAndPoint />
         <select className="border rounded p-2 mr-2" onChange={handleSelectChange}>
           {DEFAULT_PRODUCT_LIST.map((product) => (
