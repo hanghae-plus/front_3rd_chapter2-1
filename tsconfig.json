@@ -12,15 +12,6 @@
     "jsx": "preserve",
     "noImplicitAny": false,
     "baseUrl": ".",
-    "paths": {
-      "#/*": ["src/*"],
-      "#app/*": ["src/app/[locale]/*"],
-      "#api/*": ["src/api/*"],
-      "#components/*": ["src/components/*"],
-      "#hooks/*": ["src/hooks/*"],
-      "#util/*": ["src/util/*"],
-      "#constants/*": ["src/constants/*"]
-    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "incremental": true,
@@ -33,14 +24,6 @@
       }
     ]
   },
-  "include": [
-    "src",
-    "src/**/*",
-    "next-i18next.config.cjs",
-    "i18n.js",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "next.config.js"
-  ],
+  "include": ["src", "src/**/*"],
   "exclude": ["node_modules"]
 }
