@@ -94,12 +94,9 @@ const main = () => {
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
-    const $option = document.createElement('option');
-    $option.value = product.id;
-
-    $option.textContent = product.name + ' - ' + product.price + '원';
-    if (product.quantity === 0) $option.disabled = true;
-    $productSelect.appendChild($option);
+    const productOptionHTML =
+      /* HTML */ `<option value="${product.id}" ${product.quantity === 0 ? 'disabled' : ''}>${product.name} - ${product.price}원</option>`.trim();
+    $productSelect.innerHTML += productOptionHTML;
   });
 };
 
@@ -179,10 +176,12 @@ const getDiscountRate = (itemCount, subtotal, totalAmount) => {
 const updateCartTotal = (discountRate) => {
   $cartTotal.textContent = '총액: ' + Math.round(totalAmount) + '원';
   if (discountRate > 0) {
-    const span = document.createElement('span');
-    span.className = 'text-green-500 ml-2';
-    span.textContent = '(' + (discountRate * 100).toFixed(1) + '% 할인 적용)';
-    $cartTotal.appendChild(span);
+    const discountInfoHTML = /* HTML */ `
+      <span class="text-green-500 ml-2"
+        >(${(discountRate * 100).toFixed(1)}% 할인 적용)</span
+      >
+    `;
+    $cartTotal.innerHTML += discountInfoHTML;
   }
 };
 
@@ -193,12 +192,13 @@ const calculateBonusPoints = () => {
 const updateBonusPoints = (bonusPoints) => {
   let pointsTag = document.getElementById('loyalty-points');
   if (!pointsTag) {
-    pointsTag = document.createElement('span');
-    pointsTag.id = 'loyalty-points';
-    pointsTag.className = 'text-blue-500 ml-2';
-    $cartTotal.appendChild(pointsTag);
+    const pointsTagHTML = /* HTML */ `
+      <span id="loyalty-points" class="text-blue-500 ml-2"
+>(포인트: ${bonusPoints})</span
+      >
+    `.trim();
+    $cartTotal.innerHTML += pointsTagHTML;
   }
-  pointsTag.textContent = '(포인트: ' + bonusPoints + ')';
 };
 
 const updateStockInfo = () => {
