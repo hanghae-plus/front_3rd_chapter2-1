@@ -1,12 +1,12 @@
-import { Product } from '../types';
+import { useProductContext } from '../utils/hooks';
 
 export default function ProductSelect({
-  productList,
   selectRef,
 }: {
-  productList: Product[];
   selectRef: React.RefObject<HTMLSelectElement>;
 }) {
+  const { productList } = useProductContext();
+
   return (
     <select
       ref={selectRef}

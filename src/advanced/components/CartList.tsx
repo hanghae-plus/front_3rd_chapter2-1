@@ -1,9 +1,13 @@
-import { Cart } from '../types';
+import { useCartContext } from '../utils/hooks';
 
-export default function CartList({ cartList }: { cartList: Cart[] }) {
+export default function CartList() {
+  const { cartList } = useCartContext();
+
+  console.log('cartList', cartList);
+
   return (
     <div id="cart-items">
-      {cartList.map((cart) => (
+      {cartList?.map((cart) => (
         <div
           key={cart.id}
           id={cart.id}

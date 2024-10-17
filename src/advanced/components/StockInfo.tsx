@@ -1,6 +1,7 @@
-import { Product } from '../types';
+import { useProductContext } from '../utils/hooks';
 
-export default function StockInfo({ productList }: { productList: Product[] }) {
+export default function StockInfo() {
+  const { productList } = useProductContext();
   const lowQuantityProducts = productList.filter(
     (product) => product.quantity < 5
   );
