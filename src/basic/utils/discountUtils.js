@@ -1,14 +1,18 @@
 import {
+  ITEM_DISCOUNT_AMOUNT,
+  ITEM_DISCOUNT_RATE,
   LUCK_DISCOUNT_PROBABILITY,
   LUCK_DISCOUNT_RATE,
   LUCK_TIME_INTERVAL,
   PRODUCT_BULK_DISCOUNT_AMOUNT,
   PRODUCT_BULK_DISCOUNT_RATE,
+  SALE_DAY,
+  SALE_DAY_DISCOUNT_RATE,
   SUGGEST_DISCOUNT_RATE,
   SUGGEST_TIME_INTERVAL,
 } from '../constants';
 import { productList } from '../data';
-import { getCartInfo } from '../state';
+import { getCartInfo, updateCartInfo } from '../state';
 import { updateSelectOptions } from './cartUtils';
 
 const cartInfo = getCartInfo();
@@ -18,6 +22,34 @@ export const getProductBulkDiscountRate = (productId, quantity) => {
     return PRODUCT_BULK_DISCOUNT_RATE[productId];
   }
   return 0;
+};
+
+export const getBulkDiscountRate = (cartInfo, subTotal) => {
+  if (cartInfo.itemCount >= ITEM_DISCOUNT_AMOUNT) {
+    // 상품이 30개 이상일 때
+    const bulkDiscount = cartInfo.totalAmount * ITEM_DISCOUNT_RATE;
+    const itemDiscount = subTotal - cartInfo.totalAmount; // 상품 할인액
+
+    if (bulkDiscount > itemDiscount) {
+      cartInfo.totalAmount = subTotal * (1 - ITEM_DISCOUNT_RATE);
+      return ITEM_DISCOUNT_RATE;
+    } else {
+      const result = itemDiscount / subTotal;
+      return result;
+    }
+  } else {
+    const result = (subTotal - cartInfo.totalAmount) / subTotal;
+    return result;
+  }
+};
+
+export const getSaleDayDiscountRate = (cartInfo, discountRate) => {
+  if (new Date().getDay() === SALE_DAY) {
+    // 화요일이면 할인
+    updateCartInfo('totalAmount', cartInfo.totalAmount * (1 - SALE_DAY_DISCOUNT_RATE));
+    return Math.max(discountRate, SALE_DAY_DISCOUNT_RATE);
+  }
+  return discountRate; // SALE_DAY가 아닌 경우 기존 할인율 유지
 };
 
 export const scheduleDiscount = () => {

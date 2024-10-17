@@ -1,6 +1,10 @@
 import { getCartInfo, updateCartInfo } from '../state';
 import { productList } from '../data';
-import { getProductBulkDiscountRate } from './discountUtils';
+import {
+  getBulkDiscountRate,
+  getProductBulkDiscountRate,
+  getSaleDayDiscountRate,
+} from './discountUtils';
 import {
   ITEM_DISCOUNT_AMOUNT,
   ITEM_DISCOUNT_RATE,
@@ -41,28 +45,9 @@ export const calculatorCart = () => {
   let discountRate = 0;
 
   //TODO 함수 구분할예정
-  if (cartInfo.itemCount >= ITEM_DISCOUNT_AMOUNT) {
-    // 상품이 30개 이상일 때
-    const bulkDiscount = cartInfo.totalAmount * ITEM_DISCOUNT_RATE;
-    const itemDiscount = subTotal - cartInfo.totalAmount; // 상품 할인액
-
-    if (bulkDiscount > itemDiscount) {
-      cartInfo.totalAmount = subTotal * (1 - ITEM_DISCOUNT_RATE);
-      discountRate = 0.25;
-    } else {
-      discountRate = itemDiscount / subTotal;
-    }
-  } else {
-    discountRate = (subTotal - cartInfo.totalAmount) / subTotal;
-  }
-
+  discountRate = getBulkDiscountRate(cartInfo, subTotal);
   //TODO 함수 구분할예정
-  if (new Date().getDay() === SALE_DAY) {
-    // 화요일이면 할인
-    // TODO : 테스트코드 수정해야됨
-    updateCartInfo('totalAmount', cartInfo.totalAmount * (1 - SALE_DAY_DISCOUNT_RATE));
-    discountRate = Math.max(discountRate, SALE_DAY_DISCOUNT_RATE);
-  }
+  discountRate = getSaleDayDiscountRate(cartInfo, discountRate);
 
   cartTotal.textContent = '총액: ' + Math.round(cartInfo.totalAmount) + '원';
 
