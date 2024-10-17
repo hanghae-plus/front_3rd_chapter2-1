@@ -22,14 +22,6 @@ let totalPrice = 0;
 let itemCount = 0;
 
 // Utils
-function canLuckyDraw() {
-  return probability(LUCKY_DRAW_PERCENTAGE);
-}
-
-function getRandomProduct() {
-  return getRandomItem(prodList);
-}
-
 function discountProduct(product, percentage, round = false) {
   const discountedPrice = discountPrice(product.val, percentage);
   product.val = round ? Math.round(discountedPrice) : discountedPrice;
@@ -171,8 +163,9 @@ function calcCart() {
 // Lucky Draw 이벤트를 시작합니다.
 function startLuckyDrawInterval() {
   setInterval(() => {
-    if (canLuckyDraw()) {
-      const luckyProduct = getRandomProduct();
+    const isCanLuckyDraw = probability(LUCKY_DRAW_PERCENTAGE);
+    if (isCanLuckyDraw) {
+      const luckyProduct = getRandomItem(prodList);
 
       if (luckyProduct.q > 0) {
         discountProduct(luckyProduct, LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE);
