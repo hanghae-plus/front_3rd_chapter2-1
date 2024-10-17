@@ -48,7 +48,7 @@ function randomDelay(delay = 1) {
 /**
  * 상품 선택 셀렉트박스를 렌더링
  */
-function renderProductSelect() {
+function renderProductSelect(productList) {
   $productSelect.innerHTML = '';
 
   productList.forEach((product) => {
@@ -79,7 +79,7 @@ function renderLoyaltyPoints(points) {
   $el.textContent = `(포인트: ${points})`;
 }
 
-function renderStockStatus() {
+function renderStockStatus(productList) {
   $stockStatus.textContent = productList
     .filter(({ stock }) => stock < 5)
     .map(({ stock, name }) => {
@@ -163,7 +163,7 @@ function calcCart() {
 
   renderCartTotal(cartTotalPrice, discountRate);
 
-  renderStockStatus();
+  renderStockStatus(productList);
 
   // 장바구니에 담긴 상품 금액을 기준으로 포인트 업데이트
   const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, cartTotalPrice);
@@ -183,7 +183,7 @@ function startLuckyDrawInterval() {
 
         alert(`번개세일! ${luckyProduct.name}이(가) ${LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE}% 할인 중입니다!`);
 
-        renderProductSelect();
+        renderProductSelect(productList);
       }
     }
   }, LUCKY_DRAW_INTERVAL);
@@ -210,7 +210,7 @@ function startSuggestedProductInterval() {
 
       discountProduct(suggestedProduct, SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE);
 
-      renderProductSelect();
+      renderProductSelect(productList);
     }
   }, SUGGESTED_PRODUCT_INTERVAL);
 }
@@ -367,7 +367,7 @@ function main() {
 
   $root.appendChild($cart);
 
-  renderProductSelect();
+  renderProductSelect(productList);
   calcCart();
 
   randomDelay(LUCKY_DRAW_DELAY).then(() => {

@@ -34,6 +34,7 @@ export default [
       'no-param-reassign': 'off',
       'no-promise-executor-return': 'off',
       'no-plusplus': 'off',
+      'no-shadow': 'off',
     },
   },
 ];
