@@ -1,18 +1,25 @@
-import pluginJs from '@eslint/js';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import globals from 'globals';
 
 export default [
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  eslintConfigPrettier,
-  eslintPluginPrettierRecommended,
-  reactPlugin.configs.recommended,
-  reactHooksPlugin.configs.recommended,
   {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    languageOptions: {
+      parser: typescriptParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    plugins: {
+      '@typescript-eslint': typescriptPlugin,
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      prettier: prettierPlugin,
+    },
     rules: {
       'no-var': 'error',
       'prefer-const': 'error',
@@ -20,6 +27,16 @@ export default [
       'no-unused-vars': 'warn',
       'consistent-return': 'warn',
       'no-redeclare': 'error',
+      'prettier/prettier': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+    settings: {
+      react: {
+        version: 'detect', // React 버전 자동 감지
+      },
     },
   },
+  eslintConfigPrettier,
+  eslintPluginPrettierRecommended,
 ];
