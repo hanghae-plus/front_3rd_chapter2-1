@@ -9,7 +9,7 @@ export function applyDiscountToSuggestedItem() {
   }
 
   const suggest = DEFAULT_PRODUCT_LIST.find(
-    (item) => item.id !== selectedProductItem && item.quantity > 0
+    (item) => item.id !== selectedProductItem && item.quantity > 0,
   );
   if (suggest) {
     suggest.price = Math.round(suggest.val * 0.95); // 5% 할인 적용
