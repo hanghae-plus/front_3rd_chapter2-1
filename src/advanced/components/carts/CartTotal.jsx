@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
 export const CartTotal = () => {
-    return (
-        <div id='cart-total' className='text-xl font-bold my-4'>
-            총액: 0원
-            <span id='loyalty-points' className='text-blue-500 ml-2'>
-                (포인트: 0)
-            </span>
-        </div>
-    );
+  return (
+    <div id="cart-total" className="my-4 text-xl font-bold">
+      총액: 0원
+      <span id="loyalty-points" className="ml-2 text-blue-500">
+        (포인트: 0)
+      </span>
+    </div>
+  );
 };
