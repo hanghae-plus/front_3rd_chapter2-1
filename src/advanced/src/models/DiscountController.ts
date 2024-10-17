@@ -34,19 +34,19 @@ class DiscountController {
   }
 
   _getOriginalTotalPrice() {
-    return this._cartItems.reduce((acc, curr) => acc + curr.val * curr.q, 0);
+    return this._cartItems.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
   }
 
   _calculateItemPrice(itemId: string, quantity: number) {
     const discountRate = this._getDiscountRate(itemId, quantity);
-    const itemPrice = this._cartItems.find((item) => item.id === itemId)?.val ?? 0;
+    const itemPrice = this._cartItems.find((item) => item.id === itemId)?.price ?? 0;
     const itemTotal = itemPrice * quantity;
     return itemTotal * (1 - discountRate);
   }
 
   _calculateTotalPrice() {
     if (this._cartItems.length === 0) return 0;
-    return this._cartItems.reduce((acc, curr) => acc + this._calculateItemPrice(curr.id, curr.q), 0);
+    return this._cartItems.reduce((acc, curr) => acc + this._calculateItemPrice(curr.id, curr.quantity), 0);
   }
 
   _calculateWeekdayDiscountPrice(weekday: keyof typeof WEEKDAY_DISCOUNT_RATE, totalPrice: number) {

@@ -15,12 +15,12 @@ function useAdditionalDiscountEvent(
     setInterval(() => {
       if (lastSelectedIdRef.current) {
         const suggestItem: ProductOption | undefined = targetList.find(
-          (item) => item.id !== lastSelectedIdRef.current && item.q > 0,
+          (item) => item.id !== lastSelectedIdRef.current && item.quantity > 0,
         );
         if (suggestItem) {
           alert(suggestItem.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggestItem.val = Math.round((suggestItem?.val ?? 0) * (1 - DISCOUNT_RATE));
-          callback(suggestItem.id, { val: suggestItem.val });
+          suggestItem.price = Math.round((suggestItem?.price ?? 0) * (1 - DISCOUNT_RATE));
+          callback(suggestItem.id, { price: suggestItem.price });
         }
       }
     }, INTERVAL_TIME);

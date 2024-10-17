@@ -15,7 +15,7 @@ export default function CartItems({ items, onClick }: CartItemsProps) {
     (item: ProductOption) => (quantity: number) => {
       const data = {
         ...item,
-        q: quantity === QUANTITY_CHANGE.REMOVE ? -item.q : quantity,
+        quantity: quantity === QUANTITY_CHANGE.REMOVE ? -item.quantity : quantity,
       };
       onClick?.(data);
     },
@@ -25,7 +25,7 @@ export default function CartItems({ items, onClick }: CartItemsProps) {
   return (
     <div id="cart-items">
       {items.map((item) =>
-        item.q === 0 ? null : <CartItem key={item.id} data={item} onClick={handleQuantityChange(item)} />,
+        item.quantity === 0 ? null : <CartItem key={item.id} data={item} onClick={handleQuantityChange(item)} />,
       )}
     </div>
   );

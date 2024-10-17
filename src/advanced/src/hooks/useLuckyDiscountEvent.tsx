@@ -14,10 +14,10 @@ function useLuckyDiscountEvent(
   const luckyDiscount = useCallback(() => {
     setInterval(() => {
       const luckyItem = { ...targetList[Math.floor(Math.random() * targetList.length)] };
-      if (Math.random() < RANDOM_THRESHOLD && luckyItem.q > 0) {
-        luckyItem.val = Math.round(luckyItem.val * (1 - LUCKY_DISCOUNT_RATE));
+      if (Math.random() < RANDOM_THRESHOLD && luckyItem.quantity > 0) {
+        luckyItem.price = Math.round(luckyItem.price * (1 - LUCKY_DISCOUNT_RATE));
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
-        callback(luckyItem.id, { val: luckyItem.val });
+        callback(luckyItem.id, { price: luckyItem.price });
       }
     }, INTERVAL_TIME);
   }, [callback, targetList]);

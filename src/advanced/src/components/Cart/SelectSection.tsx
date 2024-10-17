@@ -18,7 +18,7 @@ export default function SelectSection({ onSelect, options: optionsProp }: Select
   const addProduct = useCallback(() => {
     const selectedOption = optionsProp.find((option) => option.id === selectedProductId);
     if (selectedOption) {
-      onSelect?.({ ...selectedOption, q: QUANTITY_CHANGE.PLUS });
+      onSelect?.({ ...selectedOption, quantity: QUANTITY_CHANGE.PLUS });
     }
   }, [onSelect, optionsProp, selectedProductId]);
 
@@ -26,8 +26,8 @@ export default function SelectSection({ onSelect, options: optionsProp }: Select
     <div>
       <select id="product-select" className="border rounded p-2 mr-2" onChange={handleSelectProduct}>
         {optionsProp.map((option) => (
-          <option key={option.id} value={option.id} disabled={option.q === 0}>
-            {`${option.name} - ${option.val}원`}
+          <option key={option.id} value={option.id} disabled={option.quantity === 0}>
+            {`${option.name} - ${option.price}원`}
           </option>
         ))}
       </select>

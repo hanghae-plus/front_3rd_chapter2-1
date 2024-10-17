@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-export default function useOptions<T extends { id: string; val: number }>(initialOptions: T[]) {
+export default function useOptions<T extends { id: string; price: number }>(initialOptions: T[]) {
   const [options, setOptions] = useState<T[]>(() => initialOptions);
 
   const updateOption = useCallback((id: string, data: Partial<T>) => {

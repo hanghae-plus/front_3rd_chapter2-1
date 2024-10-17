@@ -6,7 +6,7 @@ import { DiscountType, ProductOption } from "@/types";
 
 const useCalculate = (propsData: ProductOption[]) => {
   const calculateTotalPrice = useMemo(() => {
-    const totalQuantity = propsData.reduce((acc, item) => acc + item.q, 0);
+    const totalQuantity = propsData.reduce((acc, item) => acc + item.quantity, 0);
     const discountController = new DiscountController(propsData);
 
     const discountType = {

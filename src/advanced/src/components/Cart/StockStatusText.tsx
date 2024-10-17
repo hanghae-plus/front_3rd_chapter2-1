@@ -11,7 +11,7 @@ type StockStatusTextProps = {
 const StockStatusText = ({ items, productOptions }: StockStatusTextProps) => {
   const stockStatusText = useMemo(() => {
     const stockStatus = items.map((item) => {
-      const stock = remainingStock(item.id, item.q, productOptions);
+      const stock = remainingStock(item.id, item.quantity, productOptions);
       if (stock >= 5) return "";
       return `${item.name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : "품절"}`;
     });

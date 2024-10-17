@@ -7,7 +7,7 @@ type CartItemProps = {
 };
 
 export default function CartItem({ data, onClick }: CartItemProps) {
-  const { id, name, val: price, q: quantity } = data;
+  const { id, name, price: price, quantity: quantity } = data;
 
   return (
     <div className="flex justify-between items-center mb-2" id={id}>
