@@ -3,7 +3,7 @@ import React, { FC, memo, ReactNode, useMemo, useCallback } from 'react'
 type ButtonProps = {
   id?: string
   className?: string
-  children: ReactNode
+  text: string
   onClick: () => void
   disabled?: boolean
   color?: 'primary' | 'error'
@@ -21,27 +21,25 @@ const sizeMap = {
   lg: 'px-6 py-3',
 } as const
 
-const Button: FC<ButtonProps> = memo(
-  ({ color = 'primary', size = 'md', children, className = '', onClick, ...props }) => {
-    const colorClass = colorMap[color]
-    const sizeClass = sizeMap[size]
+const Button: FC<ButtonProps> = memo(({ color = 'primary', size = 'md', text, className = '', onClick, ...props }) => {
+  const colorClass = colorMap[color]
+  const sizeClass = sizeMap[size]
 
-    const classNameProps = useMemo(
-      () => `rounded disabled:bg-gray-400 ${className} ${colorClass} ${sizeClass}`.trim(),
-      [className, colorClass, sizeClass],
-    )
+  const classNameProps = useMemo(
+    () => `rounded disabled:bg-gray-400 ${className} ${colorClass} ${sizeClass}`.trim(),
+    [className, colorClass, sizeClass],
+  )
 
-    const handleClick = useCallback(() => {
-      onClick()
-    }, [onClick])
+  const handleClick = useCallback(() => {
+    onClick()
+  }, [onClick])
 
-    return (
-      <button className={classNameProps} onClick={handleClick} {...props}>
-        {children}
-      </button>
-    )
-  },
-)
+  return (
+    <button className={classNameProps} onClick={handleClick} {...props}>
+      {text}
+    </button>
+  )
+})
 
 Button.displayName = 'Button'
 

@@ -4,11 +4,11 @@ import Button from './Button'
 
 type CartItemProps = {
   cart: Product[]
-  handleQuantityChange: (id: string, change: number) => void
-  handleRemoveItem: (id: string) => void
+  onChange: (id: string, change: number) => void
+  onClick: (id: string) => void
 }
 
-const CartList: FC<CartItemProps> = ({ cart, handleQuantityChange, handleRemoveItem }) => {
+const CartList: FC<CartItemProps> = ({ cart, onChange, onClick }) => {
   return (
     <div id="cart-items">
       {cart.map((item) => (
@@ -17,15 +17,9 @@ const CartList: FC<CartItemProps> = ({ cart, handleQuantityChange, handleRemoveI
             {item.name} - {item.price.toLocaleString()}원 x {item.quantity}
           </span>
           <div>
-            <Button id="quantity-change" size="sm" onClick={() => handleQuantityChange(item.id, -1)} className="mr-1">
-              -
-            </Button>
-            <Button id="quantity-change" size="sm" onClick={() => handleQuantityChange(item.id, 1)} className="mr-1">
-              +
-            </Button>
-            <Button id="remove-item" size="sm" color="error" onClick={() => handleRemoveItem(item.id)} className="mr-1">
-              삭제
-            </Button>
+            <Button id="quantity-change" size="sm" onClick={() => onChange(item.id, -1)} className="mr-1" text="-" />
+            <Button id="quantity-change" size="sm" onClick={() => onChange(item.id, 1)} className="mr-1" text="+" />
+            <Button id="remove-item" size="sm" color="error" onClick={() => onClick(item.id)} text="삭제" />
           </div>
         </div>
       ))}
