@@ -34,9 +34,8 @@ const CONSTANTS = {
  */
 const MESSAGES = {
   OUT_OF_STOCK: '재고가 부족합니다.',
-  PRODUCT_NOT_FOUND: '존재하지 않는 상품입니다.'
+  PRODUCT_NOT_FOUND: '존재하지 않는 상품입니다.',
 };
-
 
 /**
  * utils : 어플리케이션에서 공통으로 사용하는 유틸리티 함수를 정의합니다.
@@ -65,7 +64,7 @@ const $$ = (selector) => document.querySelectorAll(selector);
  * @param {string} [props.textContent] - 요소의 텍스트 내용
  * @param {*} [props...] - 그 외 모든 속성은 setAttribute를 통해 설정됨
  * @returns {HTMLElement} 생성된 DOM 요소
- * 
+ *
  * @example const div = createElement('div', { class: 'container', id: 'main', textContent: 'Hello' });
  */
 const createElement = (tag, props = {}) => {
@@ -99,11 +98,11 @@ let lastSelectedProductId,
 
 /**
  * ShopApplication
- * 
+ *
  * 쇼핑 카트 애플리케이션의 주요 기능을 관리하는 클래스입니다.
  * 상품 목록 초기화, UI 표현, 장바구니 기능, 할인 적용 등 애플리케이션의 전반적인 로직을 처리합니다.
  * 싱글톤 패턴으로 구현하여 애플리케이션 전체에서 ShopApplication의 인스턴스가 하나만 존재하도록 하였습니다.
- * 
+ *
  * 주요 기능:
  * - 상품 목록 관리
  * - UI 요소 생성 및 업데이트
@@ -150,26 +149,26 @@ class ShopApplication {
 
     // 장바구니 아이템 div
     cartItemsDisplay = createElement('div', { id: 'cart-items' });
-    
+
     // 장바구니 요약(총액, 할인, 포인트) div
     cartSummaryDisplay = createElement('div', {
       id: 'cart-total',
       class: 'text-xl font-bold my-4',
     });
-    
+
     // 상품 셀렉트 박스
     productSelectBox = createElement('select', {
       id: 'product-select',
       class: 'border rounded p-2 mr-2',
     });
-    
+
     // 장바구니 추가 버튼
     addToCartButton = createElement('button', {
       id: 'add-to-cart',
       class: 'bg-blue-500 text-white px-4 py-2 rounded',
       textContent: '추가',
     });
-    
+
     // 재고 정보 div
     stockInfoDisplay = createElement('div', {
       id: 'stock-status',
@@ -197,10 +196,9 @@ class ShopApplication {
 
   // 이벤트 리스너를 설정합니다.
   setupEventListeners() {
-
     // '추가' 버튼 클릭: 선택된 상품을 장바구니에 추가합니다.
     addToCartButton.addEventListener('click', () => this.addItemToCart());
-    
+
     // 장바구니 항목 클릭: 이벤트 위임을 사용하여 장바구니 내 버튼(수량 변경, 삭제 등) 클릭을 처리합니다.
     cartItemsDisplay.addEventListener('click', (event) =>
       this.handleCartButtonClick(event)
@@ -336,7 +334,7 @@ class ShopApplication {
   // 장바구니 수량을 변경하고 화면에 변경사항을 표시합니다.
   updateCartItemQuantity(cartItem, product, change) {
     if (change > product.stock) return alert(MESSAGES.OUT_OF_STOCK);
-    
+
     const quantitySpan = cartItem.querySelector('span');
     const currentQuantity = parseInt(quantitySpan.textContent.split('x ')[1]);
     const newQuantity = currentQuantity + change;
@@ -392,11 +390,7 @@ class ShopApplication {
         const removeQuantity = parseInt(
           cartItem.querySelector('span').textContent.split('x ')[1]
         );
-        this.updateCartItemQuantity(
-          cartItem,
-          product,
-          -removeQuantity
-        );
+        this.updateCartItemQuantity(cartItem, product, -removeQuantity);
       }
 
       // 변경된 정보에 따라 장바구니 요약 정보를 갱신합니다.
