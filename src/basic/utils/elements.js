@@ -21,3 +21,15 @@ export const updateSelectOptions = (options, targetElement) => {
   targetElement.innerHTML = '';
   targetElement.appendChild(fragment);
 };
+
+export const createButtonElement = (text, className, productId, change) => {
+  const button = createElement('button', {
+    textContent: text,
+    className: `${className} bg-blue-500 text-white px-2 py-1 rounded mr-1`
+  });
+  button.dataset.productId = productId;
+  if (change) {
+    button.dataset.change = change;
+  }
+  return button;
+};
