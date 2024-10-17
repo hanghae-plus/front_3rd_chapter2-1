@@ -47,11 +47,18 @@ const CartItemList = () => {
     }
 
     const selectedProduct = PRODUCT_LIST.find(p => p.id === productId);
-
     if (selectedProduct !== undefined) {
       setCartItemList(prev => [...prev, { ...selectedProduct, itemCount: 1 }]);
     }
   };
+
+  // FIXME: Rate들 수정해야 함
+  const BONUS_POINT_RATE = 0.05;
+  const DISCOUNT_RATE = 0.1;
+
+  const totalAmount =
+    cartItemList.reduce((acc, item) => acc + item.price * item.itemCount, 0) * (1 - DISCOUNT_RATE);
+  const bonusPoint = totalAmount * BONUS_POINT_RATE;
 
   return (
     <>
@@ -60,6 +67,14 @@ const CartItemList = () => {
           <CartItem key={cartItem.id} cartItem={cartItem} setCartItemList={setCartItemList} />
         ))}
       </div>
+
+      <div id="cart-total" className="text-xl font-bold my-4">
+        총액: {totalAmount.toLocaleString()}원
+        <span id="loyalty-points" className="text-blue-500 ml-2">
+          (포인트: {bonusPoint})
+        </span>
+      </div>
+
       {/* FIXME: select에서 가능하면 상태 걷어내기 */}
       <select
         name="productSelect"
@@ -69,13 +84,11 @@ const CartItemList = () => {
         onChange={handleChangeProduct}
       >
         {PRODUCT_LIST.map(product => (
-          <option key={product.id} value={product.id}>
+          <option key={product.id} value={product.id} disabled={product.quantity === 0}>
             {product.name} - {product.price.toLocaleString()}원
           </option>
         ))}
       </select>
-      <div id="cart-total" className="text-xl font-bold my-4"></div>
-      <div id="stock-status" className="text-sm text-gray-500 mt-2"></div>
       <button
         id="add-to-cart"
         className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -83,6 +96,20 @@ const CartItemList = () => {
       >
         추가
       </button>
+      <div id="stock-status" className="text-sm text-gray-500 mt-2">
+        {cartItemList?.map(cartItem => {
+          const CRITICAL_STOCK_QUANTITY = 5;
+          const stockCritical = cartItem.quantity - cartItem.itemCount <= CRITICAL_STOCK_QUANTITY;
+
+          return (
+            stockCritical && (
+              <div key={cartItem.id}>
+                {`${cartItem.name}: ${cartItem.quantity > 0 ? `재고 부족 (${cartItem.quantity - cartItem.itemCount}개 남음)` : "품절"}`}
+              </div>
+            )
+          );
+        })}
+      </div>
     </>
   );
 };
