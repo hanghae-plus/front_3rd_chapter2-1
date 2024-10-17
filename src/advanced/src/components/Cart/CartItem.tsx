@@ -6,8 +6,6 @@ type CartItemProps = {
   onClick: (quantity: number) => void;
 };
 
-//TODO: 일단 관련 이벤트들 여기에다가 만들어보고 구리다 싶으면 개선하기
-
 export default function CartItem({ data, onClick }: CartItemProps) {
   const { id, name, val: price, q: quantity } = data;
 
