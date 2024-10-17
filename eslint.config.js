@@ -31,6 +31,7 @@ export default [
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       'no-alert': 'off',
       radix: 'off',
+      'no-param-reassign': 'off',
     },
   },
 ];
