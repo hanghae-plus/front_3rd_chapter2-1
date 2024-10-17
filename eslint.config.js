@@ -34,7 +34,6 @@ export default [
         'warn',
         { argsIgnorePattern: '^_' },
       ],
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
 
       // React 규칙들
       ...reactHooks.configs.recommended.rules,
@@ -65,6 +64,10 @@ export default [
       'no-console': 'warn', // console.log 사용 시 경고
       'no-debugger': 'error', // debugger 사용 금지
       'no-undef': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn', // any 사용 시 경고
+      '@typescript-eslint/explicit-module-boundary-types': 'warn', // 함수 및 모듈의 반환 타입을 명시하도록 요구
+      '@typescript-eslint/no-empty-function': 'warn', // 빈 함수 정의를 경고
+      '@typescript-eslint/no-inferrable-types': 'warn', // 타입이 유추 가능한 경우 명시하지 않도록 경고
     },
     settings: {
       react: {
