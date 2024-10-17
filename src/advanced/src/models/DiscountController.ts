@@ -1,9 +1,11 @@
-import { PRODUCT_DISCOUNT_RULES, WEEKDAY_DISCOUNT_RATE } from "../constants/discount";
-import { ProductOption } from "../types/cart";
-import { DiscountType } from "../types/discount";
+import { PRODUCT_DISCOUNT_RULES, WEEKDAY_DISCOUNT_RATE } from "@/constants";
+import { DiscountType, ProductOption } from "@/types";
 
 //? 베이스가 되는 클래스를 만들어서 다형성있게?
 //? 각 할인 타입에 따라 class를 생성해야 할까?
+
+const BULK_DISCOUNT_RATE = 0.25;
+const BULK_DISCOUNT_SIZE = 30;
 
 class DiscountController {
   private _cartItems: ProductOption[];
@@ -12,8 +14,8 @@ class DiscountController {
 
   constructor(cartItems: ProductOption[]) {
     this._cartItems = cartItems;
-    this._bulkRate = 0.25;
-    this._bulkSize = 30;
+    this._bulkRate = BULK_DISCOUNT_RATE;
+    this._bulkSize = BULK_DISCOUNT_SIZE;
   }
 
   _getDiscountRate(productId: string, quantity: number) {
@@ -47,7 +49,7 @@ class DiscountController {
     return this._cartItems.reduce((acc, curr) => acc + this._calculateItemPrice(curr.id, curr.q), 0);
   }
 
-  _calculateWeekdayDiscountPrice(weekday: number, totalPrice: number) {
+  _calculateWeekdayDiscountPrice(weekday: keyof typeof WEEKDAY_DISCOUNT_RATE, totalPrice: number) {
     return totalPrice * (1 - WEEKDAY_DISCOUNT_RATE[weekday]);
   }
 
@@ -69,10 +71,10 @@ class DiscountController {
     };
   }
 
-  _calculateWeekday(weekday: number) {
+  _calculateWeekday(weekday: keyof typeof WEEKDAY_DISCOUNT_RATE) {
     return {
       discountedTotalPrice: this._calculateWeekdayDiscountPrice(weekday, this._calculateTotalPrice()),
-      discountRate: WEEKDAY_DISCOUNT_RATE[weekday],
+      discountRate: WEEKDAY_DISCOUNT_RATE[weekday as keyof typeof WEEKDAY_DISCOUNT_RATE],
     };
   }
 
@@ -81,7 +83,7 @@ class DiscountController {
       case "bulk":
         return this._calculateBulk();
       case "weekday":
-        return this._calculateWeekday(new Date().getDay());
+        return this._calculateWeekday(new Date().getDay() as keyof typeof WEEKDAY_DISCOUNT_RATE);
       case "noItem":
         return { discountedTotalPrice: 0, discountRate: 0 };
       case "default":

@@ -4,6 +4,11 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src/advanced/src"),
+    },
+  },
   test: {
     globals: true,
     environment: "jsdom",

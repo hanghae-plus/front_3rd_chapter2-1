@@ -1,21 +1,17 @@
-import { fireEvent, render, screen } from "@testing-library/react";
 import "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-
-import CartPage from "../src/pages/CartPage.tsx";
 
 describe("advanced test", () => {
   describe.each([
     { type: "origin", loadFile: () => import("../../main.js") },
     { type: "advanced", loadFile: () => import("../main.advanced.tsx") },
   ])("$type 장바구니 시나리오 테스트", ({ loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo;
+    let sel, addBtn, cartDisp, sum, stockInfo, module;
 
-    beforeAll(() => {
+    beforeAll(async () => {
       // DOM 초기화
-
-      render(<CartPage />);
-
+      document.body.innerHTML = '<div id="app"></div>';
+      module = await loadFile();
       // 전역 변수 참조
       sel = document.getElementById("product-select");
       addBtn = document.getElementById("add-to-cart");
@@ -36,32 +32,28 @@ describe("advanced test", () => {
     });
 
     it("초기 상태: 상품 목록이 올바르게 그려졌는지 확인", () => {
-      const select = screen.getByRole("combobox");
-
-      expect(select).toBeDefined();
-      expect(select.tagName.toLowerCase()).toBe("select");
-      expect(select.children.length).toBe(5);
+      expect(sel).toBeDefined();
+      expect(sel.tagName.toLowerCase()).toBe("select");
+      expect(sel.children.length).toBe(5);
 
       // 첫 번째 상품 확인
-      expect(select.children[0].value).toBe("p1");
-      expect(select.children[0].textContent).toBe("상품1 - 10000원");
-      expect(select.children[0].disabled).toBe(false);
+      expect(sel.children[0].value).toBe("p1");
+      expect(sel.children[0].textContent).toBe("상품1 - 10000원");
+      expect(sel.children[0].disabled).toBe(false);
 
       // 마지막 상품 확인
-      expect(select.children[4].value).toBe("p5");
-      expect(select.children[4].textContent).toBe("상품5 - 25000원");
-      expect(select.children[4].disabled).toBe(false);
+      expect(sel.children[4].value).toBe("p5");
+      expect(sel.children[4].textContent).toBe("상품5 - 25000원");
+      expect(sel.children[4].disabled).toBe(false);
 
       // 재고 없는 상품 확인 (상품4)
-      expect(select.children[3].value).toBe("p4");
-      expect(select.children[3].textContent).toBe("상품4 - 15000원");
-      expect(select.children[3].disabled).toBe(true);
+      expect(sel.children[3].value).toBe("p4");
+      expect(sel.children[3].textContent).toBe("상품4 - 15000원");
+      expect(sel.children[3].disabled).toBe(true);
     });
 
     it("초기 상태: DOM 요소가 올바르게 생성되었는지 확인", () => {
-      const title = screen.findByText(/장바구니/i);
-      expect(title).toBeDefined();
-
+      expect(document.querySelector("h1").textContent).toBe("장바구니");
       expect(sel).toBeDefined();
       expect(addBtn).toBeDefined();
       expect(cartDisp).toBeDefined();
@@ -70,57 +62,31 @@ describe("advanced test", () => {
     });
 
     it("상품을 장바구니에 추가할 수 있는지 확인", () => {
-      const select = screen.getByRole("combobox");
-      select.value = "p1";
-
-      const addButton = screen.getByRole("button", { name: "추가" });
-      fireEvent.click(addButton);
-
-      const cartItem = screen.getByTestId("p1");
-      expect(cartItem).toBeDefined();
-      expect(cartItem.querySelector("span").textContent).toContain("상품1 - 10000원 x 1");
+      sel.value = "p1";
+      addBtn.click();
+      expect(cartDisp.children.length).toBe(1);
+      expect(cartDisp.children[0].querySelector("span").textContent).toContain("상품1 - 10000원 x 1");
     });
 
     it("장바구니에서 상품 수량을 변경할 수 있는지 확인", () => {
-      const select = screen.getByRole("combobox");
-      select.value = "p1";
-
-      const addButton = screen.getByRole("button", { name: "추가" });
-      fireEvent.click(addButton);
-
-      const increaseBtn = screen.getByRole("button", { name: "+" });
-      fireEvent.click(increaseBtn);
-
-      const cartItem = screen.getByTestId("p1");
-      expect(cartItem.querySelector("span").textContent).toContain("상품1 - 10000원 x 2");
+      const increaseBtn = cartDisp.querySelector('.quantity-change[data-change="1"]');
+      increaseBtn.click();
+      expect(cartDisp.children[0].querySelector("span").textContent).toContain("상품1 - 10000원 x 2");
     });
 
     it("장바구니에서 상품을 삭제할 수 있는지 확인", () => {
-      const select = screen.getByRole("combobox");
-      select.value = "p1";
-
-      const addButton = screen.getByRole("button", { name: "추가" });
-      fireEvent.click(addButton);
-
-      const removeBtn = screen.getByRole("button", { name: "삭제" });
-      fireEvent.click(removeBtn);
-
-      const cartItem = screen.queryByTestId("p1");
-      expect(cartItem).toBeNull();
+      sel.value = "p1";
+      addBtn.click();
+      const removeBtn = cartDisp.querySelector(".remove-item");
+      removeBtn.click();
+      expect(cartDisp.children.length).toBe(0);
     });
 
     it("총액이 올바르게 계산되는지 확인", () => {
-      const select = screen.getByRole("combobox");
-      select.value = "p1";
-
-      const addButton = screen.getByRole("button", { name: "추가" });
-      fireEvent.click(addButton);
-
-      fireEvent.click(addButton);
-
-      const total = screen.getByText(/총액/i);
-      expect(total).toBeDefined();
-      expect(total.textContent).toContain("총액: 20000원(포인트: 90)");
+      sel.value = "p1";
+      addBtn.click();
+      addBtn.click();
+      expect(sum.textContent).toContain("총액: 20000원(포인트: 90)");
     });
 
     it("할인이 올바르게 적용되는지 확인", () => {
@@ -138,11 +104,62 @@ describe("advanced test", () => {
     });
 
     it("번개세일 기능이 정상적으로 동작하는지 확인", () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
+      //! 또한 실제 코드에서 delay 값이 바뀔 때 어떻게??
+      // 조건 충족 - 0.3 미만 설정
+      vi.spyOn(Math, "random").mockReturnValue(0.1);
+
+      const randomDelay = 10000 * 0.1;
+      const randomInterval = 30000;
+
+      const spy = vi.spyOn(module, "luckyDiscount");
+      module.luckyDiscount();
+
+      // 초기 상품 가격 확인
+      expect(sel.textContent).toContain("상품1 - 10000원");
+
+      // 번개세일 기능 호출
+      vi.advanceTimersByTime(randomInterval + randomDelay);
+
+      // 번개세일 기능 호출 확인
+      expect(spy).toHaveBeenCalled();
+      // alert 호출 확인
+      expect(window.alert).toHaveBeenCalled();
+      // alert 메세지 확인
+      expect(window.alert).toHaveBeenCalledWith("번개세일! 상품1이(가) 20% 할인 중입니다!");
+
+      // 상품 가격 변경 확인
+      expect(sel.textContent).toContain("상품1 - 8000원");
     });
 
     it("추천 상품 알림이 표시되는지 확인", () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
+      // 조건 충족, 추가버튼을 통해 마지막으로 추가한 상품이 있어야함
+      // p1 이 마지막이면 find를 통해 만족하는 첫 번쨰 요소는 p2가 됨
+      sel.value = "p1";
+      addBtn.click();
+
+      vi.spyOn(Math, "random").mockReturnValue(0.1);
+
+      const randomDelay = 20000 * 0.1;
+      const randomInterval = 60000;
+
+      const spy = vi.spyOn(module, "suggestAdditionalDiscount");
+      module.suggestAdditionalDiscount();
+
+      // 추가 할인 기능 호출
+      vi.advanceTimersByTime(randomInterval + randomDelay);
+
+      // 추가 할인 기능 호출 확인
+      expect(spy).toHaveBeenCalled();
+      // alert 호출 확인
+      expect(window.alert).toHaveBeenCalled();
+
+      // alert 메세지 확인
+      expect(window.alert).toHaveBeenCalledWith("상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
+
+      // 상품 가격 변경 확인
+      expect(sel.textContent).toContain("상품2 - 19000원");
     });
 
     it("화요일 할인이 적용되는지 확인", () => {
