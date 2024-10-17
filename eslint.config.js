@@ -18,7 +18,6 @@ export default [
       "no-var": ["warn"], // var 대신 let 또는 const 사용 강제
       curly: ["warn", "all"], // 모든 제어문에 중괄호 사용 강제(화살표함수에 영향 미치지 않음)
       "no-debugger": ["warn"], // 디버거 사용 못하게
-      "arrow-body-style": ["warn", "as-needed"], // 화살표 함수 단일표현식 중괄호 삭제
       "no-shadow": "warn", // 변수 섀도잉 방지(상위스코프와 동일한 하위스코프의 변수 네이밍)
       "no-magic-numbers": ["warn", { ignore: [0, 1] }], // 매직넘버 사용금지
       "no-multi-spaces": ["warn"], // 여러 개의 연속된 공백 금지
