@@ -4,19 +4,19 @@ import CartProduct from './components/CartProduct.js';
 import DiscountInfo from './components/DiscountInfo.js';
 import ProductOption from './components/ProductOption.js';
 import { productList } from './shared/product.js';
-
-// shared/constants.js
-const FLASH_SALE_INTERVAL = 30000;
-const FLASH_SALE_CHANCE = 0.3;
-const FLASH_SALE_DISCOUNT = 0.8;
-const SUGGESTION_INTERVAL = 60000;
-const SUGGESTION_DISCOUNT = 0.95;
-const BULK_PURCHASE_THRESHOLD = 10;
-const BULK_DISCOUNT_RATE = 0.25;
-const TUESDAY_DISCOUNT_RATE = 0.1;
-const BONUS_POINT_RATE = 1000;
-const LOW_STOCK_THRESHOLD = 5;
-const MAX_QUANTITY = 99;
+import {
+  FLASH_SALE_INTERVAL,
+  FLASH_SALE_CHANCE,
+  FLASH_SALE_DISCOUNT,
+  SUGGESTION_INTERVAL,
+  SUGGESTION_DISCOUNT,
+  BULK_PURCHASE_THRESHOLD,
+  BULK_DISCOUNT_RATE,
+  TUESDAY_DISCOUNT_RATE,
+  BONUS_POINT_RATE,
+  LOW_STOCK_THRESHOLD,
+  MAX_QUANTITY,
+} from './shared/constants.js';
 
 // store/cartStore.js
 let $productSelect, $addButton, $cartProduct, $cartTotal, $stockStatus;
