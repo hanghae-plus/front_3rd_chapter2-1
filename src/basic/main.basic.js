@@ -8,7 +8,7 @@ import { getDOMElements } from './shared/domSelectors.js';
 import {
   handleTimerFlashSale,
   handleTimerSuggestion,
-} from './services/timerSlice.js';
+} from './services/timerService.js';
 import { updateProductOptions } from './services/productService.js';
 
 const main = () => {
