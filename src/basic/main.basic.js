@@ -1,3 +1,5 @@
+import { createElement } from './utils';
+
 const products = [
   { id: 'p1', name: '상품1', val: 10000, q: 50 },
   { id: 'p2', name: '상품2', val: 20000, q: 30 },
@@ -18,30 +20,37 @@ let lastSel,
 
 function main() {
   const root = document.getElementById('app');
-  const container = document.createElement('div');
-  const wrapper = document.createElement('div');
-  const headerText = document.createElement('h1');
-  cartItemsDisplay = document.createElement('div');
-  cartTotalDisplay = document.createElement('div');
-  productSelect = document.createElement('select');
-  addBtn = document.createElement('button');
-  stockStatusDisplay = document.createElement('div');
-  cartItemsDisplay.id = 'cart-items';
-  cartTotalDisplay.id = 'cart-total';
-  productSelect.id = 'product-select';
-  addBtn.id = 'add-to-cart';
-  stockStatusDisplay.id = 'stock-status';
+  const container = createElement('div', {
+    className: 'bg-gray-100 p-8'
+  });
+  const wrapper = createElement('div', {
+    className:
+      'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8'
+  });
 
-  container.className = 'bg-gray-100 p-8';
-  wrapper.className =
-    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
-  headerText.className = 'text-2xl font-bold mb-4';
-  cartTotalDisplay.className = 'text-xl font-bold my-4';
-  productSelect.className = 'border rounded p-2 mr-2';
-  addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  stockStatusDisplay.className = 'text-sm text-gray-500 mt-2';
-  headerText.textContent = '장바구니';
-  addBtn.textContent = '추가';
+  const headerText = createElement('h1', {
+    className: 'text-2xl font-bold mb-4',
+    textContent: '장바구니'
+  });
+  cartItemsDisplay = createElement('div', { id: 'cart-items' });
+  cartTotalDisplay = createElement('div', {
+    id: 'cart-total',
+    className: 'text-xl font-bold my-4'
+  });
+  productSelect = createElement('select', {
+    id: 'product-select',
+    className: 'border rounded p-2 mr-2'
+  });
+  addBtn = createElement('button', {
+    id: 'add-to-cart',
+    className: 'bg-blue-500 text-white px-4 py-2 rounded',
+    textContent: '추가'
+  });
+  stockStatusDisplay = createElement('div', {
+    id: 'stock-status',
+    className: 'text-sm text-gray-500 mt-2'
+  });
+
   updateSelOpts();
   wrapper.appendChild(headerText);
   wrapper.appendChild(cartItemsDisplay);
