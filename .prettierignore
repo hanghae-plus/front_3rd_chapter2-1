@@ -1,0 +1,13 @@
+__tests__
+*.md
+
+# Configuration files that shouldn't be formatted
+vite.config.ts
+eslint.config.js
+package.json
+tsconfig*.json
+
+# Ignore GitHub workflow files
+.github/workflows/**/*.yml
+.github/workflows/**/*.yaml
+
