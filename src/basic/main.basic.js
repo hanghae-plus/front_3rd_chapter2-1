@@ -101,6 +101,7 @@ const alertFlashSaleItem = () => {
 
   if (DISCOUNT_LIST.flashSale.condition(flashSaleItem)) {
     flashSaleItem.price = Math.round(flashSaleItem.price * (1 - DISCOUNT_LIST.flashSale.rate));
+
     updateProductSelectOptions();
 
     alert(`번개세일! ${flashSaleItem.name}이(가) ${DISCOUNT_LIST.flashSale.rate * 100}% 할인 중입니다!`);
@@ -118,6 +119,7 @@ const alertInstantDiscountItem = () => {
 
   if (DISCOUNT_LIST.instantDiscount.condition(instantDiscountItem)) {
     instantDiscountItem.price = Math.round(instantDiscountItem.price * (1 - DISCOUNT_LIST.instantDiscount.rate));
+
     updateProductSelectOptions();
 
     alert(
@@ -222,8 +224,8 @@ const updateCartItems = (addedItem) => {
 
   if (addedItemElement === null) {
     const cartItemsElement = document.getElementById("cart-items");
-
     cartItemsElement.innerHTML += firstAddedItemTemplate(addedItem);
+
     addedItem.quantity--;
 
     return;
@@ -243,9 +245,9 @@ const updateCartItems = (addedItem) => {
 
 const updateQuantityChangedCartItem = (itemId, quantityChange) => {
   const clickedItemElement = document.getElementById(itemId);
-  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const existingItemSpan = clickedItemElement.querySelector("span");
 
+  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
   const newQuantity = currentQuantity + quantityChange;
 
@@ -264,8 +266,9 @@ const updateQuantityChangedCartItem = (itemId, quantityChange) => {
 
 const updateRemovedCartItem = (itemId) => {
   const removeTargetElement = document.getElementById(itemId);
-  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const existingItemSpan = removeTargetElement.querySelector("span");
+
+  const clickedItem = global_variable.products.find((item) => item.id === itemId);
   const currentQuantity = parseInt(existingItemSpan.textContent.split("x ")[1]);
 
   removeTargetElement.remove();
@@ -292,6 +295,7 @@ const handleClickAddToCartBtn = () => {
 
 const handleClickCartItems = (event) => {
   const { classList, dataset } = event.target;
+
   const isClickedAddBtn = classList.contains("quantity-change");
   const isClickedRemoveBtn = classList.contains("remove-item");
 
