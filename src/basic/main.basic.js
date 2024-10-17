@@ -17,9 +17,10 @@ import {
   LOW_STOCK_THRESHOLD,
   MAX_QUANTITY,
 } from './shared/constants.js';
+import { getDOMElements } from './shared/domSelectors.js';
 
 // store/cartStore.js
-let $productSelect, $addButton, $cartProduct, $cartTotal, $stockStatus;
+
 let lastSelectedProductId;
 let bonusPoints = 0;
 
@@ -85,6 +86,7 @@ const isCartActionButton = (target) =>
   target.classList.contains('remove-item');
 
 const handleClickAddToCart = () => {
+  const { $productSelect } = getDOMElements();
   const selectedProductId = $productSelect.value;
   const productToAdd = findProductById(selectedProductId);
 
@@ -130,6 +132,7 @@ const calculateFinalDiscount = (productCount, subtotal, totalAmount) => {
 };
 
 const updateCartDisplay = (totalAmount, discountRate) => {
+  const { $cartTotal } = getDOMElements();
   $cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
   if (discountRate > 0) {
     $cartTotal.innerHTML += DiscountInfo(discountRate);
@@ -143,6 +146,7 @@ const calculateAndUpdateBonusPoints = (totalAmount) => {
 };
 
 const updateBonusPointsDisplay = (bonusPoints) => {
+  const { $cartTotal } = getDOMElements();
   const pointsTag = document.getElementById('loyalty-points');
   if (!pointsTag) {
     $cartTotal.innerHTML += BonusPoints(bonusPoints);
@@ -152,6 +156,7 @@ const updateBonusPointsDisplay = (bonusPoints) => {
 };
 
 const calculateCart = () => {
+  const { $cartProduct } = getDOMElements();
   const cartProducts = Object.values($cartProduct.children);
   const { productCount, subtotal, totalAmount } =
     calculateCartTotals(cartProducts);
@@ -167,6 +172,7 @@ const calculateCart = () => {
 };
 
 const updateStockInfo = () => {
+  const { $stockStatus } = getDOMElements();
   const lowStockProducts = productList
     .filter((product) => product.quantity < LOW_STOCK_THRESHOLD)
     .map((product) => formatStockMessage(product))
@@ -220,13 +226,8 @@ const handleTimerSuggestion = () => {
 // 메인
 
 const main = () => {
-  const $root = document.getElementById('app');
+  const { $root } = getDOMElements();
   $root.innerHTML = Cart();
-  $cartProduct = document.getElementById('cart-items');
-  $cartTotal = document.getElementById('cart-total');
-  $productSelect = document.getElementById('product-select');
-  $addButton = document.getElementById('add-to-cart');
-  $stockStatus = document.getElementById('stock-status');
 
   updateProductOptions();
   calculateCart();
@@ -237,6 +238,7 @@ const main = () => {
 
 // productServices.js
 const updateProductOptions = () => {
+  const { $productSelect } = getDOMElements();
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
     $productSelect.innerHTML += ProductOption(product);
@@ -310,5 +312,6 @@ const getCurrentQuantity = (quantitySpan) => {
 
 main();
 
+const { $addButton, $cartProduct } = getDOMElements();
 $addButton.addEventListener('click', handleClickAddToCart);
 $cartProduct.addEventListener('click', handleClickCartAction);
