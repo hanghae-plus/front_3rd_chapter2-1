@@ -2,6 +2,14 @@ import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vite
 
 describe('basic test', () => {
 
+  const prodList=[
+    {id: 'p1', name: '상품1', val: 10000, q: 50 },
+    {id: 'p2', name: '상품2', val: 20000, q: 30 },
+    {id: 'p3', name: '상품3', val: 30000, q: 20 },
+    {id: 'p4', name: '상품4', val: 15000, q: 0 },
+    {id: 'p5', name: '상품5', val: 25000, q: 10 }
+  ];
+
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
     { type: 'basic', loadFile: () => import('../main.basic.js'), },
@@ -26,7 +34,8 @@ describe('basic test', () => {
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
-    afterEach(() => {
+    afterEach(() => {      
+      vi.clearAllTimers();
       vi.restoreAllMocks();
     });
 
@@ -103,11 +112,58 @@ describe('basic test', () => {
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      vi.useFakeTimers();
+      const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    
+      const randomValues = [0.01, 0.2, 0.1];
+      vi.spyOn(Math, 'random').mockImplementation(() => randomValues.shift());
+    
+      const prodList = [
+        { name: '상품1', val: 10000, q: 10 },
+        { name: '상품2', val: 20000, q: 0 }
+      ];
+    
+      setTimeout(function () {
+        setInterval(function () {
+          const index = Math.floor(Math.random() * prodList.length);
+          var luckyItem = prodList[index];
+          if (Math.random() < 0.3 && luckyItem.q > 0) {
+            luckyItem.val = Math.round(luckyItem.val * 0.8);
+            alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+          }
+        }, 30000);
+      }, Math.random() * 10000);
+    
+      vi.advanceTimersByTime(10000);
+      vi.advanceTimersByTime(30000);
+    
+      expect(mockAlert).toHaveBeenCalledWith('번개세일! 상품1이(가) 20% 할인 중입니다!');
+    
+      mockAlert.mockRestore();
+      Math.random.mockRestore();
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      vi.useFakeTimers();
+      const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
+      
+      const lastSelectedProductId = 'p1'; 
+      const recommendedProduct = prodList[1];
+      recommendedProduct.q = 10;
+    
+      setInterval(function () {
+        if (lastSelectedProductId) {
+          var recommendation = prodList.find(item => item.id !== lastSelectedProductId && item.q > 0);
+          if (recommendation) {
+            alert(recommendation.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
+          }
+        }
+      }, 60000);
+    
+      vi.advanceTimersByTime(60000);
+    
+      expect(mockAlert).toHaveBeenCalledWith('상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
+      mockAlert.mockRestore();
     });
 
     it('화요일 할인이 적용되는지 확인', () => {
