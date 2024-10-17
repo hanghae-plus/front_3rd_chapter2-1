@@ -5,6 +5,7 @@ import { MAX_QUANTITY } from '../shared/constants.js';
 
 const updateProductOptions = () => {
   const { $productSelect } = getDOMElements();
+
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
     $productSelect.innerHTML += ProductOptionPage(product);
