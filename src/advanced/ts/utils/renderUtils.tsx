@@ -8,7 +8,7 @@ const useRenderUtils = () => {
   const renderProductList = () => {
     return productList.map((product) => (
       <option key={product.id} value={product.id} disabled={product.stock === 0 ? true : false}>
-        {`${product.name} - ${product.price}원 재고 :${product.stock}`}
+        {`${product.name} - ${product.price}원`}
       </option>
     ));
   };
