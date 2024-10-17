@@ -15,8 +15,6 @@ export function createCartItem(item) {
     `,
   });
 }
-// updateCartItem(cartItem, selectedItem, 1);
-// cartItem는 선택한 상품의 도큐먼트
 
 export function updateCartItem(cartItemElement, product, countChange) {
   const remQty = parseInt(cartItemElement.querySelector('span').textContent.split('x ')[1]);

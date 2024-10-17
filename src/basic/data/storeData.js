@@ -5,3 +5,15 @@ export const PRODUCT_LIST = [
     {id: 'p4', name: '상품4', price: 15000, stock: 0},
     {id: 'p5', name: '상품5', price: 25000, stock: 10}
 ];
+
+export const SPECIAL_DISCOUNT_DAY = 2;
+export const SPECIAL_DISCOUNT_RATE = 0.1;
+
+export const BULK_DISCOUNT_AMOUNT = 10;
+export const BULK_DISCOUNT_RATE = {
+    p1: 0.1,
+    p2: 0.15,
+    p3: 0.2,
+    p4: 0.05,
+    p5: 0.25,
+};

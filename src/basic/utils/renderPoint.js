@@ -1,6 +1,6 @@
 let point = 0;
 
-export function renderPointSystem(totalPrice, cartTotal) {
+export function renderPoint(totalPrice, cartTotal) {
   let ptsTag = document.getElementById('loyalty-points');
   point += Math.floor(totalPrice / 1000);
   
