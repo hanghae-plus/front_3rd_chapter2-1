@@ -1,5 +1,6 @@
 import useCartStore from '../store/useCartStore';
 import CartItem from './CartItem';
+import CartItemsInfo from './CartItemsInfo';
 
 const CartList: React.FC = () => {
   const { cartList } = useCartStore();
@@ -10,13 +11,8 @@ const CartList: React.FC = () => {
           <CartItem product={item} key={item.id} />
         ))}
       </div>
-      <CartTotalInfo />
+      <CartItemsInfo />
     </>
   );
 };
-
-const CartTotalInfo: React.FC = () => {
-  return <div id="cart-total" className="text-xl font-bold my-4"></div>;
-};
-
 export default CartList;
