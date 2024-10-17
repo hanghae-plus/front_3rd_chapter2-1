@@ -31,7 +31,7 @@ const Layout = () => {
           return product;
         });
         setProductList(updateProductList);
-        setSelectedProductId(timeSaleProduct.id);
+        renderProductList();
         setProductSelectDropDown(<>{options}</>);
       }
     }
@@ -50,7 +50,7 @@ const Layout = () => {
         return product;
       });
       setProductList(updateProductList);
-      setSelectedProductId(productSuggest.id);
+      renderProductList();
       setProductSelectDropDown(<>{options}</>);
     }
   };
