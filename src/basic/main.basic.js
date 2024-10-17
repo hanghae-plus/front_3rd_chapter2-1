@@ -1,3 +1,4 @@
+// 전역 변수
 let sel, addBtn, cartDisp, sum, stockInfo;
 let lastSel,
   bonusPts = 0,
@@ -11,6 +12,21 @@ let prodList = [
   { id: 'p4', name: '상품4', val: 15000, q: 0 },
   { id: 'p5', name: '상품5', val: 25000, q: 10 },
 ];
+
+// 상수
+const DISCOUNT_DEFAULT_RATES = {
+  p1: 0.1,
+  p2: 0.15,
+  p3: 0.2,
+  p4: 0.05,
+  p5: 0.25,
+};
+
+const BULK_DISCOUNT_MIN = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+const TUESDAY_DISCOUNT_RATE = 0.1;
+const SUGGEST_DISCOUNT_RATE = 0.95;
+const POINT_RATE = 1000;
 
 function main() {
   const root = document.getElementById('app');
@@ -73,7 +89,7 @@ function main() {
         });
         if (suggest) {
           alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-          suggest.val = Math.round(suggest.val * 0.95);
+          suggest.val = Math.round(suggest.val * SUGGEST_DISCOUNT_RATE);
           updateSelOpts();
         }
       }
@@ -119,11 +135,11 @@ function calcCart() {
     subTot += itemTot;
 
     if (q >= 10) {
-      if (curItem.id === 'p1') disc = 0.1;
-      else if (curItem.id === 'p2') disc = 0.15;
-      else if (curItem.id === 'p3') disc = 0.2;
-      else if (curItem.id === 'p4') disc = 0.05;
-      else if (curItem.id === 'p5') disc = 0.25;
+      if (curItem.id === 'p1') disc = DISCOUNT_DEFAULT_RATES.p1;
+      else if (curItem.id === 'p2') disc = DISCOUNT_DEFAULT_RATES.p2;
+      else if (curItem.id === 'p3') disc = DISCOUNT_DEFAULT_RATES.p3;
+      else if (curItem.id === 'p4') disc = DISCOUNT_DEFAULT_RATES.p4;
+      else if (curItem.id === 'p5') disc = DISCOUNT_DEFAULT_RATES.p5;
     }
 
     totalAmt += itemTot * (1 - disc);
@@ -131,13 +147,13 @@ function calcCart() {
 
   let discRate = 0;
 
-  if (itemCnt >= 30) {
-    let bulkDisc = totalAmt * 0.25;
+  if (itemCnt >= BULK_DISCOUNT_MIN) {
+    let bulkDisc = totalAmt * BULK_DISCOUNT_RATE;
     let itemDisc = subTot - totalAmt;
 
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
-      discRate = 0.25;
+      totalAmt = subTot * (1 - BULK_DISCOUNT_RATE);
+      discRate = BULK_DISCOUNT_RATE;
     } else {
       discRate = (subTot - totalAmt) / subTot;
     }
@@ -146,8 +162,8 @@ function calcCart() {
   }
 
   if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+    totalAmt *= 1 - TUESDAY_DISCOUNT_RATE;
+    discRate = Math.max(discRate, TUESDAY_DISCOUNT_RATE);
   }
 
   sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
@@ -164,7 +180,7 @@ function calcCart() {
 }
 
 const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+  bonusPts += Math.floor(totalAmt / POINT_RATE);
   let ptsTag = document.getElementById('loyalty-points');
 
   if (!ptsTag) {
