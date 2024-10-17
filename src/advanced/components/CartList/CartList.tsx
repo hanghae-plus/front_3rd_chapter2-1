@@ -1,8 +1,8 @@
-import { ProductList } from '../../model/product';
+import { TCartList } from '../../model/product';
 import { CartItem } from './CartItem';
 
 interface CartListProps {
-  cartList: ProductList;
+  cartList: TCartList;
 }
 
 export const CartList = ({ cartList }: CartListProps) => {

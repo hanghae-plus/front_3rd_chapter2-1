@@ -4,10 +4,10 @@ import { CartTotal } from './components/CartTotal/CartTotal';
 import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { DEFAULT_CART_TOTAL, CartTotal as TCartTotal } from './model/cartTotal';
 import {
-  CartItem,
   DEFAULT_PRODUCT_LIST,
   StockItem,
   StockList,
+  TCartItem,
   TCartList,
 } from './model/product';
 
@@ -41,7 +41,7 @@ export const App = () => {
 
   const updateCart = (
     targetStockItem: StockItem,
-    targetCartItem: CartItem,
+    targetCartItem: TCartItem,
     quantityToUpdate = 1
   ) => {
     const stockQuantity = targetStockItem?.quantity ?? 0;

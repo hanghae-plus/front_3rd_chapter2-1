@@ -8,7 +8,7 @@ type ProductItem = {
 export type StockItem = ProductItem;
 export type StockList = ProductItem[];
 
-export type CartItem = ProductItem;
+export type TCartItem = ProductItem;
 export type TCartList = ProductItem[];
 
 export const DEFAULT_PRODUCT_LIST: StockList = [
