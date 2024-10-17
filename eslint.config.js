@@ -47,11 +47,9 @@ export default [
       "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
       // ES6+ Features
       "arrow-parens": ["error", "always"],
-      "arrow-body-style": ["error", "as-needed"],
-      "prefer-arrow-callback": "error",
       "no-duplicate-imports": "error",
       // Prettier Integration
-      "prettier/prettier": "error", // Prettier 규칙을 ESLint에서 오류로 처리
+      "prettier/prettier": ["error", { endOfLine: "auto" }], // Prettier 규칙을 ESLint에서 오류로 처리
     },
   },
 ];
