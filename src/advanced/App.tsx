@@ -23,7 +23,7 @@ export const App = () => {
 
         <ProductSelector
           defaultValue={stockList[0].id}
-          handleAddCart={(selectedId) => handleUpsertCart(selectedId)}
+          handleUpsertCart={(selectedId) => handleUpsertCart(selectedId)}
           options={stockList.map(({ id, name, price, quantity }) => ({
             value: id,
             label: `${name} - ${price}원`,

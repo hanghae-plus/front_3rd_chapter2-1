@@ -10,13 +10,13 @@ type Option = {
 interface ProductSelectorProps {
   defaultValue?: string;
   options: Option[];
-  handleAddCart: (selectedId?: string) => void;
+  handleUpsertCart: (selectedId?: string) => void;
 }
 
 export const ProductSelector = ({
   defaultValue,
   options,
-  handleAddCart,
+  handleUpsertCart,
 }: ProductSelectorProps) => {
   const [selectedId, setSelectedId] = useState(defaultValue);
 
@@ -34,7 +34,11 @@ export const ProductSelector = ({
         ))}
       </select>
 
-      <Button text="추가" size="l" onClick={() => handleAddCart(selectedId)} />
+      <Button
+        text="추가"
+        size="l"
+        onClick={() => handleUpsertCart(selectedId)}
+      />
     </div>
   );
 };

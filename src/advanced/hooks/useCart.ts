@@ -24,7 +24,7 @@ export const useCart = () => {
     [updateStock]
   );
 
-  const deleteCart = useCallback(
+  const deleteCart = useCallback<HandleDeleteCart>(
     (targetCartItem: TCartItem) => {
       updateStock(targetCartItem.id, targetCartItem.quantity);
       setCartList((prevCartList) =>
