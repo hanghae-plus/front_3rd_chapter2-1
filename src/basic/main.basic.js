@@ -97,58 +97,69 @@ function calcLoyaltyPoints(currentPoints = 0, cartTotal = 0) {
 function calcCart() {
   totalPrice = 0;
   itemCount = 0;
-  const cartItems = $cartItems.children;
-  let subTot = 0;
-  for (var i = 0; i < cartItems.length; i++) {
-    (function () {
-      let curItem;
-      for (let j = 0; j < prodList.length; j++) {
-        if (prodList[j].id === cartItems[i].id) {
-          curItem = prodList[j];
-          break;
-        }
-      }
 
-      const q = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
-      const itemTot = curItem.val * q;
-      let disc = 0;
-      itemCount += q;
-      subTot += itemTot;
-      if (q >= 10) {
-        if (curItem.id === 'p1') disc = 0.1;
-        else if (curItem.id === 'p2') disc = 0.15;
-        else if (curItem.id === 'p3') disc = 0.2;
-        else if (curItem.id === 'p4') disc = 0.05;
-        else if (curItem.id === 'p5') disc = 0.25;
-      }
-      totalPrice += itemTot * (1 - disc);
-    })();
+  // bulkDiscount가 적용되지 않은 장바구니 상품 금액 합계
+  let subTotalPrice = 0;
+
+  // 장바구니 상품 마다 장바구니에 추가된 개수, 총 금액을 계산
+  // itemCount, totalPrice에 더해주는 로직
+  for (let i = 0; i < $cartItems.children.length; i++) {
+    const $cartItem = $cartItems.children[i];
+
+    const targetProduct = prodList.find((p) => p.id === $cartItem.id);
+    const quantity = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
+    const itemPrice = targetProduct.val * quantity;
+
+    let disc = 0;
+
+    if (quantity >= 10) {
+      if (targetProduct.id === 'p1') disc = 0.1;
+      else if (targetProduct.id === 'p2') disc = 0.15;
+      else if (targetProduct.id === 'p3') disc = 0.2;
+      else if (targetProduct.id === 'p4') disc = 0.05;
+      else if (targetProduct.id === 'p5') disc = 0.25;
+    }
+
+    itemCount += quantity;
+    subTotalPrice += itemPrice;
+    totalPrice += itemPrice * (1 - disc);
   }
+
   let discRate = 0;
+
+  // 장바구니에 담긴 상품 개수가 30개 이상이면
   if (itemCount >= 30) {
-    const bulkDisc = totalPrice * 0.25;
-    const itemDisc = subTot - totalPrice;
-    if (bulkDisc > itemDisc) {
-      totalPrice = subTot * (1 - 0.25);
+    // 대량 구매 할인
+    const discountedPriceByBulk = totalPrice * 0.25;
+
+    // 상품 개별 할인이 적용되어서 할인 받을 수 있는 금액 = 상품 개별 할인(개별 상품 10개 이상 구매)이 적용된 장바구니 금액 합계 - 할인이 적용되지 않은 금액 합계
+    // (대량 상품 구매에 따라서 일괄 적용되는 할인된 금액) > (상품 개별 할인이 적용되어서 할인 받을 수 있는 금액)
+    if (discountedPriceByBulk > subTotalPrice - totalPrice) {
       discRate = 0.25;
+      totalPrice = subTotalPrice * (1 - discRate);
     } else {
-      discRate = (subTot - totalPrice) / subTot;
+      discRate = (subTotalPrice - totalPrice) / subTotalPrice;
     }
   } else {
-    discRate = (subTot - totalPrice) / subTot;
+    discRate = (subTotalPrice - totalPrice) / subTotalPrice;
   }
 
+  // 화요일 특별 할인 최소 10% 적용
   if (new Date().getDay() === 2) {
     totalPrice *= 1 - 0.1;
     discRate = Math.max(discRate, 0.1);
   }
+
   $cartTotal.textContent = `총액: ${Math.round(totalPrice)}원`;
+
+  // 할인 텍스트 렌더링
   if (discRate > 0) {
     const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = `(${(discRate * 100).toFixed(1)}% 할인 적용)`;
     $cartTotal.appendChild(span);
   }
+
   renderStockStatus();
 
   // 장바구니에 담긴 상품 금액을 기준으로 포인트 업데이트

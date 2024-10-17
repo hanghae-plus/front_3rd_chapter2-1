@@ -33,6 +33,7 @@ export default [
       radix: 'off',
       'no-param-reassign': 'off',
       'no-promise-executor-return': 'off',
+      'no-plusplus': 'off',
     },
   },
 ];
