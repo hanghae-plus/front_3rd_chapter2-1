@@ -15,6 +15,7 @@ export const handleTimerFlashSale = () => {
       productList[Math.floor(Math.random() * productList.length)];
     const canStartFlashSale =
       Math.random() < FLASH_SALE_CHANCE && saleItem.quantity > 0;
+
     if (canStartFlashSale) {
       saleItem.price = Math.round(saleItem.price * FLASH_SALE_DISCOUNT);
       alert(`번개세일! ${saleItem.name}이(가) 20% 할인 중입니다!`);
@@ -26,6 +27,7 @@ export const handleTimerFlashSale = () => {
 export const handleTimerSuggestion = () => {
   setInterval(() => {
     const lastSelectedProductId = productSelector.get();
+
     if (lastSelectedProductId) {
       const suggestedProduct = productList.find(
         (product) =>
