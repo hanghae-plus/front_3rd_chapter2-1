@@ -1,13 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { WEEKDAY } from "@/constants/discount";
-import { productOptions } from "@/constants/product";
+import { productOptions, WEEKDAY } from "@/constants";
 import useAdditionalDiscountEvent from "@/hooks/useAdditionalDiscountEvent";
 import useLuckyDiscountEvent from "@/hooks/useLuckyDiscountEvent";
 import useOutOfStock from "@/hooks/useOutOfStock";
 import DiscountController from "@/models/DiscountController";
-import { ProductOption } from "@/types/cart";
-import { DiscountType } from "@/types/discount";
+import { DiscountType, ProductOption } from "@/types";
 
 import CartItems from "./CartItems";
 import PriceSection from "./PriceSection";
@@ -39,7 +37,7 @@ const CartClient = () => {
 
   const lastSelectedIdRef = useAdditionalDiscountEvent(updateOptionPrice);
   useLuckyDiscountEvent(updateOptionPrice);
-  const { alert } = useOutOfStock(cartItems, options);
+  useOutOfStock(cartItems, options);
 
   const updateQuantity = useCallback(
     (data: ProductOption) => {
@@ -47,7 +45,9 @@ const CartClient = () => {
         prev.map((item) => {
           if (item.id === data.id) {
             const stock = remainingStock(data.id, item.q + data.q);
-            if (stock < 0) {
+            if (stock < 0 && item.q > 0) {
+              alert("재고가 부족합니다.");
+
               return item;
             }
             return { ...data, q: item.q + data.q };
@@ -62,10 +62,10 @@ const CartClient = () => {
   const manageProduct = useCallback(
     (data: ProductOption) => {
       lastSelectedIdRef.current = data.id;
-      alert();
+
       updateQuantity(data);
     },
-    [updateQuantity, lastSelectedIdRef, alert],
+    [updateQuantity, lastSelectedIdRef],
   );
 
   const calculateTotalPrice = useMemo(() => {
@@ -81,17 +81,20 @@ const CartClient = () => {
     return discountController.calculate(typeKey as DiscountType);
   }, [cartItems]);
 
-  const renderStockStatus = () => {
-    const stockStatus = cartItems.map((item) => {
-      const stock = remainingStock(item.id, item.q);
-      if (stock < 5) {
-        return `${item.name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : "품절"}`;
-      }
-      return "";
-    });
+  const renderStockStatus = useMemo(
+    () => () => {
+      const stockStatus = cartItems.map((item) => {
+        const stock = remainingStock(item.id, item.q);
+        if (stock < 5) {
+          return `${item.name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : "품절"}`;
+        }
+        return "";
+      });
 
-    return stockStatus.join("\n").trim();
-  };
+      return stockStatus.join("\n").trim();
+    },
+    [cartItems, remainingStock],
+  );
 
   return (
     <>

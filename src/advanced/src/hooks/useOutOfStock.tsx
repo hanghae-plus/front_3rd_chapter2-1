@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 
-import { ProductOption } from "@/types/cart";
+import { ProductOption } from "@/types";
 
 const useOutOfStock = (items: ProductOption[], options: ProductOption[]) => {
   const memorizedItems = useMemo(() => items, [items]);
@@ -19,7 +19,7 @@ const useOutOfStock = (items: ProductOption[], options: ProductOption[]) => {
   const systemAlert = useCallback(() => {
     memorizedItems.forEach((item) => {
       const stock = remainingStock(item.id, item.q);
-      if (stock <= 0 && item.q > 0) {
+      if (stock < 0 && item.q > 0) {
         alert("재고가 부족합니다.");
       }
     });

@@ -1,37 +1,36 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
-import { productOptions } from "@/constants/product";
-import type { ProductOption } from "@/types/cart";
+import { productOptions, QUANTITY_CHANGE } from "@/constants";
+import type { ProductOption } from "@/types";
 
 type SelectSectionProps = {
-  onSelect?: (data: ProductOption) => void;
+  onSelect?: (option: ProductOption) => void;
   options: ProductOption[];
 };
 
-export default function SelectSection({ onSelect, options }: SelectSectionProps) {
+export default function SelectSection({ onSelect, options: optionsProp }: SelectSectionProps) {
   const [selectedProductId, setSelectedProductId] = useState(() => productOptions[0].id);
-  const [data, setData] = useState<ProductOption[]>(() => options);
+  const [options, setOption] = useState<ProductOption[]>(() => optionsProp);
 
   const handleSelectProduct = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setSelectedProductId(value);
+    setSelectedProductId(e.target.value);
   };
 
   const addProduct = () => {
-    const selectedOption = options.find((option) => option.id === selectedProductId);
+    const selectedOption = optionsProp.find((options) => options.id === selectedProductId);
     if (selectedOption) {
-      onSelect?.({ ...selectedOption, q: 1 });
+      onSelect?.({ ...selectedOption, q: QUANTITY_CHANGE.PLUS });
     }
   };
 
   useEffect(() => {
-    setData(options);
+    setOption(options);
   }, [options]);
 
   return (
     <div>
       <select id="product-select" className="border rounded p-2 mr-2" onChange={handleSelectProduct}>
-        {data.map((option) => (
+        {options.map((option) => (
           <option key={option.id} value={option.id} disabled={option.q === 0}>
             {`${option.name} - ${option.val}원`}
           </option>
