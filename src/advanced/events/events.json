@@ -1,0 +1,25 @@
+{
+  "TuesdayDiscount": {
+    "day": 2,
+    "rate": 0.1
+  },
+  "flashSale": {
+    "probability": 0.1,
+    "rate": 0.2,
+    "checkInterval": 6000
+  },
+  "recommendedSale": {
+    "probability": 0.2,
+    "rate": 0.05,
+    "checkInterval": 6000
+  },
+  "productDiscounts": [
+    { "id": "1", "minQuantity": 10, "rate": 0.1 },
+    { "id": "2", "minQuantity": 10, "rate": 0.15 },
+    { "id": "3", "minQuantity": 10, "rate": 0.2 }
+  ],
+  "bulkDiscount": {
+    "minQuantity": 30,
+    "rate": 0.25
+  }
+}
