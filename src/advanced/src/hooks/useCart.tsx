@@ -1,35 +1,36 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { remainingStock } from "@/utils/stock";
 
 export default function useCart<T extends { id: string; q: number }>(initialOptions: T[]) {
+  const [hasNoStockOption, setHasNoStockOption] = useState(false);
   const [cartItems, setCartItems] = useState<T[]>(() => initialOptions.map((option) => ({ ...option, q: 0 })));
-
-  const remainingStock = useCallback((itemId: string, quantity: number, initialOptions: T[]) => {
-    const originalItem = initialOptions.find((option) => option.id === itemId);
-    if (!originalItem) return 0;
-    const stock = originalItem.q - quantity;
-    return stock;
-  }, []);
 
   const updateCartItem = useCallback(
     (id: string, updates: Partial<T>) => {
-      setCartItems((prev) =>
-        prev.map((item) => {
-          if (item.id === id) {
-            const newQuantity = ("q" in updates ? updates.q! : +item.q) + item.q;
-            const stock = remainingStock(id, newQuantity, initialOptions);
-            if (stock < 0 && item.q > 0) {
-              alert("재고가 부족합니다."); //! 맘에 들지 않아
-              return item;
-            }
+      const updatedOption = cartItems.map((item) => {
+        if (item.id !== id) return item;
 
-            return { ...item, ...updates, q: newQuantity };
-          }
+        const newQuantity = ("q" in updates ? updates.q! : +item.q) + item.q;
+        const stock = remainingStock(id, newQuantity, initialOptions);
+        const isNoStock = stock < 0 && item.q > 0;
+        if (isNoStock) {
+          setHasNoStockOption(true);
           return item;
-        }),
-      );
+        }
+        return { ...item, ...updates, q: newQuantity };
+      });
+      setCartItems(updatedOption);
     },
-    [remainingStock, initialOptions],
+    [initialOptions, cartItems],
   );
+
+  useEffect(() => {
+    if (hasNoStockOption) {
+      alert("재고가 부족합니다.");
+      setHasNoStockOption(false);
+    }
+  }, [hasNoStockOption]);
 
   return { cartItems, updateCartItem };
 }
