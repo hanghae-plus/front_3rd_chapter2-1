@@ -13,8 +13,8 @@ const StockStatus: React.FC<StockStatusProps> = ({ products }) => {
     .join('\n');
 
   return (
-    <div id="stock-status" className="text-sm text-gray-500 mt-2 whitespace-pre-line">
-      {stockInfo || '모든 상품이 충분히 재고가 있습니다.'}
+    <div id="stock-status" className="text-sm text-gray-500 mt-2">
+      {stockInfo}
     </div>
   );
 };

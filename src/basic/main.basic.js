@@ -201,8 +201,14 @@ const processDiscountRate = () => {
 const renderCartTotal = () => {
   document.getElementById('cart-total').textContent = `총액: ${Math.round(state.totalAmount)}원`;
   if (state.discountRate > 0) {
-    document.getElementById('cart-total').textContent =
-      '(' + (state.discountRate * 100).toFixed(1) + '% 할인 적용)';
+    createElementWithHandler(
+      'span',
+      {
+        className: 'text-green-500 ml-2',
+        textContent: `(${(state.discountRate * 100).toFixed(1)}% 할인 적용)`,
+      },
+      document.getElementById('cart-total')
+    );
   }
 };
 

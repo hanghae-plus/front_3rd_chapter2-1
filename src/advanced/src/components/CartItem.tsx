@@ -4,21 +4,23 @@ import { CartItem as Item } from '../types';
 
 interface CartItemProps {
   item: Item;
-  onQuantityChange: (productId: string, change: number) => void;
-  onRemoveItem: (productId: string) => void;
+  handleQuantityChange: (productId: string, change: number) => void;
+  handleRemoveItem: (productId: string) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemoveItem }) => {
+const CartItem: React.FC<CartItemProps> = ({ item, handleQuantityChange, handleRemoveItem }) => {
   const handleDecrease = () => {
-    onQuantityChange(item.id, -1);
+    console.log('handleDecrease');
+    handleQuantityChange(item.id, -1);
   };
 
   const handleIncrease = () => {
-    onQuantityChange(item.id, 1);
+    console.log('handleIncrease');
+    handleQuantityChange(item.id, 1);
   };
 
   const handleRemove = () => {
-    onRemoveItem(item.id);
+    handleRemoveItem(item.id);
   };
 
   return (
