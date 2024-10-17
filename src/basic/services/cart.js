@@ -1,15 +1,11 @@
 import { products } from '../data/products';
 import { getTargetItemElementQuantity } from '../utils/cart';
+import { calculateDiscountedPrice } from '../utils/discount';
 import { createBonusPointsTag, renderCartTotalInfo } from '../views/cart';
 import { renderProductsStockInfo } from '../views/product';
 import { renderTextContent } from '../views/shared';
 
-import {
-  calculateDayDiscount,
-  calculateDiscountedPrice,
-  calculateTotalProductsBulkDiscount,
-  getProductBulkDiscountRate,
-} from './discount';
+import { calculateDayDiscount, calculateTotalProductsBulkDiscount, getProductBulkDiscountRate } from './discount';
 
 const updateCartInfos = (bonusPoints) => {
   const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();

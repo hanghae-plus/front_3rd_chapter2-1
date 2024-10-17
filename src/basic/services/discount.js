@@ -38,7 +38,6 @@ const setSuggestDiscount = (lastAddedProductId) => {
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
-          console.log(suggest.price, SUGGEST_DISCOUNT_RATE);
           renderProductOptions();
         }
       }
@@ -46,6 +45,23 @@ const setSuggestDiscount = (lastAddedProductId) => {
   }, Math.random() * 20000);
 };
 
+const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
+  let updatedTotalPrice = 0;
+  let discountRate = 0;
+
+  const bulkDiscountingPrice = discountedTotalPrice * TOTAL_BULK_DISCOUNT_RATE;
+  const itemBulkDiscountingPrice = totalPrice - discountedTotalPrice;
+
+  if (bulkDiscountingPrice > itemBulkDiscountingPrice) {
+    updatedTotalPrice = calculateDiscountedPrice(totalPrice, TOTAL_BULK_DISCOUNT_RATE);
+    discountRate = TOTAL_BULK_DISCOUNT_RATE;
+  } else {
+    updatedTotalPrice = discountedTotalPrice;
+    discountRate = calculateDiscountRate(totalPrice, discountedTotalPrice);
+  }
+
+  return { updatedTotalPrice, discountRate };
+};
 const calculateTotalProductsBulkDiscount = (totalItems, totalPrice, discountedTotalPrice) => {
   if (totalItems < TOTAL_BULK_DISCOUNT_AMOUNT) {
     return {
@@ -69,28 +85,10 @@ const getProductBulkDiscountRate = (productId, quantity) => {
   if (quantity >= PRODUCT_BULK_DISCOUNT_AMOUNT) return PRODUCT_BULK_DISCOUNT_RATE[productId];
   return 0;
 };
-const getMoreDiscountPriceAndRate = (discountedTotalPrice, totalPrice) => {
-  let updatedTotalPrice = 0;
-  let discountRate = 0;
-
-  const bulkDiscountingPrice = discountedTotalPrice * TOTAL_BULK_DISCOUNT_RATE;
-  const itemBulkDiscountingPrice = totalPrice - discountedTotalPrice;
-
-  if (bulkDiscountingPrice > itemBulkDiscountingPrice) {
-    updatedTotalPrice = calculateDiscountedPrice(totalPrice, TOTAL_BULK_DISCOUNT_RATE);
-    discountRate = TOTAL_BULK_DISCOUNT_RATE;
-  } else {
-    updatedTotalPrice = discountedTotalPrice;
-    discountRate = calculateDiscountRate(totalPrice, discountedTotalPrice);
-  }
-
-  return { updatedTotalPrice, discountRate };
-};
 
 export {
   setSurpriseDiscount,
   setSuggestDiscount,
-  calculateDiscountedPrice,
   calculateTotalProductsBulkDiscount,
   calculateDayDiscount,
   getProductBulkDiscountRate,
