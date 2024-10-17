@@ -104,7 +104,7 @@ function updateStockInfo() {
   stockInfo.textContent = lowStockProducts
     .map(
       (product) =>
-        `${product.name}: ${product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : '품절'}`
+        `${product.name}: ${product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : '품절'}`,
     )
     .join('\n');
 }
