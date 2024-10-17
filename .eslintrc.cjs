@@ -4,20 +4,29 @@ module.exports = {
       "es2021": true
   },
   "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "prettier"
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
+  "parser": '@typescript-eslint/parser',
   "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 12,
-      "sourceType": "module"
+    "ecmaFeatures": {
+      "jsx": true,
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
   "plugins": [
-      "react"
+    'react',
+    '@typescript-eslint',
   ],
+  
+  "settings": {
+    "react": {
+      "version": 'detect',
+    }
+  },
   "rules": {
       "no-unused-vars": "warn",
       "no-console": "warn",
