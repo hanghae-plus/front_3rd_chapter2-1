@@ -6,10 +6,10 @@ import CartList from "./components/Cart/CartList";
 import CartTotal from "./components/Cart/CartTotal";
 import ProductSelector from "./components/ProductSelector";
 import StockStatus from "./components/StockStatus";
-import { DISCOUNT_THRESHOLDS, initialProductList } from "./constants";
+import { DISCOUNT_THRESHOLDS, InitialProductList } from "./constants";
 
 const App: React.FC = () => {
-  const [productList, setProductList] = useState<Product[]>(initialProductList);
+  const [productList, setProductList] = useState<Product[]>(InitialProductList);
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [accumulatedPoints, setAccumulatedPoints] = useState<number>(0);
   const [selectProductId, setSelectProductId] = useState<string>(productList[0].id);
@@ -87,8 +87,7 @@ const App: React.FC = () => {
         product.id === productId
           ? {
               ...product,
-              quantity:
-                initialProductList.find((product) => product.id === productId)?.quantity || 0,
+              quantity: productList.find((product) => product.id === productId)?.quantity || 0,
             }
           : product,
       ),

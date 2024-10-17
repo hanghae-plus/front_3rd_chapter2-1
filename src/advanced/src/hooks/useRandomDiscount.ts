@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "../types";
 
 interface RandomDiscountProps {
@@ -10,7 +10,7 @@ interface RandomDiscountProps {
 export const useRandomDiscount = ({ productList, setProductList }: RandomDiscountProps) => {
   const [discountedProduct, setDiscountedProduct] = useState<Product | null>(null);
 
-  const applyRandomDiscount = useCallback(() => {
+  const applyRandomDiscount = () => {
     const availableProducts = productList.filter((product) => product.quantity > 0);
     if (availableProducts.length === 0) return;
 
@@ -25,7 +25,7 @@ export const useRandomDiscount = ({ productList, setProductList }: RandomDiscoun
 
       setDiscountedProduct(updatedProduct);
     }
-  }, [productList, setProductList]);
+  };
 
   // 랜덤 할인 주기
   useEffect(() => {
