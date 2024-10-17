@@ -110,8 +110,8 @@ describe('basic test', () => {
       // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
     });
 
-    it('토요일 할인이 적용되는지 확인', () => {
-      const mockDate=new Date('2024-10-19'); // 토요일
+    it('화요일 할인이 적용되는지 확인', () => {
+      const mockDate=new Date('2024-10-15'); // 토요일
       vi.setSystemTime(mockDate);
       sel.value='p1';
       addBtn.click();

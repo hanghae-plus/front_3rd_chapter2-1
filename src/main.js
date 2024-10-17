@@ -283,7 +283,6 @@ function calcCart() {
   });
 
   applyBulkDiscount(itemCount, subTotal);
-  applyDayDiscount();
 
   updateCartDisplay(subTotal);
   updateStockInfo();
@@ -327,23 +326,21 @@ function applyBulkDiscount(itemCount, subTotal) {
 }
 
 /**
- * 요일에 따라 추가 할인 적용
- */
-function applyDayDiscount() {
-  if (new Date().getDay() === 6) { // Saturday
-    g_TotalAmt *= (1 - 0.1);
-  }
-}
-
-/**
  * 장바구니 총액 및 할인 표시
  * @param {Number} subTotal - 총 합계 (할인적용X)
  */
 function updateCartDisplay(subTotal) {
+
+  let discountRate = (subTotal - g_TotalAmt) / subTotal;
+
+  if (new Date().getDay() === 2) { //요일에 따라 추가 할인 적용
+    discountRate = Math.max(discountRate, 0.1);
+    g_TotalAmt  = g_TotalAmt  * (1 - 0.1);
+  }
+  
   const $cartTotal = document.getElementById('cart-total');
   $cartTotal.textContent = `총액: ${Math.round(g_TotalAmt)}원`;
 
-  const discountRate = (subTotal - g_TotalAmt) / subTotal;
   if (discountRate > 0) {
     const discountHTML = `
       <span class="text-green-500 ml-2">
