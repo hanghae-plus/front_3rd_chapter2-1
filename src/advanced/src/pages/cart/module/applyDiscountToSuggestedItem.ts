@@ -7,10 +7,6 @@ const INTERVAL_TIME_MS = 60000;
 
 function applyDiscountToSuggestedItem(selectedProductItem) {
   return function () {
-    if (!selectedProductItem) {
-      return;
-    }
-
     const suggest = DEFAULT_PRODUCT_LIST.find(
       (item) => item.id !== selectedProductItem && item.quantity > 0,
     );

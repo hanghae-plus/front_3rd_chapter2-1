@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRODUCT_LIST } from './constant/defaultProducts';
 import CartItemList from './component/CartItemList';
 import CartTotalPriceAndPoint from './component/CartTotalPriceAndPoint';
@@ -17,6 +17,8 @@ export interface CartItem {
   selectQuantity: number;
 }
 
+startLuckySale();
+
 const findProductById = (productId: string) => {
   return DEFAULT_PRODUCT_LIST.find((product) => product.id === productId);
 };
@@ -24,9 +26,6 @@ const findProductById = (productId: string) => {
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductId, setSelectedProductId] = useState('p1');
-
-  initSuggestedDiscount();
-  startLuckySale();
 
   const handleAddCartItem = () => {
     const selectedProductItem = findProductById(selectedProductId);
@@ -47,6 +46,8 @@ const Cart = () => {
       if (existingCartItem) {
         return updatedCartItems;
       }
+
+      initSuggestedDiscount(findProductById(selectedProductId));
 
       return [
         ...prevState,
