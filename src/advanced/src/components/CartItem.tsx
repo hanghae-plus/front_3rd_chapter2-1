@@ -2,7 +2,7 @@ import React from 'react';
 import useCart from '../hooks/useCart';
 
 const CartItem = () => {
-  const { cart, productList, changeQuantity } = useCart();
+  const { cart, productList, changeQuantity: handleChangeQuantity } = useCart();
 
   return (
     <div id="cart-items">
@@ -16,19 +16,19 @@ const CartItem = () => {
             <div>
               <button
                 className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                onClick={() => changeQuantity(productId, -1)}
+                onClick={() => handleChangeQuantity(productId, -1)}
               >
                 -
               </button>
               <button
                 className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                onClick={() => changeQuantity(productId, 1)}
+                onClick={() => handleChangeQuantity(productId, 1)}
               >
                 +
               </button>
               <button
                 className="remove-item bg-red-500 text-white px-2 py-1 rounded"
-                onClick={() => changeQuantity(productId, -1 * quantity)}
+                onClick={() => handleChangeQuantity(productId, -1 * quantity)}
               >
                 삭제
               </button>
