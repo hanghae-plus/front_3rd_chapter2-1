@@ -82,3 +82,18 @@ calcCart => updateCartInfos
 - 애매해보이긴 하지만 view 가공하는 부분이랑 비즈니스 로직 다루는 부분이 구분되면 좋을 것 같다
 
 => 기존 utils 폴더명 services로 변경 : 비즈니스 로직을 담당하고 있기 때문에
+
+
+## react typescript eslint
+```
+// eslint flat config 적용
+// https://typescript-eslint.io/packages/typescript-eslint/
+// https://brunch.co.kr/@hongjyoun/118
+
+// import module 읽지 못하는 이슈
+"import/resolver": {
+          "node": {
+            "paths": ["src"]
+          }
+        }
+```

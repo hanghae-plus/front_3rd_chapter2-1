@@ -1,10 +1,6 @@
 // https://typescript-eslint.io/packages/typescript-eslint/
 // https://brunch.co.kr/@hongjyoun/118
 
-// // import pluginJs from '@eslint/js';
-// import js from '@eslint/js';
-
-//   languageOptions: { globals: globals.browser, parser: tseslint.parser },
 import eslint from '@eslint/js';
 import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
@@ -47,6 +43,11 @@ export default tseslint.config(
           memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
         },
       ],
+      'import/resolver': {
+        node: {
+          paths: ['src'],
+        },
+      },
     },
   },
 );
