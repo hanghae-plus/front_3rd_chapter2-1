@@ -1,0 +1,111 @@
+
+{
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "builtin",
+            "external",
+            ["internal", "parent", "sibling", "index"],
+            ["unknown", "type"]
+          ],
+          "newlines-between": "always",
+          "pathGroups": [
+            {
+              "pattern": "@/store/**",
+              "group": "internal"
+            },
+            {
+              "pattern": "@/utils/**",
+              "group": "internal"
+            },
+            {
+              "pattern": "@/hooks/**",
+              "group": "internal"
+            },
+            {
+              "pattern": "@/components/**",
+              "group": "internal"
+            },
+            {
+              "pattern": "@/api/**",
+              "group": "unknown"
+            },
+            {
+              "pattern": "@/services/**",
+              "group": "unknown"
+            },
+            {
+              "pattern": "@/types/**",
+              "group": "unknown"
+            },
+            {
+              "pattern": "@/constants/**",
+              "group": "unknown"
+            }
+          ]
+        }
+      ],
+      "prettier/prettier": "error",
+      "indent": ["error", 2],
+      "quotes": ["error", "double"],
+      "semi": ["error", "always"],
+      "camelcase": "error",
+      "max-len": ["error", { "code": 100 }],
+      "no-unused-vars": "error",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          "selector": "variable",
+          "format": ["camelCase"]
+        },
+        {
+          "selector": "function",
+          "format": ["camelCase"],
+          "leadingUnderscore": "allow"
+        },
+        {
+          "selector": "class",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "interface",
+          "format": ["PascalCase"],
+          "prefix": ["I"]
+        },
+        {
+          "selector": "typeAlias",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "enum",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "variable",
+          "types": ["boolean"],
+          "format": ["PascalCase"],
+          "prefix": ["is", "has", "should", "can"]
+        }
+      ],
+      "sort-imports": [
+        "error",
+        {
+          "ignoreCase": true,
+          "ignoreDeclarationSort": true,
+          "ignoreMemberSort": false,
+          "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+        }
+      ]
+    }
+  }
+  
+  
