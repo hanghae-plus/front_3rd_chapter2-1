@@ -1,11 +1,11 @@
+import { getBonusPoints } from '../data/point';
 import { createSpan } from '../utils/createElements';
 
-let bonusPoints = 0;
-
-const renderBonusPoints = (totalPrice, $sum) => {
-  bonusPoints += Math.floor(totalPrice / 1000);
-
+const BonusPoints = () => {
+  const $sum = document.getElementById('cart-total');
   let $point = document.getElementById('loyalty-points');
+  const bonusPoints = getBonusPoints();
+
   if (!$point) {
     $point = createSpan({
       id: 'loyalty-points',
@@ -17,4 +17,4 @@ const renderBonusPoints = (totalPrice, $sum) => {
   $point.textContent = `(포인트: ${bonusPoints})`;
 };
 
-export default renderBonusPoints;
+export default BonusPoints;

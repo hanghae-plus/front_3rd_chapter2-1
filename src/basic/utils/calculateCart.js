@@ -1,5 +1,6 @@
-import renderBonusPoints from '../components/renderBonusPoints';
+import BonusPoints from '../components/BonusPoints';
 import { cartList, productList } from '../data/global';
+import { increaseBonusPoints } from '../data/point';
 import { createSpan } from './createElements';
 
 const getDiscountRate = (cart) => {
@@ -87,7 +88,8 @@ function calculateCart() {
   }
 
   updateStock();
-  renderBonusPoints(totalPrice, $sum);
+  increaseBonusPoints(totalPrice);
+  BonusPoints();
 }
 
 export default calculateCart;
