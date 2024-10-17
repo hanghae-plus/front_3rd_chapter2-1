@@ -149,8 +149,7 @@ function isLuckyVicky() {
 function setRollBackCost(inSaleItem, originalCost, duration) {
   setTimeout(() => {
     inSaleItem.cost = originalCost;
-    const productSeletElement = document.getElementById('product-select');
-    updateProducts(productSeletElement);
+    updateProducts();
   }, duration);
 }
 
@@ -165,8 +164,7 @@ export function setLuckyVickyItem() {
     const originalCost = luckyVickyItem.cost;
     const discountedCost = Math.round(originalCost * LUCKY_VICKY_DISCOUNT_RATE);
     luckyVickyItem.cost = discountedCost;
-    const productSeletElement = document.getElementById('product-select');
-    updateProducts(productSeletElement);
+    updateProducts();
     alert(`번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`);
     setRollBackCost(luckyVickyItem, originalCost, ONE_MINUTE);
   }
@@ -186,6 +184,7 @@ export function fishHogu() {
         mikkiProduct.cost * MIKKI_DISCOUNT_RATE
       );
       mikkiProduct.cost = discountedCost;
+      updateProducts();
       setRollBackCost(mikkiProduct, originalCost, ONE_MINUTE);
     }
   }
