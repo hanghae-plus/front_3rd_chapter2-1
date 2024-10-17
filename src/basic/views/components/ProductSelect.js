@@ -1,4 +1,4 @@
-import { createSelect } from '../createElements';
+import { createSelect } from '../../createElements'
 
 export const createProductSelect = () => {
   return createSelect({
