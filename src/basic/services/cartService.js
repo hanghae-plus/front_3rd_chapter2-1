@@ -23,18 +23,18 @@ let bonusPoints = 0;
 const addNewCartProduct = (product) => {
   const { $cartProduct } = getDOMElements();
   const newItem = CartProduct(product);
+
   $cartProduct.insertAdjacentHTML('beforeend', newItem);
   product.quantity--;
 };
 
 export const handleClickCartAction = (event) => {
   const eventTarget = event.target;
-
-  if (!isCartActionButton(eventTarget)) return;
-
   const { productId } = eventTarget.dataset;
   const cartProduct = document.getElementById(productId);
   const product = findProductById(productId);
+
+  if (!isCartActionButton(eventTarget)) return;
 
   if (eventTarget.classList.contains('quantity-change')) {
     updateProductQuantity(eventTarget, cartProduct, product);
@@ -70,11 +70,11 @@ const calculateCartTotals = (cartProducts) => {
   return cartProducts.reduce(
     (totals, cartProduct) => {
       const product = productList.find((p) => p.id === cartProduct.id);
-      if (!product) return totals;
-
       const quantity = getProductQuantity(cartProduct);
       const productTotal = product.price * quantity;
       const discount = getDiscount(product, quantity);
+
+      if (!product) return totals;
 
       totals.productCount += quantity;
       totals.subtotal += productTotal;
@@ -97,6 +97,7 @@ const calculateFinalDiscount = (productCount, subtotal, totalAmount) => {
 
 const updateCartDisplay = (totalAmount, discountRate) => {
   const { $cartTotal } = getDOMElements();
+
   $cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
   if (discountRate > 0) {
     $cartTotal.innerHTML += DiscountInfo(discountRate);
@@ -105,6 +106,7 @@ const updateCartDisplay = (totalAmount, discountRate) => {
 
 const calculateAndUpdateBonusPoints = (totalAmount) => {
   const newBonusPoints = Math.floor(totalAmount / BONUS_POINT_RATE);
+
   bonusPoints += newBonusPoints;
   updateBonusPointsDisplay(bonusPoints);
 };
@@ -112,6 +114,7 @@ const calculateAndUpdateBonusPoints = (totalAmount) => {
 const updateBonusPointsDisplay = (bonusPoints) => {
   const { $cartTotal } = getDOMElements();
   const pointsTag = document.getElementById('loyalty-points');
+
   if (!pointsTag) {
     $cartTotal.innerHTML += BonusPoints(bonusPoints);
   } else {
@@ -138,6 +141,7 @@ export const calculateCart = () => {
 const updateStockInfo = () => {
   const { $stockStatus } = getDOMElements();
   const lowStockProducts = productList
+
     .filter((product) => product.quantity < LOW_STOCK_THRESHOLD)
     .map((product) => formatStockMessage(product))
     .join('\n');
