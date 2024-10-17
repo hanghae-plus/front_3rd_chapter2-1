@@ -39,8 +39,8 @@ const calculateBulkDiscount = () => {
     let itemDiscount = totalOriginPrice - totalDiscountPrice;
 
     if (bulkDiscount > itemDiscount) {
-      totalDiscountPrice = totalOriginPrice * (1 - 0.25);
-      rate = 0.25;
+      totalDiscountPrice = totalOriginPrice * (1 - BULK_DISCOUNT_RATE);
+      rate = BULK_DISCOUNT_RATE;
     } else rate = (totalOriginPrice - totalDiscountPrice) / totalOriginPrice;
   } else rate = (totalOriginPrice - totalDiscountPrice) / totalOriginPrice;
 
