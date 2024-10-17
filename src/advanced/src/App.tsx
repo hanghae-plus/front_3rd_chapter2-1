@@ -60,6 +60,7 @@ const App: React.FC = () => {
       setItemList(_itemList);
       setProductList(_productList);
     }
+
     const _totalAmount = calculateCartTotalAmount(_itemList, _productList);
     const _totalDiscountRate = calculateCartTotalDiscountRate(
       _itemList,

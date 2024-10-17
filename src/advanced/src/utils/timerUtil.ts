@@ -32,6 +32,7 @@ function applyLuckySale(
   const _productList = [...productList];
   const luckyItem =
     _productList[Math.floor(Math.random() * _productList.length)];
+
   if (Math.random() < LUCKY_RANDOM_RATE && luckyItem.quantity > 0) {
     luckyItem.price = Math.round(luckyItem.price * (1 - LUCKY_DISCOUNT_RATE));
     alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
@@ -49,6 +50,7 @@ function applySuggestItem(
   const suggest = _productList.find(
     (_product) => _product.id !== lastAddedProduct && _product.quantity > 0,
   );
+
   if (suggest) {
     alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
     suggest.price = Math.round(suggest.price * (1 - SUGGEST_DISCOUNT_RATE));
