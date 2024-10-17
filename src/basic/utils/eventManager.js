@@ -1,5 +1,5 @@
 import updateSelectOptions from '../components/updateSelectOptions';
-import { productList } from '../data/global';
+import { productList } from '../data/product';
 
 export function setLuckySale() {
   setTimeout(function () {

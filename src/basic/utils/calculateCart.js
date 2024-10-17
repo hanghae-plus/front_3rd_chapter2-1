@@ -1,5 +1,6 @@
 import renderBonusPoints from '../components/renderBonusPoints';
-import { cartList, productList } from '../data/global';
+import { cartList } from '../data/cart';
+import { productList } from '../data/product';
 import { increaseBonusPoints } from '../data/point';
 import { createSpan } from './createElements';
 

@@ -5,7 +5,8 @@ import {
   createSelect,
   createTitle,
 } from '../utils/createElements';
-import { cartList, productList } from '../data/global';
+import { cartList } from '../data/cart';
+import { productList } from '../data/product';
 import { renderCartItem, reRenderCartItem } from '../components/renderCartItem';
 
 const renderHome = () => {

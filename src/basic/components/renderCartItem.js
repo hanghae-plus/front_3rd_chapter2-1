@@ -4,7 +4,7 @@ import {
   createRemoveBtn,
   createSpan,
 } from '../utils/createElements';
-import { cartList } from '../data/global';
+import { cartList } from '../data/cart';
 
 export const renderCartItem = ({ id, name, price }) => {
   const $cartList = document.getElementById('cart-items');

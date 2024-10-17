@@ -1,4 +1,4 @@
-import { productList } from '../data/global';
+import { productList } from '../data/product';
 import { createOption } from '../utils/createElements';
 
 function updateSelectOptions() {
