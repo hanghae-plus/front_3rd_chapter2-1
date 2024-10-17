@@ -18,7 +18,9 @@ export default function PriceSection({ totalPrice, discountRate }: PriceSectionP
       <span id="loyalty-points" className="text-blue-500 ml-2">
         {`(포인트: ${point})`}
       </span>
-      <span className="text-green-500 ml-2">{`(${Number.isNaN(discountRate) ? 0 : (discountRate * 100).toFixed(1)}% 할인 적용)`}</span>
+      {Number.isNaN(discountRate) || discountRate === 0 ? null : (
+        <span className="text-green-500 ml-2">{`(${discountRate * 100}% 할인 적용)`}</span>
+      )}
     </div>
   );
 }
