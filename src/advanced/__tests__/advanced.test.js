@@ -4,7 +4,7 @@ describe('advanced test', () => {
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js'), },
+    { type: 'advanced', loadFile: () => import('../main.advanced.tsx'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
@@ -31,6 +31,7 @@ describe('advanced test', () => {
     });
 
     it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
+      
       expect(sel).toBeDefined();
       expect(sel.tagName.toLowerCase()).toBe('select');
       expect(sel.children.length).toBe(5);

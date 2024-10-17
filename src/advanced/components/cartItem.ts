@@ -1,7 +1,13 @@
-// 장바구니 상품추가, 수정
-import { createElementWithProps } from '../utils/createElement.js';
+import { createElementWithProps } from '../utils/createElement'
 
-export function createCartItem(item) {
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+}
+
+export function createCartItem(item: CartItem): HTMLElement {
   return createElementWithProps('div', {
     id: item.id,
     className: 'flex justify-between items-center mb-2',
@@ -16,14 +22,14 @@ export function createCartItem(item) {
   });
 }
 
-export function updateCartItem(cartItemElement, product, countChange) {
+export function updateCartItem(cartItemElement: HTMLElement, product: CartItem, countChange: number): void {
   const remQty = parseInt(
-    cartItemElement.querySelector('span').textContent.split('x ')[1]
+    cartItemElement.querySelector('span')!.textContent!.split('x ')[1] // !를 사용하여 null이 아님을 보장
   );
   const newStock = remQty + countChange;
 
   if (newStock > 0 && newStock <= product.stock + remQty) {
-    cartItemElement.querySelector('span').textContent = `
+    cartItemElement.querySelector('span')!.textContent = `
     ${product.name} - ${product.price}원 x ${newStock}
     `;
     product.stock -= countChange;

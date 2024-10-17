@@ -1,31 +1,43 @@
-import { createElementWithProps } from '../utils/createElement.js';
-import { renderPoint } from '../utils/renderPoint.js';
+import { createElementWithProps } from '../utils/createElement';
+import { renderPoint } from '../utils/renderPoint';
 import {
   SPECIAL_DISCOUNT_DAY,
   SPECIAL_DISCOUNT_RATE,
   BULK_DISCOUNT_AMOUNT,
   BULK_DISCOUNT_RATE,
-} from '../data/storeData.js';
+} from '../data/storeData';
 
-// 장바구니 총액과 할인 표시, 표인트 적립
+// 장바구니 총액과 할인 표시, 포인트 적립
 
-export function calculateCart(cartList, productList, cartTotal) {
+interface CartItem {
+  id: string;
+  quantity: number;
+}
+
+interface Product {
+  id: string;
+  price: number;
+}
+
+export function calculateCart(cartList: HTMLElement, productList: Product[], cartTotal: HTMLElement): void {
   let totalPrice = 0;
   let totalItem = 0;
   let subTotal = 0;
   let totalDiscRate = 0;
-  const cartItems = [...cartList.children];
+  const cartItems = Array.from(cartList.children) as HTMLElement[];
 
   cartItems.forEach((cartItem) => {
     const currentItem = productList.find((item) => item.id === cartItem.id);
-    const quantity = getCartItemQuantity(cartItem);
-    const itemTotal = currentItem.price * quantity;
-    const discount =
-      quantity >= BULK_DISCOUNT_AMOUNT ? getDiscount(currentItem.id) : 0;
+    if (currentItem) {
+      const quantity = getCartItemQuantity(cartItem);
+      const itemTotal = currentItem.price * quantity;
+      const discount =
+        quantity >= BULK_DISCOUNT_AMOUNT ? getDiscount(currentItem.id) : 0;
 
-    totalItem += quantity;
-    subTotal += itemTotal;
-    totalPrice += itemTotal * (1 - discount);
+      totalItem += quantity;
+      subTotal += itemTotal;
+      totalPrice += itemTotal * (1 - discount);
+    }
   });
 
   // 할인율 계산
@@ -41,15 +53,15 @@ export function calculateCart(cartList, productList, cartTotal) {
   renderPoint(totalPrice, cartTotal);
 }
 
-function getCartItemQuantity(cartItem) {
-  return parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
+function getCartItemQuantity(cartItem: HTMLElement): number {
+  return parseInt(cartItem.querySelector('span')!.textContent!.split('x ')[1]); // !를 사용하여 null이 아님을 보장
 }
 
-function getDiscount(productId) {
+function getDiscount(productId: string): number {
   return BULK_DISCOUNT_RATE[productId] || 0;
 }
 
-function calculateDiscountRate(totalItem, subTotal, totalPrice) {
+function calculateDiscountRate(totalItem: number, subTotal: number, totalPrice: number): number {
   let discRate = 0;
   if (totalItem >= 30) {
     const bulkDisc = totalPrice * 0.25;
@@ -65,7 +77,7 @@ function calculateDiscountRate(totalItem, subTotal, totalPrice) {
   return discRate;
 }
 
-function updateCartTotal(cartTotal, totalPrice, totalDiscRate) {
+function updateCartTotal(cartTotal: HTMLElement, totalPrice: number, totalDiscRate: number): void {
   cartTotal.textContent = `총액: ${Math.round(totalPrice)}원`;
 
   if (totalDiscRate > 0) {
