@@ -103,7 +103,7 @@ describe("advanced test", () => {
       expect(document.getElementById("loyalty-points").textContent).toContain("(포인트: 935)");
     });
 
-    it.skip("번개세일 기능이 정상적으로 동작하는지 확인", () => {
+    it("번개세일 기능이 정상적으로 동작하는지 확인", () => {
       //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
       //! 또한 실제 코드에서 delay 값이 바뀔 때 어떻게??
       // 조건 충족 - 0.3 미만 설정
@@ -132,7 +132,7 @@ describe("advanced test", () => {
       expect(sel.textContent).toContain("상품1 - 8000원");
     });
 
-    it.skip("추천 상품 알림이 표시되는지 확인", () => {
+    it("추천 상품 알림이 표시되는지 확인", () => {
       //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
       // 조건 충족, 추가버튼을 통해 마지막으로 추가한 상품이 있어야함
       // p1 이 마지막이면 find를 통해 만족하는 첫 번쨰 요소는 p2가 됨
