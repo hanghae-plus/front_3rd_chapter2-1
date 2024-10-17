@@ -6,12 +6,12 @@
   "flashSale": {
     "probability": 0.1,
     "rate": 0.2,
-    "checkInterval": 1800000
+    "checkInterval": 6000
   },
   "recommendedSale": {
     "probability": 0.2,
     "rate": 0.05,
-    "checkInterval": 3600000
+    "checkInterval": 6000
   },
   "productDiscounts": [
     { "id": "1", "minQuantity": 10, "rate": 0.1 },

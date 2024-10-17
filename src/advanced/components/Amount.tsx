@@ -1,20 +1,19 @@
 // components/Amount.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { useCart } from '../hooks/useCart';
-import { useFlashSale } from '../hooks/useFlashSale';
+import { useSales } from '../hooks/useSale';
 
 const Amount: React.FC = () => {
   const { cart } = useCart();
   const [bonusPoints, setBonusPoints] = useState(0);
   const [events, setEvents] = useState<any>(null);
-  const flashSaleItem = useFlashSale();
+  const { flashSaleItem } = useSales();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch('/src/advanced/events/events.json');
         const data = await response.json();
-        console.log(data);
 
         setEvents(data);
       } catch (error) {
@@ -29,33 +28,29 @@ const Amount: React.FC = () => {
   }, []);
 
   const { discountRate, finalAmount } = useMemo(() => {
-    const total = cart.reduce((sum, item) => {
-      console.log('sum', sum);
-      console.log('item.price', item.price);
-
-      return sum + item.price * item.quantity;
-    }, 0);
-
-    console.log('total', total);
-
     if (!events) {
-      return {
-        totalAmount: total,
-        discountRate: 0,
-        finalAmount: total,
-      };
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      return { totalAmount: total, discountRate: 0, finalAmount: total };
     }
 
+    let total = 0;
     let discount = 0;
     console.log('1', discount);
 
     // 각 상품별 할인 계산
     cart.forEach((item) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      // 각 상품별 할인 계산
       const productDiscount = events.productDiscounts.find(
         (pd: any) => pd.id === item.id
       );
       if (productDiscount && item.quantity >= productDiscount.minQuantity) {
-        discount += item.price * item.quantity * productDiscount.rate;
+        discount += itemTotal * productDiscount.rate;
       }
     });
     console.log('2', discount);
