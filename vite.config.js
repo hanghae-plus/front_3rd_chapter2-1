@@ -1,9 +1,20 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig as defineTestConfig, mergeConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.js',
-  },
-});
+export default mergeConfig(
+  defineConfig({
+    plugins: [react()],
+  }),
+  defineTestConfig({
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './src/setupTests.js',
+      coverage: {
+        reportsDirectory: './.coverage',
+        reporter: ['lcov', 'json', 'json-summary'],
+      },
+    },
+  }),
+);
