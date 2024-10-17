@@ -80,6 +80,7 @@ const Layout = () => {
           return product;
         });
         setProductList(updateProductList);
+        setSelectedProductId(timeSaleProduct.id);
         setProductSelectDropDown(<>{options}</>);
       }
     }
@@ -98,6 +99,7 @@ const Layout = () => {
         return product;
       });
       setProductList(updateProductList);
+      setSelectedProductId(productSuggest.id);
       setProductSelectDropDown(<>{options}</>);
     }
   };
