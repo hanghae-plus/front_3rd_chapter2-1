@@ -1,7 +1,7 @@
 import {
+  afterEach,
   beforeAll,
   beforeEach,
-  afterEach,
   describe,
   expect,
   it,
@@ -34,7 +34,9 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      vi.useRealTimers();
       vi.restoreAllMocks();
+      vi.clearAllTimers();
     });
 
     it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
@@ -131,6 +133,17 @@ describe('basic test', () => {
       sel.value = 'p1';
       addBtn.click();
       expect(document.getElementById('cart-total').textContent).toContain(
+        '(10.0% 할인 적용)'
+      );
+    });
+
+    it('화요일이 아닌 날에는 할인이 적용되지 않는지 확인', () => {
+      const mockDate = new Date('2024-10-16'); // 수요일
+      vi.setSystemTime(mockDate);
+
+      sel.value = 'p1';
+      addBtn.click();
+      expect(document.getElementById('cart-total').textContent).not.toContain(
         '(10.0% 할인 적용)'
       );
     });
