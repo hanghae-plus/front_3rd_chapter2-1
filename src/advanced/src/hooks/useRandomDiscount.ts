@@ -3,11 +3,11 @@ import type { Product } from "../types";
 
 interface RandomDiscountProps {
   productList: Product[];
-  setProductList: (newList: Product[]) => void;
+  updateProduct: (productId: string, updatedProduct: Product) => void;
 }
 
 // 랜덤 할인
-export const useRandomDiscount = ({ productList, setProductList }: RandomDiscountProps) => {
+export const useRandomDiscount = ({ productList, updateProduct }: RandomDiscountProps) => {
   const [discountedProduct, setDiscountedProduct] = useState<Product | null>(null);
 
   const applyRandomDiscount = () => {
@@ -19,9 +19,7 @@ export const useRandomDiscount = ({ productList, setProductList }: RandomDiscoun
       const discountedPrice = Math.round(luckyItem.price * 0.8);
       const updatedProduct = { ...luckyItem, price: discountedPrice };
 
-      setProductList(
-        productList.map((product) => (product.id === luckyItem.id ? updatedProduct : product)),
-      );
+      updateProduct(luckyItem.id, updatedProduct);
 
       setDiscountedProduct(updatedProduct);
     }

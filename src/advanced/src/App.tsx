@@ -16,8 +16,16 @@ const App: React.FC = () => {
 
   // 추천 상품 추가
   useRecommendation({ productList, selectProductId });
+
+  // RandomDiscount 상품 목록 업데이트
+  const updateProduct = (productId: string, updatedProduct: Product) => {
+    setProductList((prevList) =>
+      prevList.map((product) => (product.id === productId ? updatedProduct : product)),
+    );
+  };
+
   // 랜덤 할인 적용
-  useRandomDiscount({ productList, setProductList });
+  useRandomDiscount({ productList, updateProduct });
 
   const calculateDiscountRate = useMemo(() => {
     const totalQuantity = cartItems.reduce((acc, curr) => acc + curr.quantity, 0);
@@ -142,7 +150,7 @@ const App: React.FC = () => {
         <ProductSelector
           productList={productList}
           selectProductId={selectProductId}
-          setSelectProductId={setSelectProductId}
+          handleProductId={(productId: string) => setSelectProductId(productId)}
           AddToCart={AddToCart}
         />
         <StockStatus productList={productList} />
