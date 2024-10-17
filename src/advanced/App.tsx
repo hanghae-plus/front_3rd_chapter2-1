@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { CartList } from './components/CartList';
 import { CartTotal } from './components/CartTotal/CartTotal';
 import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { useCart } from './hooks/useCart';
-import { DEFAULT_CART_TOTAL, CartTotal as TCartTotal } from './model/cartTotal';
+import { useCartTotal } from './hooks/useCartTotal';
 
 export const App = () => {
   const { cartList, deleteCart, handleUpsertCart, stockList } = useCart();
-  const [cartTotal, setCartTotal] = useState<TCartTotal>(DEFAULT_CART_TOTAL);
+  const cartTotal = useCartTotal(cartList);
 
   return (
     <div className="bg-gray-100 p-8">

@@ -1,4 +1,4 @@
-import { CartTotal as TCartTotal } from '../../model/cartTotal';
+import { TCartTotal } from '../../model/cartTotal';
 
 interface CartTotalProps {
   cartTotal: TCartTotal;

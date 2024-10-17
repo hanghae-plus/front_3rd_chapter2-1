@@ -24,7 +24,6 @@ export default [
       'no-var': 'error',
       'prefer-const': 'error',
       eqeqeq: 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', { ignoreTypes: true }],
       'consistent-return': 'warn',
       'no-redeclare': 'error',
       'prettier/prettier': 'error',
