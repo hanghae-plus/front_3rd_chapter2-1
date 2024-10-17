@@ -8,7 +8,7 @@ type Props = {
 };
 
 const CartItem = ({ cartItem }: Props) => {
-  const removeStoreCartItem = useCartStore((state) => state.removeStoreCartItem);
+  const removeStoreCartItem = useCartStore((state) => state.removeCartItem);
   const { handleCartItemQuantity } = useCartOperations();
 
   return (
