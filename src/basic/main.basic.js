@@ -14,6 +14,7 @@ const SUGGESTION_DISCOUNT = 0.95;
 const BULK_PURCHASE_THRESHOLD = 10;
 const BULK_DISCOUNT_RATE = 0.25;
 const TUESDAY_DISCOUNT_RATE = 0.1;
+const BONUS_POINT_RATE = 1000;
 
 // store/cartStore.js
 let $productSelect, $addButton, $cartProduct, $cartTotal, $stockStatus;
@@ -54,54 +55,70 @@ const getDiscountRate = (productCount, subtotal, totalAmount) => {
 };
 
 // services/cartService.js
-const calcCart = () => {
-  totalAmount = 0;
-  productCount = 0;
-  const cartProduct = $cartProduct.children;
-  let subTot = 0;
-  for (let i = 0; i < cartProduct.length; i++) {
-    const newProduct = cartProduct[i];
-    const currentProduct = productList.find(
-      (product) => product.id === newProduct.id,
-    );
+const calculateCartTotals = (cartProducts) => {
+  return cartProducts.reduce(
+    (totals, cartProduct) => {
+      const product = productList.find((p) => p.id === cartProduct.id);
+      if (!product) return totals;
 
-    if (!currentProduct) return;
+      const quantity = getProductQuantity(cartProduct);
+      const productTotal = product.price * quantity;
+      const discount = getDiscount(product, quantity);
 
-    const quantity = parseInt(
-      cartProduct[i].querySelector('span').textContent.split('x ')[1],
-    );
-    const productTotalPrice = currentProduct.price * quantity;
-    const discount = getDiscount(currentProduct, quantity);
+      totals.productCount += quantity;
+      totals.subtotal += productTotal;
+      totals.totalAmount += productTotal * (1 - discount);
 
-    productCount += quantity;
-    subTot += productTotalPrice;
-    totalAmount += productTotalPrice * (1 - discount);
-  }
-  let discountRate = getDiscountRate(productCount, subTot, totalAmount);
-  discountRate = applyTuesdayDiscount(totalAmount, discountRate);
-
-  updateCartTotal(discountRate);
-  updateStockInfo();
-  calculateBonusPoints();
-  updateBonusPoints(bonusPoints);
+      return totals;
+    },
+    { productCount: 0, subtotal: 0, totalAmount: 0 },
+  );
 };
 
-const updateCartTotal = (discountRate) => {
-  $cartTotal.textContent = '총액: ' + Math.round(totalAmount) + '원';
+const getProductQuantity = (cartProduct) => {
+  return parseInt(cartProduct.querySelector('span').textContent.split('x ')[1]);
+};
+
+const calculateFinalDiscount = (productCount, subtotal, totalAmount) => {
+  let discountRate = getDiscountRate(productCount, subtotal, totalAmount);
+  return applyTuesdayDiscount(totalAmount, discountRate);
+};
+
+const updateCartDisplay = (totalAmount, discountRate) => {
+  $cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
   if (discountRate > 0) {
     $cartTotal.innerHTML += DiscountInfo(discountRate);
   }
 };
 
-const calculateBonusPoints = () => {
-  bonusPoints += Math.floor(totalAmount / 1000);
+const calculateAndUpdateBonusPoints = (totalAmount) => {
+  const newBonusPoints = Math.floor(totalAmount / BONUS_POINT_RATE);
+  bonusPoints += newBonusPoints;
+  updateBonusPointsDisplay(bonusPoints);
 };
 
-const updateBonusPoints = (bonusPoints) => {
-  let pointsTag = document.getElementById('loyalty-points');
+const updateBonusPointsDisplay = (bonusPoints) => {
+  const pointsTag = document.getElementById('loyalty-points');
   if (!pointsTag) {
     $cartTotal.innerHTML += BonusPoints(bonusPoints);
+  } else {
+    pointsTag.textContent = `보너스 포인트: ${bonusPoints}점`;
   }
+};
+
+const calculateCart = () => {
+  const cartProducts = Object.values($cartProduct.children);
+  const { productCount, subtotal, totalAmount } =
+    calculateCartTotals(cartProducts);
+  const discountRate = calculateFinalDiscount(
+    productCount,
+    subtotal,
+    totalAmount,
+  );
+
+  updateCartDisplay(totalAmount, discountRate);
+  updateStockInfo();
+  calculateAndUpdateBonusPoints(totalAmount);
 };
 
 // services/stockService.js
@@ -168,7 +185,7 @@ const main = () => {
   $stockStatus = document.getElementById('stock-status');
 
   updateProductOptions();
-  calcCart();
+  calculateCart();
 
   setTimeout(handleTimerFlashSale, Math.random() * 10000);
   setTimeout(handleTimerSuggestion, Math.random() * 20000);
@@ -234,7 +251,7 @@ const handleClickAddToCart = () => {
     addNewCartProduct(productToAdd);
   }
 
-  calcCart();
+  calculateCart();
   lastSelectedProductId = selectedProductId;
 };
 
@@ -272,7 +289,7 @@ const handleClickCartAction = (event) => {
     removeProduct(cartProduct, product);
   }
 
-  calcCart();
+  calculateCart();
 };
 
 const isCartActionButton = (target) =>
