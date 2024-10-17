@@ -9,6 +9,10 @@ const LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE = 20;
 const SUGGESTED_PRODUCT_DELAY = 20000;
 const SUGGESTED_PRODUCT_INTERVAL = 60 * 1000; // 1분
 const SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE = 5;
+const BULK_PURCHASE_DISCOUNT_PERCENTAGE = 25;
+const BULK_PURCHASE_DISCOUNT_MIN_COUNT = 30;
+const BULK_PURCHASE_DISCOUNT_MIN_COUNT_PER_PRODUCT = 10;
+const TUESDAY_DISCOUNT_PERCENTAGE = 10;
 
 let prodList;
 let $productSelect;
@@ -76,6 +80,18 @@ function renderStockStatus() {
     .join('\n');
 }
 
+function renderCartTotal(price, discountRate) {
+  $cartTotal.textContent = `총액: ${Math.round(price)}원`;
+
+  // 할인 텍스트 렌더링
+  if (discountRate > 0) {
+    const span = document.createElement('span');
+    span.className = 'text-green-500 ml-2';
+    span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
+    $cartTotal.appendChild(span);
+  }
+}
+
 /**
  * 현재 장바구니에 담긴 상품의 총 합을 기준으로 포인트를 계산합니다
  * @param {number} currentPoints - 현재 누적된 포인트
@@ -95,62 +111,49 @@ function calcCart() {
 
   // 장바구니 상품 마다 장바구니에 추가된 개수, 총 금액을 계산
   // itemCount, totalPrice에 더해주는 로직
-  for (let i = 0; i < $cartItems.children.length; i++) {
-    const $cartItem = $cartItems.children[i];
-
+  Array.from($cartItems.children).forEach(($cartItem) => {
     const targetProduct = prodList.find((p) => p.id === $cartItem.id);
     const quantity = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
     const itemPrice = targetProduct.val * quantity;
 
-    let disc = 0;
-
-    if (quantity >= 10) {
-      if (targetProduct.id === 'p1') disc = 0.1;
-      else if (targetProduct.id === 'p2') disc = 0.15;
-      else if (targetProduct.id === 'p3') disc = 0.2;
-      else if (targetProduct.id === 'p4') disc = 0.05;
-      else if (targetProduct.id === 'p5') disc = 0.25;
-    }
-
     itemCount += quantity;
     subTotalPrice += itemPrice;
-    totalPrice += itemPrice * (1 - disc);
-  }
 
-  let discRate = 0;
+    if (quantity >= BULK_PURCHASE_DISCOUNT_MIN_COUNT_PER_PRODUCT) {
+      totalPrice += discountPrice(itemPrice, targetProduct.bulkDiscountPercentage);
+    } else {
+      totalPrice += itemPrice;
+    }
+  });
+
+  let discountRate = 0;
 
   // 장바구니에 담긴 상품 개수가 30개 이상이면
-  if (itemCount >= 30) {
+  const isCanBulkDiscount = itemCount >= BULK_PURCHASE_DISCOUNT_MIN_COUNT;
+  if (isCanBulkDiscount) {
     // 대량 구매 할인
-    const discountedPriceByBulk = totalPrice * 0.25;
+    const bulkDiscountedPrice = discountPrice(totalPrice, BULK_PURCHASE_DISCOUNT_PERCENTAGE);
 
     // 상품 개별 할인이 적용되어서 할인 받을 수 있는 금액 = 상품 개별 할인(개별 상품 10개 이상 구매)이 적용된 장바구니 금액 합계 - 할인이 적용되지 않은 금액 합계
     // (대량 상품 구매에 따라서 일괄 적용되는 할인된 금액) > (상품 개별 할인이 적용되어서 할인 받을 수 있는 금액)
-    if (discountedPriceByBulk > subTotalPrice - totalPrice) {
-      discRate = 0.25;
-      totalPrice = subTotalPrice * (1 - discRate);
+    if (bulkDiscountedPrice > subTotalPrice - totalPrice) {
+      discountRate = BULK_PURCHASE_DISCOUNT_PERCENTAGE / 100;
+      totalPrice = discountPrice(subTotalPrice, BULK_PURCHASE_DISCOUNT_PERCENTAGE);
     } else {
-      discRate = (subTotalPrice - totalPrice) / subTotalPrice;
+      discountRate = (subTotalPrice - totalPrice) / subTotalPrice;
     }
   } else {
-    discRate = (subTotalPrice - totalPrice) / subTotalPrice;
+    discountRate = (subTotalPrice - totalPrice) / subTotalPrice;
   }
 
   // 화요일 특별 할인 최소 10% 적용
-  if (new Date().getDay() === 2) {
-    totalPrice *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+  const isTuesDay = new Date().getDay() === 2;
+  if (isTuesDay) {
+    totalPrice = discountPrice(totalPrice, TUESDAY_DISCOUNT_PERCENTAGE);
+    discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_PERCENTAGE / 100);
   }
 
-  $cartTotal.textContent = `총액: ${Math.round(totalPrice)}원`;
-
-  // 할인 텍스트 렌더링
-  if (discRate > 0) {
-    const span = document.createElement('span');
-    span.className = 'text-green-500 ml-2';
-    span.textContent = `(${(discRate * 100).toFixed(1)}% 할인 적용)`;
-    $cartTotal.appendChild(span);
-  }
+  renderCartTotal(totalPrice, discountRate);
 
   renderStockStatus();
 
@@ -207,11 +210,11 @@ function startSuggestedProductInterval() {
 function main() {
   // 상품 리스트 초기화
   prodList = [
-    { id: 'p1', name: '상품1', val: 10000, q: 50 },
-    { id: 'p2', name: '상품2', val: 20000, q: 30 },
-    { id: 'p3', name: '상품3', val: 30000, q: 20 },
-    { id: 'p4', name: '상품4', val: 15000, q: 0 },
-    { id: 'p5', name: '상품5', val: 25000, q: 10 },
+    { id: 'p1', name: '상품1', val: 10000, q: 50, bulkDiscountPercentage: 10 },
+    { id: 'p2', name: '상품2', val: 20000, q: 30, bulkDiscountPercentage: 15 },
+    { id: 'p3', name: '상품3', val: 30000, q: 20, bulkDiscountPercentage: 20 },
+    { id: 'p4', name: '상품4', val: 15000, q: 0, bulkDiscountPercentage: 5 },
+    { id: 'p5', name: '상품5', val: 25000, q: 10, bulkDiscountPercentage: 25 },
   ];
 
   // 엘리먼트 생성 및 초기화
