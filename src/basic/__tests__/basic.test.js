@@ -101,6 +101,7 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value='p2';
       addBtn.click();
+      console.log("loyalty-points",document.getElementById('loyalty-points'));
       expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
     });
 
