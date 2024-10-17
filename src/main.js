@@ -1,4 +1,11 @@
-import { PRODUCT_DATA, DISCOUNT_RULES, DISCOUTNT_RULES_OF_TUESDAY, MESSAGE, DURATION } from './advanced/src/constants';
+import {
+  PRODUCT_DATA,
+  DISCOUNT_RULES,
+  DISCOUTNT_RULES_OF_TUESDAY,
+  MESSAGE,
+  DURATION,
+  QUANTITY,
+} from './advanced/src/constants';
 
 let productList = PRODUCT_DATA.slice();
 let lastProduct,
@@ -6,6 +13,10 @@ let lastProduct,
   totalAmount = 0,
   itemCount = 0;
 
+/**
+ * 최초 렌더링 시에 나타나는 element들을 만들고 속성을 추가.
+ * @returns {HTMLElement}
+ */
 function createUI() {
   const rootElement = document.getElementById('app');
 
@@ -51,31 +62,9 @@ function createUI() {
   return elements;
 }
 
-function main() {
-  const { cartContainerElement, totalAmountElement, productSelectElement, stockInfoElement } = createUI();
-
-  document.getElementById('add-to-cart').addEventListener('click', (e) => {
-    const cartData = handleAddButton(e, productSelectElement);
-
-    if (cartData) {
-      updateCartUI(cartData, cartContainerElement);
-
-      calculateCart(totalAmountElement, stockInfoElement, cartContainerElement);
-    }
-  });
-
-  cartContainerElement.addEventListener('click', (e) =>
-    handleCartItem(e, totalAmountElement, stockInfoElement, cartContainerElement),
-  );
-
-  updateProductSelectOption(productSelectElement);
-
-  calculateCart(totalAmountElement, stockInfoElement, cartContainerElement);
-
-  setTimeout(handleSurpriseSale, Math.random() * DURATION[1000]);
-  setTimeout(handleSuggest, Math.random() * DURATION[2000]);
-}
-
+/**
+ * 번개세일과 관련된 setTimeout의 callback함수.
+ */
 function handleSurpriseSale() {
   setInterval(() => {
     const luckyItem = productList[Math.floor(Math.random() * productList.length)];
@@ -88,6 +77,9 @@ function handleSurpriseSale() {
   }, DURATION[3000]);
 }
 
+/**
+ * 세일상품과 관련된 setTimeout의 callback함수.
+ */
 function handleSuggest() {
   setInterval(() => {
     if (lastProduct) {
@@ -102,6 +94,10 @@ function handleSuggest() {
   }, DURATION[6000]);
 }
 
+/**
+ * 사용자가 selectbox에서 option을 클릭했을 때 일어나는 이벤트
+ * @param {HTMLElement} productSelectElement
+ */
 function updateProductSelectOption(productSelectElement) {
   productSelectElement.innerHTML = '';
 
@@ -116,6 +112,12 @@ function updateProductSelectOption(productSelectElement) {
   });
 }
 
+/**
+ * 장바구니에 담긴 물건들 가격 계산 및 UI 업데이트
+ * @param {HTMLElement} totalAmountElement
+ * @param {HTMLElement} stockInfoElement
+ * @param {HTMLElement} cartContainerElement
+ */
 function calculateCart(totalAmountElement, stockInfoElement, cartContainerElement) {
   totalAmount = 0;
   itemCount = 0;
@@ -171,6 +173,11 @@ function calculateCart(totalAmountElement, stockInfoElement, cartContainerElemen
   updatePointElement(totalAmountElement);
 }
 
+/**
+ * 총액과 관련된 UI 업데이트
+ * @param {HTMLElement} totalAmountElement
+ * @param {number} discountRate
+ */
 function updateTotalAmountElement(totalAmountElement, discountRate) {
   totalAmountElement.textContent = '총액: ' + Math.round(totalAmount) + '원';
 
@@ -183,6 +190,10 @@ function updateTotalAmountElement(totalAmountElement, discountRate) {
   }
 }
 
+/**
+ * 포인트와 관련된 UI 업데이트
+ * @param {HTMLElement} totalAmountElement
+ */
 function updatePointElement(totalAmountElement) {
   bonusPoint += Math.floor(totalAmount / 1000);
   totalAmountElement.querySelector('#loyalty-points')?.remove();
@@ -195,6 +206,10 @@ function updatePointElement(totalAmountElement) {
   totalAmountElement.appendChild(pointElement);
 }
 
+/**
+ * 재고와 관련된 UI 업데이트
+ * @param {HTMLElement} stockInfoElement
+ */
 function updateStockInfoElement(stockInfoElement) {
   let message = '';
 
@@ -208,6 +223,12 @@ function updateStockInfoElement(stockInfoElement) {
   stockInfoElement.textContent = message;
 }
 
+/**
+ * 장바구니에 담긴 목록 UI 업데이트
+ * @param {import('./advanced/src/types').Product} selectedProduct
+ * @param {number} quantity
+ * @param {HTMLElement} cartContainerElement
+ */
 function updateCartUI({ selectedProduct, quantity }, cartContainerElement) {
   const productElement = document.getElementById(selectedProduct.id);
 
@@ -236,6 +257,10 @@ function updateCartUI({ selectedProduct, quantity }, cartContainerElement) {
   }
 }
 
+/**
+ * 장바구니에 추가 버튼 클릭시 일어나는 이벤트
+ * @param {HTMLElement} productSelectElement
+ */
 function handleAddButton(_, productSelectElement) {
   const selectedProductId = productSelectElement.value;
   const selectedProduct = productList.find((product) => product.id === selectedProductId);
@@ -262,6 +287,12 @@ function handleAddButton(_, productSelectElement) {
   };
 }
 
+/**
+ * 추가, 삭제 버튼 클릭시 일어나는 이벤트
+ * @param {HTMLElement} totalAmountElement
+ * @param {HTMLElement} stockInfoElement
+ * @param {HTMLElement} cartContainerElement
+ */
 function handleCartItem(e, totalAmountElement, stockInfoElement, cartContainerElement) {
   const target = e.target;
 
@@ -299,6 +330,34 @@ function handleCartItem(e, totalAmountElement, stockInfoElement, cartContainerEl
 
     calculateCart(totalAmountElement, stockInfoElement, cartContainerElement);
   }
+}
+
+/**
+ * 루트가 되는 함수
+ */
+function main() {
+  const { cartContainerElement, totalAmountElement, productSelectElement, stockInfoElement } = createUI();
+
+  document.getElementById('add-to-cart').addEventListener('click', (e) => {
+    const cartData = handleAddButton(e, productSelectElement);
+
+    if (cartData) {
+      updateCartUI(cartData, cartContainerElement);
+
+      calculateCart(totalAmountElement, stockInfoElement, cartContainerElement);
+    }
+  });
+
+  cartContainerElement.addEventListener('click', (e) =>
+    handleCartItem(e, totalAmountElement, stockInfoElement, cartContainerElement),
+  );
+
+  updateProductSelectOption(productSelectElement);
+
+  calculateCart(totalAmountElement, stockInfoElement, cartContainerElement);
+
+  setTimeout(handleSurpriseSale, Math.random() * DURATION[1000]);
+  setTimeout(handleSuggest, Math.random() * DURATION[2000]);
 }
 
 main();
