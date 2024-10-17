@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { DISCOUNT_RULES, DISCOUTNT_RULES_OF_TUESDAY, MESSAGE, PRODUCT_DATA, QUANTITY } from '../constants';
 import { Cart, Product } from '../types';
 
+/**
+ * 추가, 삭제 버튼 클릭시 일어나는 이벤트
+ */
 const useCart = () => {
   const [productList, setProductList] = useState<Product[]>(PRODUCT_DATA);
   const [cart, setCart] = useState<Cart>({});

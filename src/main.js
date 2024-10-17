@@ -137,6 +137,11 @@ function calculateCart(totalAmountElement, stockInfoElement, cartContainerElemen
 
     const quantity = parseInt(cartItems[i].querySelector('span').textContent.split('x ')[1]);
 
+    if (isNaN(quantity)) {
+      console.error('수량이 숫자가 아닙니다.');
+      return;
+    }
+
     const itemTotalAount = currentItem.price * quantity;
 
     let discountRateOfProduct = 0;
@@ -265,7 +270,12 @@ function handleAddButton(_, productSelectElement) {
   const selectedProductId = productSelectElement.value;
   const selectedProduct = productList.find((product) => product.id === selectedProductId);
 
-  if (!selectedProduct || selectedProduct.quantity <= 0) return;
+  if (!selectedProduct) {
+    console.error(`${selectedProductId}를 찾지 못했습니다`);
+    return;
+  }
+
+  if (selectedProduct.quantity <= 0) return;
 
   const productElement = document.getElementById(selectedProduct.id);
 
