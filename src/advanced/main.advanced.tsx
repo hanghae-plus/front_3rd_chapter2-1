@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-const rootElement = document.getElementById('app') as HTMLElement; // 타입 단언 추가
+const rootElement = document.getElementById('app') as HTMLElement;
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
