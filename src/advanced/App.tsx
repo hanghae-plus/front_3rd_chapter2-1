@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { CartList } from './components/CartList';
 import { CartTotal } from './components/CartTotal/CartTotal';
+import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { DEFAULT_CART_TOTAL, CartTotal as TCartTotal } from './model/cartTotal';
-import { ProductList } from './model/product';
+import { DEFAULT_PRODUCT_LIST, ProductList } from './model/product';
 
 export const App = () => {
-  const [cartTotal, setCartTotal] = useState<TCartTotal>(DEFAULT_CART_TOTAL);
+  const [productList, setProductList] =
+    useState<ProductList>(DEFAULT_PRODUCT_LIST);
   const [cartList, setCartList] = useState<ProductList>([]);
+  const [cartTotal, setCartTotal] = useState<TCartTotal>(DEFAULT_CART_TOTAL);
 
   return (
     <div className="bg-gray-100 p-8">
@@ -15,6 +18,16 @@ export const App = () => {
 
         <CartTotal cartTotal={cartTotal} />
         <CartList cartList={cartList} />
+
+        <ProductSelector
+          defaultValue={productList[0].id}
+          handleAddCart={(selectedId) => console.log(selectedId)}
+          options={productList.map(({ id, name, price, quantity }) => ({
+            value: id,
+            label: `${name} - ${price}원`,
+            disabled: quantity <= 0,
+          }))}
+        />
       </div>
     </div>
   );
