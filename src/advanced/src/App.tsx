@@ -1,5 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
+import { initProductList } from './data';
+import {
+  LUCKY_DELAY_TIME,
+  LUCKY_DISCOUNT_RATE,
+  LUCKY_INTERVAL_TIME,
+  LUCKY_RANDOM_RATE,
+  QUANTITY_FOR_DISCOUNT,
+  SUGGEST_DELAY_TIME,
+  SUGGEST_DISCOUNT_RATE,
+  SUGGEST_INTERVAL_TIME,
+  TUESDAY_DISCOUNT_RATE,
+} from './constants';
+import { isTuesday } from './utils/dateUtil';
+import {
+  calculateTotalAmount,
+  calculateTotalDiscountRate,
+} from './utils/calculateUtil';
+import { createDelayedIntervalFunction } from './utils/timerUtil';
+
 interface Product {
   id: string;
   name: string;
@@ -15,70 +34,6 @@ interface Item {
   price: number;
 }
 
-const initProductList = () => [
-  { id: 'p1', name: '상품1', price: 10000, quantity: 50, discountRate: 0.1 },
-  { id: 'p2', name: '상품2', price: 20000, quantity: 30, discountRate: 0.15 },
-  { id: 'p3', name: '상품3', price: 30000, quantity: 20, discountRate: 0.2 },
-  { id: 'p4', name: '상품4', price: 15000, quantity: 0, discountRate: 0.05 },
-  { id: 'p5', name: '상품5', price: 25000, quantity: 10, discountRate: 0.25 },
-];
-
-const TOTAL_QUANTITY_FOR_DISCOUNT = 30;
-const TOTAL_DISCOUNT_RATE = 0.25;
-const TUESDAY_DISCOUNT_RATE = 0.1;
-const QUANTITY_FOR_DISCOUNT = 10;
-
-const LUCKY_DELAY_TIME = Math.random() * 10000;
-const LUCKY_INTERVAL_TIME = 30000;
-const LUCKY_RANDOM_RATE = 0.3;
-const LUCKY_DISCOUNT_RATE = 0.2;
-const SUGGEST_DELAY_TIME = Math.random() * 20000;
-const SUGGEST_INTERVAL_TIME = 60000;
-const SUGGEST_DISCOUNT_RATE = 0.05;
-
-function isTuesday() {
-  return new Date().getDay() === 2;
-}
-
-function calculateTotalDiscountRate({
-  totalAmountWithoutDiscount,
-  totalAmount,
-  totalQuantity,
-}) {
-  let totalDiscountRate = 0;
-  const itemDiscount = totalAmountWithoutDiscount - totalAmount;
-  if (totalQuantity >= TOTAL_QUANTITY_FOR_DISCOUNT) {
-    const bulkDiscount = totalAmount * TOTAL_DISCOUNT_RATE;
-    if (bulkDiscount > itemDiscount) {
-      totalAmount = totalAmountWithoutDiscount * (1 - TOTAL_DISCOUNT_RATE);
-      totalDiscountRate = TOTAL_DISCOUNT_RATE;
-    } else {
-      totalDiscountRate = itemDiscount / (totalAmountWithoutDiscount || 1);
-    }
-  } else {
-    totalDiscountRate = itemDiscount / (totalAmountWithoutDiscount || 1);
-  }
-  if (isTuesday()) {
-    totalDiscountRate = Math.max(totalDiscountRate, TUESDAY_DISCOUNT_RATE);
-  }
-  return { totalDiscountRate, totalAmount };
-}
-
-function createDelayedIntervalFunction(callback, delay, interval) {
-  return function () {
-    setTimeout(function () {
-      setInterval(callback, interval);
-    }, delay);
-  };
-}
-
-function hasClickButton(target) {
-  return (
-    target.classList.contains('quantity-change') ||
-    target.classList.contains('remove-item')
-  );
-}
-
 const App: React.FC = () => {
   const [productList, setProductList] = useState(initProductList());
   const [itemList, setItemList] = useState<Item[]>([]);
@@ -88,7 +43,6 @@ const App: React.FC = () => {
   const [lastAddedProduct, setLastAddedProduct] = useState<null | string>(null);
   const [selectedItemId, setSelectedItemId] = useState(productList[0].id);
 
-  // renderCart
   const calculateCart = () => {
     const initTotalAmount = itemList.reduce((acc, cur) => {
       const currentItem = productList.find(
@@ -110,12 +64,17 @@ const App: React.FC = () => {
     }, 0);
     const totalQuantity = itemList.reduce((acc, cur) => acc + cur.quantity, 0);
 
-    let { totalDiscountRate: _totalDiscountRate, totalAmount: _totalAmount } =
-      calculateTotalDiscountRate({
-        totalAmountWithoutDiscount,
-        totalAmount: initTotalAmount,
-        totalQuantity,
-      });
+    let _totalAmount = calculateTotalAmount(
+      totalAmountWithoutDiscount,
+      initTotalAmount,
+      totalQuantity,
+    );
+
+    const _totalDiscountRate = calculateTotalDiscountRate(
+      totalAmountWithoutDiscount,
+      initTotalAmount,
+      totalQuantity,
+    );
 
     if (isTuesday()) {
       _totalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
@@ -199,8 +158,15 @@ const App: React.FC = () => {
     setLastAddedProduct(selectedItemId);
   };
 
-  const handleCartItemsClick = (event) => {
-    const target = event.target;
+  function hasClickButton(target: HTMLElement) {
+    return (
+      target.classList.contains('quantity-change') ||
+      target.classList.contains('remove-item')
+    );
+  }
+
+  const handleCartItemsClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
     if (!hasClickButton(target)) {
       return;
     }
@@ -213,7 +179,7 @@ const App: React.FC = () => {
     const item = _itemList.find((_item) => _item.id === itemId) as Item;
 
     if (target.classList.contains('quantity-change')) {
-      const changedQuantity = parseInt(target.dataset.change);
+      const changedQuantity = parseInt(target.dataset.change as string);
       const newQuantity = item.quantity + changedQuantity;
       if (newQuantity > 0 && changedQuantity <= product.quantity) {
         item.quantity = newQuantity;
