@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+// 판매할 상품 정보
 export interface Product {
   id: string;
   name: string;
@@ -8,6 +9,7 @@ export interface Product {
   quantity: number; // 재고
 }
 
+// 장바구니 상품 정보
 export interface CartItem {
   id: string;
   name: string;
@@ -15,6 +17,7 @@ export interface CartItem {
   count: number; // 장바구니에 담긴 개수
 }
 
+// 장바구니 관련 상태와 함수
 interface CartStore {
   products: Product[];
   cartList: CartItem[];
@@ -34,6 +37,7 @@ const useCartStore = create<CartStore>((set) => ({
   ],
   cartList: [],
 
+  // 상품 추가 함수
   addCartItem: (id) =>
     set((state) => {
       const product = state.products.find((p) => p.id === id);
