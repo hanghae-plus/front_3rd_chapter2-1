@@ -145,6 +145,8 @@ function isLuckyVicky() {
 function setRollBackCost(inSaleItem, originalCost, duration) {
   setTimeout(() => {
     inSaleItem.cost = originalCost;
+    const productSeletElement = document.getElementById('product-select');
+    updateProducts(productSeletElement);
   }, duration);
 }
 
