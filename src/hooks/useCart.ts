@@ -1,11 +1,11 @@
 import { Dispatch, useEffect, useReducer, useCallback } from 'react'
 import { cartAction, CartState } from '../types'
 import { cartReducer } from '../reducers'
-import { carStore } from '../stores'
+import { CartStore } from '../stores'
 import { MESSAGE, FLASH_SALE_CHANCE, FLASH_SALE_INTERVAL, SUGGESTION_INTERVAL } from '../constants'
 
 export function useCart(): [CartState, Dispatch<cartAction>] {
-  const [state, dispatch] = useReducer(cartReducer, carStore)
+  const [state, dispatch] = useReducer(cartReducer, CartStore)
 
   const runFlashSale = useCallback(() => {
     const availableProducts = state.products.filter((quantity) => quantity)

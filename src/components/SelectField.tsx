@@ -2,22 +2,22 @@ import { FC, memo } from 'react'
 import { Product } from '../types'
 
 type SelectFieldProps = {
-  value: string
-  onChange: (value: string) => void
+  price: string
+  onChange: (price: string) => void
   options: Product[]
 }
 
-const SelectField: FC<SelectFieldProps> = ({ value, onChange, options }) => {
+const SelectField: FC<SelectFieldProps> = ({ price, onChange, options }) => {
   return (
     <select
       id="product-select"
-      value={value}
+      value={price}
       onChange={(e) => onChange(e.target.value)}
       className="border rounded p-2 mr-2"
     >
-      {options.map(({ id, quantity, name, value }) => (
+      {options.map(({ id, quantity, name, price }) => (
         <option key={id} value={id} disabled={quantity === 0}>
-          {name} ({value.toLocaleString()}원)
+          {name} ({price.toLocaleString()}원)
         </option>
       ))}
     </select>

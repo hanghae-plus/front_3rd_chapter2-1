@@ -53,7 +53,7 @@ function calculateCart() {
   Array.from(cartElement).forEach((cart) => {
     const currentItem = CartStore.products.find(({ id }) => id === cart.id)
     const quantity = parseInt(cart.querySelector('span').textContent.split('x ')[1])
-    const itemTotal = currentItem.value * quantity
+    const itemTotal = currentItem.price * quantity
     itemCount += quantity
     totalBeforeDiscount += itemTotal
     CartStore.totalAmount += itemTotal * (1 - getDiscountRate(currentItem.id, quantity))
@@ -163,7 +163,7 @@ function handleAddToCart() {
 function updateExistingCartItem(item, product) {
   const newQuantity = parseInt(item.querySelector('span').textContent.split('x ')[1]) + 1
   if (product.quantity) {
-    const content = `${product.name} - ${product.value}원 x ${newQuantity}`
+    const content = `${product.name} - ${product.price}원 x ${newQuantity}`
     item.querySelector('span').textContent = content
     product.quantity -= 1
   } else {
@@ -280,7 +280,7 @@ function handleSetupPromotion() {
 function runFlashSale() {
   const luckyItem = CartStore.products[Math.floor(Math.random() * CartStore.products.length)]
   if (Math.random() < FLASH_SALE_CHANCE && luckyItem.quantity) {
-    luckyItem.value = Math.round(luckyItem.value * 0.8)
+    luckyItem.price = Math.round(luckyItem.price * 0.8)
     alert(MESSAGE.PROMOTION.FLASH_SALE(luckyItem.name))
     updateSelOpts()
   }
@@ -295,7 +295,7 @@ function runSuggestion() {
     const suggest = CartStore.products.find(({ id, quantity }) => id !== CartStore.selectedCartId && quantity)
     if (suggest) {
       alert(MESSAGE.PROMOTION.SUGGESTION(suggest.name))
-      suggest.value = Math.round(suggest.value * 0.95)
+      suggest.price = Math.round(suggest.price * 0.95)
       updateSelOpts()
     }
   }

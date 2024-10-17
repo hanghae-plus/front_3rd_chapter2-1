@@ -103,11 +103,11 @@ export function handleChangeQuantity(state: CartState, payload: { id: string; ch
 export function handleUpdateProduct(state: CartState, payload: { id: string; discount: number }): CartState {
   const { id, discount } = payload
   const updatedProducts = state.products.map((product) =>
-    product.id === id ? { ...product, value: Math.round(product.value * (1 - discount)) } : product,
+    product.id === id ? { ...product, price: Math.round(product.price * (1 - discount)) } : product,
   )
 
   const updatedCart = state.cart.map((item) =>
-    item.id === id ? { ...item, value: Math.round(item.value * (1 - discount)) } : item,
+    item.id === id ? { ...item, price: Math.round(item.price * (1 - discount)) } : item,
   )
 
   return { ...state, products: updatedProducts, cart: updatedCart }

@@ -14,7 +14,7 @@ const CartList: FC<CartItemProps> = ({ cart, handleQuantityChange, handleRemoveI
       {cart.map((item) => (
         <div key={item.id} className="flex justify-between items-center mb-2">
           <span>
-            {item.name} - {item.value.toLocaleString()}원 x {item.quantity}
+            {item.name} - {item.price.toLocaleString()}원 x {item.quantity}
           </span>
           <div>
             <Button id="quantity-change" size="sm" onClick={() => handleQuantityChange(item.id, -1)} className="mr-1">

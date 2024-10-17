@@ -13,12 +13,12 @@ import {
 /**
  * @description 포인트 계산
  * @param {number} quantity
- * @param {number} value
+ * @param {number} price
  * @returns {number}
  */
-export const handleUpdatePoint = (quantity: number, value: number): number => {
+export const handleUpdatePoint = (quantity: number, price: number): number => {
   const calculatePointsForIndex = (index: number): number => {
-    const basePoints = index * value * 0.001
+    const basePoints = index * price * 0.001
     return index < 10 ? basePoints : Math.floor(basePoints * 0.9)
   }
 
@@ -43,10 +43,10 @@ export function handleUpdateTotal(state: CartState): CartState {
 
   const getDiscount = (...rates: number[]) => Math.max(...rates) * 100
 
-  state.cart.forEach(({ id, value, quantity }) => {
-    const itemTotal = value * quantity
+  state.cart.forEach(({ id, price, quantity }) => {
+    const itemTotal = price * quantity
     totalItems += quantity
-    totalPoints += handleUpdatePoint(quantity, value)
+    totalPoints += handleUpdatePoint(quantity, price)
 
     const discountRate = quantity >= MIN_FOR_DISCOUNT ? DISCOUNT_RATE[id as keyof typeof DISCOUNT_RATE] || 0 : 0
     totalPrice += itemTotal * (1 - discountRate)
