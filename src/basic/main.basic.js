@@ -74,11 +74,9 @@ function main() {
   setTimeout(function () {
     setInterval(function () {
       var saleProduct = products[Math.floor(Math.random() * products.length)];
-      if (Math.random() < 0.3 && saleProduct.quantity > 0) {
-        saleProduct.price = Math.round(saleProduct.price * 0.8);
-        alert('번개세일! ' + saleProduct.name + '이(가) 20% 할인 중입니다!');
       if (Math.random() < FLASH_SALE_PROBABILITY && saleProduct.quantity > 0) {
         saleProduct.price = Math.round(saleProduct.price * FLASH_SALE_DISCOUNT);
+        alert(`번개세일! ${saleProduct.name}이(가) 20% 할인 중입니다!`);
         addProductSelectOptions();
       }
     }, FLASH_SALE_INTERVAL_TIME);
@@ -189,15 +187,10 @@ const renderbonusPoints = () => {
 function updateStockStatusMessage() {
   var message = '';
   products.forEach(function (product) {
-    if (product.quantity < 5) {
-      message +=
-        product.name +
-        ': ' +
-        (product.quantity > 0
-          ? '재고 부족 (' + product.quantity + '개 남음)'
-          : '품절') +
-        '\n';
     if (product.quantity < LOW_STOCK) {
+      message += `${product.name}: ${
+        product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : '품절'
+      }\n`;
     }
   });
   $stockStatus.textContent = message;
