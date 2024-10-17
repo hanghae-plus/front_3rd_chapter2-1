@@ -33,8 +33,6 @@ export const useStock = ({ products }: IUseStockProps) => {
 
     if (!foundStock) return false;
 
-    console.log(foundStock);
-
     if (foundStock.q - 1 < 0) {
       alert('재고 부족');
       return false;
