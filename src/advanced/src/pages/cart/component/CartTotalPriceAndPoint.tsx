@@ -62,18 +62,18 @@ function calculateRewardPoints(totalPrice) {
  * 장바구니의 총액, 할인율, 포인트 계산 및 상태 업데이트
  */
 function calculateCartTotals(cartItems) {
-  if (!cartItems.length) {
-    return {
-      totalPrice: 0,
-      discountRate: 0,
-      rewardPoints: 0,
-    };
-  }
-
   let totalPrice = 0;
   let totalQuantity = 0;
   let subTotal = 0;
   let discountRate = 0;
+
+  if (!cartItems.length) {
+    return {
+      totalPrice,
+      discountRate,
+      rewardPoints: 0,
+    };
+  }
 
   cartItems.forEach((cartItem) => {
     const cartSelectQuantity = cartItem.selectQuantity;
