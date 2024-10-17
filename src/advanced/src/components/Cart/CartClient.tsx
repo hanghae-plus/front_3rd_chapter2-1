@@ -1,21 +1,29 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import { productOptions, WEEKDAY } from "@/constants";
 import useAdditionalDiscountEvent from "@/hooks/useAdditionalDiscountEvent";
+import useCalculate from "@/hooks/useCalculate";
+import useCart from "@/hooks/useCart";
 import useLuckyDiscountEvent from "@/hooks/useLuckyDiscountEvent";
+import useOptions from "@/hooks/useOptions";
 import useOutOfStock from "@/hooks/useOutOfStock";
-import DiscountController from "@/models/DiscountController";
-import { DiscountType, ProductOption } from "@/types";
+import { ProductOption } from "@/types";
 
 import CartItems from "./CartItems";
 import PriceSection from "./PriceSection";
 import SelectSection from "./SelectSection";
 
+const productOptions = [
+  { id: "p1", name: "상품1", val: 10000, q: 50 },
+  { id: "p2", name: "상품2", val: 20000, q: 30 },
+  { id: "p3", name: "상품3", val: 30000, q: 20 },
+  { id: "p4", name: "상품4", val: 15000, q: 0 },
+  { id: "p5", name: "상품5", val: 25000, q: 10 },
+];
+
 const CartClient = () => {
-  const [options, setOptions] = useState<ProductOption[]>(productOptions);
-  const [cartItems, setCartItems] = useState<ProductOption[]>(() =>
-    productOptions.map((option) => ({ ...option, q: 0 })),
-  );
+  const { options, updateOption } = useOptions<ProductOption>(productOptions);
+  const { cartItems, updateCartItem } = useCart<ProductOption>(productOptions);
+  const { discountedTotalPrice, discountRate } = useCalculate(cartItems);
 
   const remainingStock = useCallback((itemId: string, quantity: number) => {
     const originalItem = productOptions.find((option) => option.id === itemId);
@@ -23,89 +31,36 @@ const CartClient = () => {
     const stock = originalItem.q - quantity;
     return stock;
   }, []);
+  const discountTargetIdRef = useAdditionalDiscountEvent(options, updateOption);
 
-  const updateOptionPrice = useCallback((data: ProductOption) => {
-    setOptions((prev) =>
-      prev.map((item) => {
-        if (item.id === data.id) {
-          return { ...item, val: data.val };
-        }
-        return item;
-      }),
-    );
-  }, []);
-
-  const lastSelectedIdRef = useAdditionalDiscountEvent(updateOptionPrice);
-  useLuckyDiscountEvent(updateOptionPrice);
+  useLuckyDiscountEvent(options, updateOption);
   useOutOfStock(cartItems, options);
-
-  const updateQuantity = useCallback(
-    (data: ProductOption) => {
-      setCartItems((prev) =>
-        prev.map((item) => {
-          if (item.id === data.id) {
-            const stock = remainingStock(data.id, item.q + data.q);
-            if (stock < 0 && item.q > 0) {
-              alert("재고가 부족합니다.");
-
-              return item;
-            }
-            return { ...data, q: item.q + data.q };
-          }
-          return item;
-        }),
-      );
-    },
-    [remainingStock],
-  );
 
   const manageProduct = useCallback(
     (data: ProductOption) => {
-      lastSelectedIdRef.current = data.id;
-
-      updateQuantity(data);
+      discountTargetIdRef.current = data.id;
+      updateCartItem(data.id, { q: data.q });
     },
-    [updateQuantity, lastSelectedIdRef],
+    [updateCartItem, discountTargetIdRef],
   );
 
-  const calculateTotalPrice = useMemo(() => {
-    const totalQuantity = cartItems.reduce((acc, item) => acc + item.q, 0);
-    const discountController = new DiscountController(cartItems);
-    const discountType = {
-      noItem: cartItems.length === 0,
-      bulk: totalQuantity >= discountController.getBulkSize(),
-      weekday: new Date().getDay() === WEEKDAY.TUESDAY,
-      default: true,
-    };
-    const typeKey = Object.entries(discountType).find(({ 1: value }) => !!value)?.[0];
-    return discountController.calculate(typeKey as DiscountType);
-  }, [cartItems]);
+  const renderStockStatus = useMemo(() => {
+    const stockStatus = cartItems.map((item) => {
+      const stock = remainingStock(item.id, item.q);
+      if (stock >= 5) return "";
+      return `${item.name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : "품절"}`;
+    });
 
-  const renderStockStatus = useMemo(
-    () => () => {
-      const stockStatus = cartItems.map((item) => {
-        const stock = remainingStock(item.id, item.q);
-        if (stock < 5) {
-          return `${item.name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : "품절"}`;
-        }
-        return "";
-      });
-
-      return stockStatus.join("\n").trim();
-    },
-    [cartItems, remainingStock],
-  );
+    return stockStatus.join("\n").trim();
+  }, [cartItems, remainingStock]);
 
   return (
     <>
       <CartItems items={cartItems} onClick={manageProduct} />
-      <PriceSection
-        totalPrice={calculateTotalPrice.discountedTotalPrice}
-        discountRate={calculateTotalPrice.discountRate}
-      />
+      <PriceSection totalPrice={discountedTotalPrice} discountRate={discountRate} />
       <SelectSection options={options} onSelect={manageProduct} />
       <div id="stock-status" className="text-sm text-gray-500 mt-2 whitespace-pre-wrap">
-        {renderStockStatus()}
+        {renderStockStatus}
       </div>
     </>
   );

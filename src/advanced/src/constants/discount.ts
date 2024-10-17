@@ -19,7 +19,7 @@ export const PRODUCT_DISCOUNT_RULES = {
     minQuantity: 10,
     rate: 0.25,
   },
-};
+} as const;
 
 export const WEEKDAY = {
   SUNDAY: 0,
@@ -29,14 +29,16 @@ export const WEEKDAY = {
   THURSDAY: 4,
   FRIDAY: 5,
   SATURDAY: 6,
-};
+} as const;
+
+const NO_DISCOUNT = 0;
 
 export const WEEKDAY_DISCOUNT_RATE = {
-  [WEEKDAY.MONDAY]: 0,
+  [WEEKDAY.MONDAY]: NO_DISCOUNT,
   [WEEKDAY.TUESDAY]: 0.1,
-  [WEEKDAY.WEDNESDAY]: 0,
-  [WEEKDAY.THURSDAY]: 0,
-  [WEEKDAY.FRIDAY]: 0,
-  [WEEKDAY.SATURDAY]: 0,
-  [WEEKDAY.SUNDAY]: 0,
-};
+  [WEEKDAY.WEDNESDAY]: NO_DISCOUNT,
+  [WEEKDAY.THURSDAY]: NO_DISCOUNT,
+  [WEEKDAY.FRIDAY]: NO_DISCOUNT,
+  [WEEKDAY.SATURDAY]: NO_DISCOUNT,
+  [WEEKDAY.SUNDAY]: NO_DISCOUNT,
+} as const;

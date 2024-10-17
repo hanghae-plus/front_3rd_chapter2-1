@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
-import { productOptions, QUANTITY_CHANGE } from "@/constants";
+import { QUANTITY_CHANGE } from "@/constants";
 import type { ProductOption } from "@/types";
 
 type SelectSectionProps = {
@@ -9,7 +9,7 @@ type SelectSectionProps = {
 };
 
 export default function SelectSection({ onSelect, options: optionsProp }: SelectSectionProps) {
-  const [selectedProductId, setSelectedProductId] = useState(() => productOptions[0].id);
+  const [selectedProductId, setSelectedProductId] = useState(() => optionsProp[0].id);
   const [options, setOption] = useState<ProductOption[]>(() => optionsProp);
 
   const handleSelectProduct = (e: ChangeEvent<HTMLSelectElement>) => {
