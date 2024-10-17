@@ -1,6 +1,7 @@
 import eslint from "@eslint/js";
 import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginPrettier from "eslint-plugin-prettier";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import globals from "globals";
 
 export default [
@@ -10,6 +11,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: "module",
+      parser: "@typescript-eslint/parser",
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -23,6 +25,7 @@ export default [
     plugins: {
       react: eslintPluginReact,
       prettier: eslintPluginPrettier,
+      "@typescript-eslint": typescriptEslint,
     },
     settings: {
       react: {
