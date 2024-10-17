@@ -1,4 +1,4 @@
 export * from './discountRates.js';
 export * from './productConfig.js';
-export * from './testContent.js';
-export * from './timeConfig.js';
+export * from './textContent.js';
+export * from './timerConfig.js';
