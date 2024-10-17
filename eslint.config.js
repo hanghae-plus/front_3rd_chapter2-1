@@ -1,25 +1,25 @@
 import pluginJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import pluginReact from 'eslint-plugin-react';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
 
 export default [
-  { ignores: ['node_modules/', 'src/main.js', '**/__tests__/'] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  pluginReact.configs.flat['jsx-runtime'],
+  eslintConfigPrettier,
+  eslintPluginPrettierRecommended,
+  reactPlugin.configs.recommended,
+  reactHooksPlugin.configs.recommended,
   {
     rules: {
-      eqeqeq: 'error',
-      'no-console': 'warn',
-      curly: ['error', 'multi-or-nest'],
       'no-var': 'error',
-      'no-undefined': 'error',
+      'prefer-const': 'error',
+      eqeqeq: 'warn',
+      'no-unused-vars': 'warn',
+      'consistent-return': 'warn',
+      'no-redeclare': 'error',
     },
   },
-  eslintConfigPrettier,
 ];
