@@ -6,33 +6,13 @@ import {
   LUCKY_DISCOUNT_RATE,
   LUCKY_INTERVAL_TIME,
   LUCKY_RANDOM_RATE,
-  QUANTITY_FOR_DISCOUNT,
   SUGGEST_DELAY_TIME,
   SUGGEST_DISCOUNT_RATE,
   SUGGEST_INTERVAL_TIME,
-  TUESDAY_DISCOUNT_RATE,
 } from './constants';
-import { isTuesday } from './utils/dateUtil';
-import {
-  calculateTotalAmount,
-  calculateTotalDiscountRate,
-} from './utils/calculateUtil';
+import { calculateCart } from './utils/calculateUtil';
 import { createDelayedIntervalFunction } from './utils/timerUtil';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  discountRate: number;
-}
-
-interface Item {
-  id: string;
-  quantity: number;
-  name: string;
-  price: number;
-}
+import { Item, Product } from './utils/interfaceUtil';
 
 const App: React.FC = () => {
   const [productList, setProductList] = useState(initProductList());
@@ -43,49 +23,12 @@ const App: React.FC = () => {
   const [lastAddedProduct, setLastAddedProduct] = useState<null | string>(null);
   const [selectedItemId, setSelectedItemId] = useState(productList[0].id);
 
-  const calculateCart = () => {
-    const initTotalAmount = itemList.reduce((acc, cur) => {
-      const currentItem = productList.find(
-        (product) => product.id === cur.id,
-      ) as Product;
-      const quantity = cur.quantity;
-      const itemAmount = currentItem.price * quantity;
-      const discountRate =
-        quantity >= QUANTITY_FOR_DISCOUNT ? currentItem.discountRate : 0;
-      return acc + itemAmount * (1 - discountRate);
-    }, 0);
-
-    const totalAmountWithoutDiscount = itemList.reduce((acc, cur) => {
-      const currentItem = productList.find(
-        (product) => product.id === cur.id,
-      ) as Product;
-      const quantity = cur.quantity;
-      return acc + currentItem.price * quantity;
-    }, 0);
-    const totalQuantity = itemList.reduce((acc, cur) => acc + cur.quantity, 0);
-
-    let _totalAmount = calculateTotalAmount(
-      totalAmountWithoutDiscount,
-      initTotalAmount,
-      totalQuantity,
-    );
-
-    const _totalDiscountRate = calculateTotalDiscountRate(
-      totalAmountWithoutDiscount,
-      initTotalAmount,
-      totalQuantity,
-    );
-
-    if (isTuesday()) {
-      _totalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
-    }
+  useEffect(() => {
+    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
+      calculateCart(itemList, productList);
     setLoyaltyPoints(Math.floor(_totalAmount / 1000));
     setTotalAmount(_totalAmount);
     setTotalDiscountRate(_totalDiscountRate);
-  };
-
-  useEffect(() => {
-    calculateCart();
     createDelayedIntervalFunction(
       () => {
         const _productList = [...productList];
@@ -154,7 +97,11 @@ const App: React.FC = () => {
       setItemList(_itemList);
       setProductList(_productList);
     }
-    calculateCart();
+    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
+      calculateCart(_itemList, _productList);
+    setLoyaltyPoints(Math.floor(_totalAmount / 1000));
+    setTotalAmount(_totalAmount);
+    setTotalDiscountRate(_totalDiscountRate);
     setLastAddedProduct(selectedItemId);
   };
 
@@ -172,7 +119,7 @@ const App: React.FC = () => {
     }
     const itemId = target.dataset.productId;
     const _productList = [...productList];
-    const _itemList = [...itemList];
+    let _itemList = [...itemList];
     const product = _productList.find(
       (_product) => _product.id === itemId,
     ) as Product;
@@ -187,7 +134,8 @@ const App: React.FC = () => {
         setItemList(_itemList);
         setProductList(_productList);
       } else if (newQuantity <= 0) {
-        setItemList(_itemList.filter((_item) => _item.id !== itemId));
+        _itemList = _itemList.filter((_item) => _item.id !== itemId);
+        setItemList(_itemList);
         product.quantity -= changedQuantity;
         setProductList(_productList);
       } else {
@@ -199,9 +147,14 @@ const App: React.FC = () => {
       const removeQuantity = item.quantity;
       product.quantity += removeQuantity;
       setProductList(_productList);
-      setItemList(_itemList.filter((_item) => _item.id !== itemId));
+      _itemList = _itemList.filter((_item) => _item.id !== itemId);
+      setItemList(_itemList);
     }
-    calculateCart();
+    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
+      calculateCart(_itemList, _productList);
+    setLoyaltyPoints(Math.floor(_totalAmount / 1000));
+    setTotalAmount(_totalAmount);
+    setTotalDiscountRate(_totalDiscountRate);
   };
 
   return (
