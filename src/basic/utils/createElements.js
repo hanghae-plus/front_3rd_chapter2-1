@@ -52,7 +52,8 @@ export const createBtn = (props) => {
 
 const NULL_QUANTITY_CHANGE_PROPS = { id: '', text: '', changeValue: '' };
 export const createQuantityChangeBtn = (props) => {
-  const { id, text, changeValue } = props || (props = NULL_QUANTITY_CHANGE_PROPS);
+  const { id, text, changeValue } =
+    props || (props = NULL_QUANTITY_CHANGE_PROPS);
   const button = createBtn({
     className: 'quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1',
     text,

@@ -1,22 +1,34 @@
-import calculateCart from './calculateCart';
-import { createBtn, createDiv, createSelect, createTitle } from './createElements';
-import { cartList, productList } from './global';
-import { renderCartItem, reRenderCartItem } from './renderCartItem';
+import calculateCart from '../utils/calculateCart';
+import {
+  createBtn,
+  createDiv,
+  createSelect,
+  createTitle,
+} from '../utils/createElements';
+import { cartList, productList } from '../data/global';
+import { renderCartItem, reRenderCartItem } from '../components/renderCartItem';
 
 const renderHome = () => {
   const $content = createDiv({ className: 'bg-gray-100 p-8' });
   const $wrap = createDiv({
-    className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
+    className:
+      'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
   });
   const $title = createTitle('장바구니');
   const $cartList = createDiv({ id: 'cart-items' });
-  const $total = createDiv({ id: 'cart-total', className: 'text-xl font-bold my-4' });
+  const $total = createDiv({
+    id: 'cart-total',
+    className: 'text-xl font-bold my-4',
+  });
   const $select = createSelect({
     id: 'product-select',
     className: 'border rounded p-2 mr-2',
   });
   const $addBtn = createBtn({ id: 'add-to-cart', text: '추가' });
-  const $stock = createDiv({ id: 'stock-status', className: 'text-sm text-gray-500 mt-2' });
+  const $stock = createDiv({
+    id: 'stock-status',
+    className: 'text-sm text-gray-500 mt-2',
+  });
 
   $wrap.appendChild($title);
   $wrap.appendChild($cartList);

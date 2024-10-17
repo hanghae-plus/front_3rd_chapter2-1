@@ -1,4 +1,4 @@
-import { createSpan } from './createElements';
+import { createSpan } from '../utils/createElements';
 
 let bonusPoints = 0;
 
@@ -7,7 +7,10 @@ const renderBonusPoints = (totalPrice, $sum) => {
 
   let $point = document.getElementById('loyalty-points');
   if (!$point) {
-    $point = createSpan({ id: 'loyalty-points', className: 'text-blue-500 ml-2' });
+    $point = createSpan({
+      id: 'loyalty-points',
+      className: 'text-blue-500 ml-2',
+    });
     $sum.appendChild($point);
   }
 

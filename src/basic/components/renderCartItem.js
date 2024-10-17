@@ -1,13 +1,25 @@
-import { createDiv, createQuantityChangeBtn, createRemoveBtn, createSpan } from './createElements';
-import { cartList } from './global';
+import {
+  createDiv,
+  createQuantityChangeBtn,
+  createRemoveBtn,
+  createSpan,
+} from '../utils/createElements';
+import { cartList } from '../data/global';
 
 export const renderCartItem = ({ id, name, price }) => {
   const $cartList = document.getElementById('cart-items');
 
-  const $wrap = createDiv({ id, className: 'flex justify-between items-center mb-2' });
+  const $wrap = createDiv({
+    id,
+    className: 'flex justify-between items-center mb-2',
+  });
   const $newCartSpan = createSpan({ text: `${name} - ${price}원 x 1` });
   const $buttonWrap = createDiv();
-  const $minusBtn = createQuantityChangeBtn({ id, text: '-', changeValue: '-1' });
+  const $minusBtn = createQuantityChangeBtn({
+    id,
+    text: '-',
+    changeValue: '-1',
+  });
   const $plusBtn = createQuantityChangeBtn({ id, text: '+', changeValue: '1' });
   const $removeBtn = createRemoveBtn({ id, text: '삭제', changeValue: '1' });
 

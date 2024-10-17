@@ -150,7 +150,10 @@ function createCartList(cartList) {
   }
 
   function getTotalPrice() {
-    return cartList.reduce((acc, cart) => acc + cart.getPrice() * cart.getQuantity(), 0);
+    return cartList.reduce(
+      (acc, cart) => acc + cart.getPrice() * cart.getQuantity(),
+      0
+    );
   }
 
   function getTotalQuantity() {

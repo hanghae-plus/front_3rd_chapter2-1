@@ -1,6 +1,6 @@
+import renderBonusPoints from '../components/renderBonusPoints';
+import { cartList, productList } from '../data/global';
 import { createSpan } from './createElements';
-import { cartList, productList } from './global';
-import renderBonusPoints from './renderBonusPoints';
 
 const getDiscountRate = (cart) => {
   const { id, quantity } = cart;
@@ -22,7 +22,11 @@ const applyBulkDiscount = () => {
   const totalOriginPrice = cartList.getTotalPrice();
   let totalDiscountPrice = cartList
     .toObject()
-    .reduce((acc, item) => acc + item.price * item.quantity * (1 - getDiscountRate(item)), 0);
+    .reduce(
+      (acc, item) =>
+        acc + item.price * item.quantity * (1 - getDiscountRate(item)),
+      0
+    );
   let rate = 0;
 
   if (totalCount >= 30) {

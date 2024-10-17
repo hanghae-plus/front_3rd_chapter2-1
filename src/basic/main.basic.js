@@ -1,7 +1,7 @@
-import calculateCart from './calculateCart';
-import { setLuckySale, setSuggestSale } from './eventManager';
-import renderHome from './renderHome';
-import updateSelectOptions from './updateSelectOptions';
+import renderHome from './components/renderHome';
+import updateSelectOptions from './components/updateSelectOptions';
+import calculateCart from './utils/calculateCart';
+import { setLuckySale, setSuggestSale } from './utils/eventManager';
 
 function main() {
   let root = document.getElementById('app');
