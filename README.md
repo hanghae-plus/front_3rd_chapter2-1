@@ -6,7 +6,7 @@
 
   ```javascript
   const userAge = 25;
-  function handleUpdateTotal() { ... }
+  function calculateTotalAmount() { ... }
   ```
 
 - **상수**: 대문자와 snake_case를 사용합니다.
@@ -20,7 +20,7 @@
 
   ```javascript
   function UserProfile() { ... }
-  const CartItem = () => { ... }
+  const ProductItem = () => { ... }
   ```
 
 - **파일 이름**: 컴포넌트 파일은 PascalCase, 그 외는 kebab-case를 사용합니다.
@@ -83,6 +83,6 @@
   import { useEffect, useState } from 'react'
 
   // 내부 모듈
-  import { CartItem } from './CartItem'
+  import { ProductItem } from './ProductItem'
   import { CONSTANTS } from '../constants'
   ```
