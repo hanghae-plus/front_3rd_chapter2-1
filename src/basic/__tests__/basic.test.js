@@ -22,7 +22,9 @@ describe('basic test', () => {
     });
 
     beforeEach(() => {
-      vi.useFakeTimers();
+      vi.useFakeTimers()
+      const mockDate = new Date("2024-10-14") // 화요일
+      vi.setSystemTime(mockDate)      
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
@@ -101,7 +103,7 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value='p2';
       addBtn.click();
-      console.log("loyalty-points",document.getElementById('loyalty-points'));
+
       expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
     });
 
@@ -135,7 +137,7 @@ describe('basic test', () => {
     it('재고가 부족한 경우 추가되지 않고 알림이 표시되는지 확인', () => {
       sel.value='p5';
       addBtn.click();
-
+      addBtn.click();
       // p5 상품이 장바구니에 추가되었는지 확인
       const p5InCart=Array.from(cartDisp.children).some(item => item.id === 'p5');
       expect(p5InCart).toBe(true);

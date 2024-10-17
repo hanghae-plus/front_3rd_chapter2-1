@@ -85,6 +85,7 @@ export class UIManager {
       this.elements.cartItems.innerHTML = '';
       for (const [id, item] of this.cartManager.items) {
         const itemElement = createElement('div', 'flex justify-between items-center mb-2');
+        itemElement.id = id;
         itemElement.innerHTML = `
           <span>${item.name} - ${item.price}원 x ${item.quantity}</span>
           <div>
