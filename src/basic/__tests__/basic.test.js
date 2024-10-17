@@ -13,7 +13,14 @@ describe('basic test', () => {
     { type: 'origin', loadFile: () => import('../../main.js') },
     { type: 'basic', loadFile: () => import('../main.basic.js') },
   ])('$type 장바구니 시나리오 테스트', ({ type, loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo, globalState, setLuckyVickyItem;
+    let sel,
+      addBtn,
+      cartDisp,
+      sum,
+      stockInfo,
+      globalState,
+      setLuckyVickyItem,
+      fishHogu;
 
     beforeAll(async () => {
       // DOM 초기화
@@ -23,6 +30,7 @@ describe('basic test', () => {
       // 전역 변수 참조
       globalState = module.globalState;
       setLuckyVickyItem = module.setLuckyVickyItem;
+      fishHogu = module.fishHogu;
       sel = document.getElementById('product-select');
       addBtn = document.getElementById('add-to-cart');
       cartDisp = document.getElementById('cart-items');
@@ -144,7 +152,16 @@ describe('basic test', () => {
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      if (type === 'origin') return;
+
+      globalState.lastSelected = 'p2';
+      fishHogu();
+      const mikkiProduct = globalState.inventory[0];
+
+      expect(global.alert).toHaveBeenCalledWith(
+        `${mikkiProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
+      );
+      expect(mikkiProduct.cost).toBe(9500);
     });
 
     it('화요일 할인이 적용되는지 확인', () => {

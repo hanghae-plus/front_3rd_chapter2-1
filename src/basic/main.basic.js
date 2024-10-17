@@ -6,11 +6,13 @@ import {
   ONE_MINUTE,
   INCREASE,
   DECREASE,
+  LUCKY_VICKY_DISCOUNT_RATE,
+  MIKKI_DISCOUNT_RATE,
 } from './shared/constants';
 import { checkSaleDay, createElement, getCartInfoFromElements } from '../utils';
 import { myCart } from './store/my-cart';
 
-const globalState = {
+export const globalState = {
   inventory: [
     { id: 'p1', name: '상품1', cost: 10000, stock: 50, discountRate: 0.1 },
     { id: 'p2', name: '상품2', cost: 20000, stock: 30, discountRate: 0.15 },
@@ -151,38 +153,40 @@ function setRollBackCost(inSaleItem, originalCost, duration) {
 }
 
 export function setLuckyVickyItem() {
-    const luckyVickyItem =
-      globalState.inventory[
-        Math.floor(Math.random() * globalState.inventory.length)
-      ];
-    const inStock = luckyVickyItem.stock > 0;
+  const luckyVickyItem =
+    globalState.inventory[
+      Math.floor(Math.random() * globalState.inventory.length)
+    ];
+  const inStock = luckyVickyItem.stock > 0;
 
-    if (inStock && isLuckyVicky()) {
-      const originalCost = luckyVickyItem.cost;
-      const discountedCost = Math.round(originalCost * 0.8);
-      luckyVickyItem.cost = discountedCost;
+  if (inStock && isLuckyVicky()) {
+    const originalCost = luckyVickyItem.cost;
+    const discountedCost = Math.round(originalCost * LUCKY_VICKY_DISCOUNT_RATE);
+    luckyVickyItem.cost = discountedCost;
     const productSeletElement = document.getElementById('product-select');
     updateProducts(productSeletElement);
-      alert(`번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`);
-      setRollBackCost(luckyVickyItem, originalCost, ONE_MINUTE);
-    }
+    alert(`번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`);
+    setRollBackCost(luckyVickyItem, originalCost, ONE_MINUTE);
+  }
 }
 
-function fishHogu() {
-    if (globalState.lastSelected) {
-      const mikkiProduct = globalState.inventory.find((item) => {
-        return item.id !== globalState.lastSelected && item.stock > 0;
-      });
-      if (mikkiProduct) {
-        alert(
-          `${mikkiProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
-        );
-        const originalCost = mikkiProduct.cost;
-        const discountedCost = Math.round(mikkiProduct.cost * 0.95);
-        mikkiProduct.cost = discountedCost;
-        setRollBackCost(mikkiProduct, originalCost, ONE_MINUTE);
-      }
+export function fishHogu() {
+  if (globalState.lastSelected) {
+    const mikkiProduct = globalState.inventory.find((item) => {
+      return item.id !== globalState.lastSelected && item.stock > 0;
+    });
+    if (mikkiProduct) {
+      alert(
+        `${mikkiProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
+      );
+      const originalCost = mikkiProduct.cost;
+      const discountedCost = Math.round(
+        mikkiProduct.cost * MIKKI_DISCOUNT_RATE
+      );
+      mikkiProduct.cost = discountedCost;
+      setRollBackCost(mikkiProduct, originalCost, ONE_MINUTE);
     }
+  }
 }
 
 function makeNewItemButtons(productId) {
