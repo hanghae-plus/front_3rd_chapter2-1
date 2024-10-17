@@ -37,7 +37,7 @@ function main() {
   stockInfo.className = 'text-sm text-gray-500 mt-2';
   hTxt.textContent = '장바구니';
   addBtn.textContent = '추가';
-  updateSelOpts();
+  updateSelectOpts();
   wrap.appendChild(hTxt);
   wrap.appendChild(cartDisp);
   wrap.appendChild(sum);
@@ -53,7 +53,7 @@ function main() {
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateSelOpts();
+        updateSelectOpts();
       }
     }, 30000);
   }, Math.random() * 10000);
@@ -68,13 +68,13 @@ function main() {
             suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
           );
           suggest.val = Math.round(suggest.val * 0.95);
-          updateSelOpts();
+          updateSelectOpts();
         }
       }
     }, 60000);
   }, Math.random() * 20000);
 }
-function updateSelOpts() {
+function updateSelectOpts() {
   sel.innerHTML = '';
   prodList.forEach(function (item) {
     var opt = document.createElement('option');
@@ -142,10 +142,10 @@ function calcCart() {
     span.textContent = '(' + (discRate * 100).toFixed(1) + '% 할인 적용)';
     sum.appendChild(span);
   }
-  updateStockInfo();
-  renderBonusPts();
+  displayStockStatus();
+  renderBounsPoints();
 }
-const renderBonusPts = () => {
+const renderBounsPoints = () => {
   bonusPts += Math.floor(totalAmt / 1000);
   var ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
@@ -157,7 +157,7 @@ const renderBonusPts = () => {
   ptsTag.textContent = '(포인트: ' + bonusPts + ')';
 };
 
-function updateStockInfo() {
+function displayStockStatus() {
   var infoMsg = '';
   prodList.forEach(function (item) {
     if (item.q < 5) {
