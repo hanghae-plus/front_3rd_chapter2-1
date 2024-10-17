@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-type Props = {
+type PriceSectionProps = {
   totalPrice: number;
   discountRate: number;
 };
 
-export default function PriceSection({ totalPrice, discountRate }: Props) {
+export default function PriceSection({ totalPrice, discountRate }: PriceSectionProps) {
   const [point, setPoint] = useState(0);
 
   useEffect(() => {
