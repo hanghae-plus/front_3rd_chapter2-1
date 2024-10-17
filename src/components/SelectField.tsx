@@ -15,9 +15,9 @@ const SelectField: FC<SelectFieldProps> = ({ value, onChange, options }) => {
       onChange={(e) => onChange(e.target.value)}
       className="border rounded p-2 mr-2"
     >
-      {options.map((product) => (
-        <option key={product.id} value={product.id} disabled={product.quantity === 0}>
-          {product.name}
+      {options.map(({ id, quantity, name, value }) => (
+        <option key={id} value={id} disabled={quantity === 0}>
+          {name} ({value.toLocaleString()}원)
         </option>
       ))}
     </select>

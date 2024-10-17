@@ -28,3 +28,4 @@ export type cartAction =
   | { type: 'CALCULATE_TOTAL' }
   | { type: 'SET_FLASH_SALE'; payload: boolean }
   | { type: 'SET_RECOMMENDED_SALE'; payload: boolean }
+  | { type: 'UPDATE_PRODUCT_PRICE'; payload: { id: string; discount: number } }

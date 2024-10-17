@@ -1,6 +1,6 @@
 import { CartState } from '../types'
 
-export const carStore: CartState = {
+export const CartStore: CartState = {
   selectedCartId: 'p1',
   products: [
     { id: 'p1', name: '상품1', value: 10000, quantity: 50 },
