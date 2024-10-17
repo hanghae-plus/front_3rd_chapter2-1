@@ -1,45 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { productConst } from "../const";
+import { Item } from "./CartItemAdit";
 
-interface Item {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
+export interface ItemSelecterProps {
+  selectedProducts: Item[];
+  setSelectedProducts: React.Dispatch<React.SetStateAction<Item[]>>;
 }
 
-const ItemSelecter = () => {
+const ItemSelecter: React.FC<ItemSelecterProps> = ({ selectedProducts, setSelectedProducts }) => {
   const { PRODUCT_LIST } = productConst;
-  const [productList, setProductList] = useState<Item[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<Item>({
+    id: "",
+    name: "",
+    price: 0,
+    quantity: 0,
+  });
 
-  const updateSelectOptions = (list: Item[]) => {
-    setProductList(list);
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = e.target.value;
+    const selectedItem = PRODUCT_LIST.find((item) => item.id === selectedId);
+
+    if (!selectedItem) return;
+    setSelectedProduct(selectedItem);
   };
 
-  useEffect(() => {
-    const ProductList: Item[] = PRODUCT_LIST;
-    console.log("ProductList", ProductList);
+  const handleAddItemButton = () => {
+    if (!selectedProduct.id || selectedProduct.quantity === 0) {
+      return;
+    }
 
-    updateSelectOptions(ProductList);
-  }, []);
+    // 상품이 이미 장바구니에 있는지 확인
+    const productIndex = selectedProducts.findIndex((item) => item.id === selectedProduct.id);
+
+    if (productIndex !== -1) {
+      const updatedProducts = selectedProducts.map((item, index) =>
+        index === productIndex ? { ...item, quantity: item.quantity + 1 } : item,
+      );
+      setSelectedProducts(updatedProducts);
+    } else {
+      // 새로운 상품 추가
+      setSelectedProducts([...selectedProducts, { ...selectedProduct, quantity: 1 }]);
+    }
+  };
 
   return (
     <div>
       <select
         id="product-select"
         className="border rounded p-2 mr-2"
-        value={selectedProduct}
-        onChange={(e) => setSelectedProduct(e.target.value)}
+        value={selectedProduct.id}
+        onChange={handleSelectChange}
       >
         <option value="">상품을 선택하세요</option>
-        {productList.map((item) => (
+        {PRODUCT_LIST.map((item) => (
           <option key={item.id} value={item.id} disabled={item.quantity === 0}>
             {item.name} - {item.price}원
           </option>
         ))}
       </select>
-      <button id="add-to-cart" className="bg-blue-500 text-white px-4 py-2 rounded">
+      <button
+        id="add-to-cart"
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        onClick={handleAddItemButton}
+      >
         추가
       </button>
     </div>
