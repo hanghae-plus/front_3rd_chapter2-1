@@ -3,7 +3,7 @@ import { DISCOUNT_RULES, DISCOUTNT_RULES_OF_TUESDAY, MESSAGE, PRODUCT_DATA, QUAN
 import { Cart, Product } from '../types';
 
 /**
- * 추가, 삭제 버튼 클릭시 일어나는 이벤트
+ * 장바구니 기능과 관련된 상태와 함수들을 커스텀 훅으로 구현
  */
 const useCart = () => {
   const [productList, setProductList] = useState<Product[]>(PRODUCT_DATA);
@@ -20,7 +20,12 @@ const useCart = () => {
   const addToCart = (productId: string) => {
     const product = findProductById(productId);
 
-    if (!product || product.quantity <= 0) {
+    if (!product) {
+      console.error('상품이 존재하지 않습니다.');
+      return;
+    }
+
+    if (product.quantity <= 0) {
       alert(MESSAGE.NOT_ENOUGH_PRODUCT);
       return;
     }
@@ -46,9 +51,15 @@ const useCart = () => {
     let discountedTotal = 0;
 
     Object.entries(cart).forEach(([productId, quantity]) => {
+      if (isNaN(quantity)) {
+        console.error('수량이 숫자가 아닙니다.');
+        return;
+      }
+
       const product = findProductById(productId);
 
       if (!product) {
+        console.error('상품이 존재하지 않습니다.');
         return;
       }
 
