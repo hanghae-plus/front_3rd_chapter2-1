@@ -7,7 +7,7 @@ import {
 import { isTuesday } from './dateUtil';
 import { Item, Product } from './interfaceUtil';
 
-export function calculateTotalDiscountRate(
+function calculateTotalDiscountRate(
   totalAmountWithoutDiscount: number,
   totalAmount: number,
   totalQuantity: number,
@@ -31,7 +31,7 @@ export function calculateTotalDiscountRate(
   return totalDiscountRate;
 }
 
-export function calculateTotalAmount(
+function calculateTotalAmount(
   totalAmountWithoutDiscount: number,
   totalAmount: number,
   totalQuantity: number,
@@ -43,8 +43,11 @@ export function calculateTotalAmount(
   return totalAmountWithoutDiscount * (1 - TOTAL_DISCOUNT_RATE);
 }
 
-export const calculateCart = (itemList: Item[], productList: Product[]) => {
-  const initTotalAmount = itemList.reduce((acc, cur) => {
+function calculateInitTotalAmount(
+  itemList: Item[],
+  productList: Product[],
+): number {
+  return itemList.reduce((acc, cur) => {
     const currentItem = productList.find(
       (product) => product.id === cur.id,
     ) as Product;
@@ -54,14 +57,30 @@ export const calculateCart = (itemList: Item[], productList: Product[]) => {
       quantity >= QUANTITY_FOR_DISCOUNT ? currentItem.discountRate : 0;
     return acc + itemAmount * (1 - discountRate);
   }, 0);
+}
 
-  const totalAmountWithoutDiscount = itemList.reduce((acc, cur) => {
+function calculateTotalAmountWithoutDiscount(
+  itemList: Item[],
+  productList: Product[],
+): number {
+  return itemList.reduce((acc, cur) => {
     const currentItem = productList.find(
       (product) => product.id === cur.id,
     ) as Product;
     const quantity = cur.quantity;
     return acc + currentItem.price * quantity;
   }, 0);
+}
+
+export function calculateCartTotalAmount(
+  itemList: Item[],
+  productList: Product[],
+): number {
+  const initTotalAmount = calculateInitTotalAmount(itemList, productList);
+  const totalAmountWithoutDiscount = calculateTotalAmountWithoutDiscount(
+    itemList,
+    productList,
+  );
   const totalQuantity = itemList.reduce((acc, cur) => acc + cur.quantity, 0);
 
   let _totalAmount = calculateTotalAmount(
@@ -70,15 +89,23 @@ export const calculateCart = (itemList: Item[], productList: Product[]) => {
     totalQuantity,
   );
 
-  const _totalDiscountRate = calculateTotalDiscountRate(
+  return isTuesday() ? 1 - TUESDAY_DISCOUNT_RATE : _totalAmount;
+}
+
+export function calculateCartTotalDiscountRate(
+  itemList: Item[],
+  productList: Product[],
+): number {
+  const initTotalAmount = calculateInitTotalAmount(itemList, productList);
+  const totalAmountWithoutDiscount = calculateTotalAmountWithoutDiscount(
+    itemList,
+    productList,
+  );
+  const totalQuantity = itemList.reduce((acc, cur) => acc + cur.quantity, 0);
+
+  return calculateTotalDiscountRate(
     totalAmountWithoutDiscount,
     initTotalAmount,
     totalQuantity,
   );
-
-  if (isTuesday()) {
-    _totalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
-  }
-
-  return { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate };
-};
+}

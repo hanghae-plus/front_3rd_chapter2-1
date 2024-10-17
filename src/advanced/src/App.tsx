@@ -2,20 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { initProductList } from './data';
 import {
-  LUCKY_DELAY_TIME,
-  LUCKY_DISCOUNT_RATE,
-  LUCKY_INTERVAL_TIME,
-  LUCKY_RANDOM_RATE,
-  SUGGEST_DELAY_TIME,
-  SUGGEST_DISCOUNT_RATE,
-  SUGGEST_INTERVAL_TIME,
-} from './constants';
-import { calculateCart } from './utils/calculateUtil';
-import { createDelayedIntervalFunction } from './utils/timerUtil';
+  calculateCartTotalAmount,
+  calculateCartTotalDiscountRate,
+} from './utils/calculateUtil';
+import { setLuckyTimer, setSuggestTimer } from './utils/timerUtil';
 import { Item, Product } from './utils/interfaceUtil';
 
 const App: React.FC = () => {
-  const [productList, setProductList] = useState(initProductList());
+  const [productList, setProductList] = useState<Product[]>(initProductList());
   const [itemList, setItemList] = useState<Item[]>([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -24,48 +18,17 @@ const App: React.FC = () => {
   const [selectedItemId, setSelectedItemId] = useState(productList[0].id);
 
   useEffect(() => {
-    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
-      calculateCart(itemList, productList);
+    const _totalAmount = calculateCartTotalAmount(itemList, productList);
+    const _totalDiscountRate = calculateCartTotalDiscountRate(
+      itemList,
+      productList,
+    );
     setLoyaltyPoints(Math.floor(_totalAmount / 1000));
     setTotalAmount(_totalAmount);
     setTotalDiscountRate(_totalDiscountRate);
-    createDelayedIntervalFunction(
-      () => {
-        const _productList = [...productList];
-        const luckyItem =
-          _productList[Math.floor(Math.random() * _productList.length)];
-        if (Math.random() < LUCKY_RANDOM_RATE && luckyItem.quantity > 0) {
-          luckyItem.price = Math.round(
-            luckyItem.price * (1 - LUCKY_DISCOUNT_RATE),
-          );
-          alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-          setProductList(_productList);
-        }
-      },
-      LUCKY_DELAY_TIME,
-      LUCKY_INTERVAL_TIME,
-    )();
-    createDelayedIntervalFunction(
-      () => {
-        if (!lastAddedProduct) return;
-        const _productList = [...productList];
-        const suggest = _productList.find(
-          (_product) =>
-            _product.id !== lastAddedProduct && _product.quantity > 0,
-        );
-        if (suggest) {
-          alert(
-            suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!',
-          );
-          suggest.price = Math.round(
-            suggest.price * (1 - SUGGEST_DISCOUNT_RATE),
-          );
-          setProductList(_productList);
-        }
-      },
-      SUGGEST_DELAY_TIME,
-      SUGGEST_INTERVAL_TIME,
-    )();
+
+    setLuckyTimer(productList, setProductList);
+    setSuggestTimer(lastAddedProduct, productList, setProductList);
   }, []);
 
   const handleAddClick = () => {
@@ -97,8 +60,11 @@ const App: React.FC = () => {
       setItemList(_itemList);
       setProductList(_productList);
     }
-    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
-      calculateCart(_itemList, _productList);
+    const _totalAmount = calculateCartTotalAmount(_itemList, _productList);
+    const _totalDiscountRate = calculateCartTotalDiscountRate(
+      _itemList,
+      _productList,
+    );
     setLoyaltyPoints(Math.floor(_totalAmount / 1000));
     setTotalAmount(_totalAmount);
     setTotalDiscountRate(_totalDiscountRate);
@@ -150,8 +116,11 @@ const App: React.FC = () => {
       _itemList = _itemList.filter((_item) => _item.id !== itemId);
       setItemList(_itemList);
     }
-    const { totalAmount: _totalAmount, totalDiscountRate: _totalDiscountRate } =
-      calculateCart(_itemList, _productList);
+    const _totalAmount = calculateCartTotalAmount(_itemList, _productList);
+    const _totalDiscountRate = calculateCartTotalDiscountRate(
+      _itemList,
+      _productList,
+    );
     setLoyaltyPoints(Math.floor(_totalAmount / 1000));
     setTotalAmount(_totalAmount);
     setTotalDiscountRate(_totalDiscountRate);
