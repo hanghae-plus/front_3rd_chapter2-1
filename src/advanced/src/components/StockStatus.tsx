@@ -1,5 +1,6 @@
+import useCart from '../hooks/useCart';
 import { QUANTITY } from '../constants';
-import useCart, { Product } from '../hooks/useCart';
+import { Product } from '../types';
 
 const StockStatus = () => {
   const { productList } = useCart();

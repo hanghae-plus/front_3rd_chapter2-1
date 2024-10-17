@@ -1,16 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DISCOUNT_RULES, DISCOUTNT_RULES_OF_TUESDAY, MESSAGE, PRODUCT_DATA, QUANTITY } from '../constants';
-
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-export interface Cart {
-  [key: string]: number;
-}
+import { Cart, Product } from '../types';
 
 const useCart = () => {
   const [productList, setProductList] = useState<Product[]>(PRODUCT_DATA);
@@ -60,6 +50,7 @@ const useCart = () => {
       }
 
       const productTotal = calculateDiscount(quantity, productId, product.price);
+
       subTotal += product.price * quantity;
       itemCount += quantity;
       discountedTotal += productTotal;

@@ -1,4 +1,5 @@
-import useCart, { Product } from '../hooks/useCart';
+import useCart from '../hooks/useCart';
+import { Product } from '../types';
 
 const ProductSelect = () => {
   const { addToCart, productList } = useCart();
