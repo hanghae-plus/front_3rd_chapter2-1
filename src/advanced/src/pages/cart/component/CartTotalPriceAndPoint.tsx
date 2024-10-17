@@ -102,25 +102,14 @@ function calculateCartTotals(cartItems) {
 }
 
 const CartTotalPriceAndPoint: React.FC<{ cartItems: CartItem[] }> = ({ cartItems }) => {
-  const [totals, setTotals] = useState({
-    totalPrice: 0,
-    discountRate: 0,
-    rewardPoints: 0,
-  });
-
-  useEffect(() => {
-    const updatedTotals = calculateCartTotals(cartItems);
-    setTotals(updatedTotals);
-  }, [cartItems]);
+  const { totalPrice, discountRate, rewardPoints } = calculateCartTotals(cartItems);
 
   return (
     <div className="text-xl font-bold my-4">
-      <span>총액: {totals.totalPrice}원</span>
-      <span className="text-blue-500 ml-2">(포인트: {totals.rewardPoints})</span>
-      {totals.discountRate > 0 && (
-        <span className="text-green-500 ml-2">
-          ({(totals.discountRate * 100).toFixed(1)}% 할인 적용)
-        </span>
+      <span>총액: {totalPrice}원</span>
+      <span className="text-blue-500 ml-2">(포인트: {rewardPoints})</span>
+      {discountRate > 0 && (
+        <span className="text-green-500 ml-2">({(discountRate * 100).toFixed(1)}% 할인 적용)</span>
       )}
     </div>
   );
