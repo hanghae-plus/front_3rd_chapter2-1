@@ -9,7 +9,7 @@ export default function PriceSection({ totalPrice, discountRate }: PriceSectionP
   const [point, setPoint] = useState(0);
 
   useEffect(() => {
-    setPoint((p) => p + Math.floor(totalPrice / 1000));
+    setPoint(Math.floor(totalPrice / 1000));
   }, [totalPrice]);
 
   return (

@@ -292,7 +292,7 @@ class BonusPointController {
   }
 
   add(price) {
-    this.point += Math.floor(price / 1000);
+    this.point = Math.floor(price / 1000);
   }
 }
 
