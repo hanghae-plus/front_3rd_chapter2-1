@@ -20,61 +20,57 @@ const App: React.FC = () => {
   const [bonusPoints, setBonusPoints] = useState(0);
   const [lastSelectedProductId, setLastSelectedProductId] = useState<string | null>(null);
 
+  const getDiscount = (id: string, quantity: number) => {
+    if (quantity < 10) return 0;
+
+    switch (id) {
+      case "p1":
+        return 0.1;
+      case "p2":
+        return 0.15;
+      case "p3":
+        return 0.2;
+      case "p4":
+        return 0.05;
+      case "p5":
+        return 0.25;
+      default:
+        return 0;
+    }
+  };
+
   const calculateCart = () => {
     let total = 0;
     let itemCount = 0;
     let subTotal = 0;
 
-    const updatedCart = cart.map((item) => {
-      let discount = 0;
-      if (item.cartQuantity >= 10) {
-        switch (item.id) {
-          case "p1":
-            discount = 0.1;
-            break;
-          case "p2":
-            discount = 0.15;
-            break;
-          case "p3":
-            discount = 0.2;
-            break;
-          case "p4":
-            discount = 0.05;
-            break;
-          case "p5":
-            discount = 0.25;
-            break;
-          default:
-            discount = 0;
-        }
-      }
+    cart.forEach((item) => {
+      const discount = getDiscount(item.id, item.cartQuantity);
       const itemTotal = item.price * item.cartQuantity;
       subTotal += itemTotal;
       total += itemTotal * (1 - discount);
       itemCount += item.cartQuantity;
-      return { ...item };
     });
 
-    let bulkDiscount = 0;
     if (itemCount >= 30) {
-      bulkDiscount = totalAmount * 0.25;
-    }
-    const itemDiscount = subTotal - totalAmount;
-
-    if (bulkDiscount > itemDiscount) {
-      total = subTotal * (1 - 0.25);
-      setDiscountRate(0.25);
+      const bulkDiscount = subTotal * 0.25;
+      if (bulkDiscount > subTotal - total) {
+        total = subTotal * (1 - 0.25);
+        setDiscountRate(0.25);
+      } else {
+        setDiscountRate((subTotal - total) / subTotal);
+      }
     } else {
       setDiscountRate((subTotal - total) / subTotal);
     }
 
-    const today = new Date().getDay();
-    if (today === 2) {
+    // 화요일 할인 적용
+    if (new Date().getDay() === 2) {
       total *= 0.9;
     }
 
     setTotalAmount(Math.round(total));
-    setBonusPoints(bonusPoints + Math.floor(total / 1000));
+    setBonusPoints((prevPoints) => prevPoints + Math.floor(total / 1000));
   };
 
   // Update stock status
