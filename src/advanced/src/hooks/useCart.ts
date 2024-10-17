@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DISCOUNT_RULES, DISCOUTNT_RULES_OF_TUESDAY, MESSAGE, PRODUCT_DATA, QUANTITY } from '../constants';
 
 export interface Product {
@@ -19,14 +19,15 @@ const useCart = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [discountRate, setDiscountRate] = useState<number>(0);
 
+  const findProductById = useCallback(
+    (productId: string) => productList.find((product) => product.id === productId),
+    [productList],
+  );
+
   const addToCart = (productId: string) => {
-    const product = productList.find((product: Product) => product.id === productId);
+    const product = findProductById(productId);
 
-    if (!product) {
-      return;
-    }
-
-    if (product.quantity <= 0) {
+    if (!product || product.quantity <= 0) {
       alert(MESSAGE.NOT_ENOUGH_PRODUCT);
       return;
     }
@@ -41,46 +42,44 @@ const useCart = () => {
     );
   };
 
+  const calculateDiscount = (quantity: number, productId: string, price: number): number => {
+    const discountRate = quantity >= QUANTITY['10'] ? DISCOUNT_RULES[productId] : 0;
+    return price * quantity * (1 - discountRate);
+  };
+
   const calculateCart = () => {
-    let newTotalAmount = 0;
     let subTotal = 0;
     let itemCount = 0;
-    let newDiscountRate = 0;
+    let discountedTotal = 0;
 
     Object.entries(cart).forEach(([productId, quantity]) => {
-      const product = productList.find((item) => item.id === productId);
+      const product = findProductById(productId);
 
       if (!product) {
         return;
       }
 
-      const productPrice = product.price * quantity;
-
-      subTotal += productPrice;
+      const productTotal = calculateDiscount(quantity, productId, product.price);
+      subTotal += product.price * quantity;
       itemCount += quantity;
-
-      const discount = quantity >= QUANTITY['10'] ? DISCOUNT_RULES[productId] : 0;
-
-      newTotalAmount += productPrice * (1 - discount);
+      discountedTotal += productTotal;
     });
 
-    const bulkDiscount = newTotalAmount * DISCOUNT_RULES['bulk'];
+    const bulkDiscountAmount = subTotal * DISCOUNT_RULES['bulk'];
 
-    if (itemCount >= QUANTITY['30'] && bulkDiscount > subTotal - newTotalAmount) {
-      newTotalAmount = subTotal * (1 - DISCOUNT_RULES['bulk']);
-      newDiscountRate = DISCOUNT_RULES['bulk'];
+    if (itemCount >= QUANTITY['30'] && bulkDiscountAmount > subTotal - discountedTotal) {
+      discountedTotal = subTotal * (1 - DISCOUNT_RULES['bulk']);
+      setDiscountRate(DISCOUNT_RULES['bulk']);
     } else {
-      newDiscountRate = (subTotal - newTotalAmount) / subTotal;
+      setDiscountRate((subTotal - discountedTotal) / subTotal);
     }
 
     if (new Date().getDay() === DISCOUTNT_RULES_OF_TUESDAY.dayNumber) {
-      newTotalAmount *= 1 - DISCOUTNT_RULES_OF_TUESDAY.discountRate;
-      newDiscountRate = Math.max(newDiscountRate, DISCOUTNT_RULES_OF_TUESDAY.discountRate);
+      discountedTotal *= 1 - DISCOUTNT_RULES_OF_TUESDAY.discountRate;
     }
 
-    setTotalAmount(newTotalAmount);
-    setDiscountRate(newDiscountRate);
-    setBonusPoint((prev) => prev + Math.floor(newTotalAmount / 1000));
+    setTotalAmount(discountedTotal);
+    setBonusPoint((prev) => prev + Math.floor(discountedTotal / 1000));
   };
 
   const changeQuantity = (productId: string, change: number) => {
@@ -93,7 +92,6 @@ const useCart = () => {
       if (newCart[productId] <= 0) {
         delete newCart[productId];
       }
-
       return newCart;
     });
 
