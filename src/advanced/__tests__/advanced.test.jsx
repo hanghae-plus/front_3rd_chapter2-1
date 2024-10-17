@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "react";
+import { act } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "../src/App.tsx";
@@ -13,7 +14,6 @@ describe("advanced test", () => {
 
     beforeAll(async () => {
       // DOM 초기화
-
       document.body.innerHTML = '<div id="app"></div>';
       if (type === "advanced") {
         render(<App />);
@@ -92,37 +92,55 @@ describe("advanced test", () => {
     });
 
     it("장바구니에서 상품 수량을 변경할 수 있는지 확인", () => {
-      const increaseBtn = cartDisp.querySelector('.quantity-change[data-change="1"]');
-      increaseBtn.click();
+      const increaseBtn = screen.getByTestId("plus-button");
+      act(() => {
+        increaseBtn.click();
+      });
       expect(cartDisp.children[0].querySelector("span").textContent).toContain("상품1 - 10000원 x 2");
     });
 
     it("장바구니에서 상품을 삭제할 수 있는지 확인", () => {
-      sel.value = "p1";
-      addBtn.click();
-      const removeBtn = cartDisp.querySelector(".remove-item");
-      removeBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p1" } });
+      });
+      fireEvent.click(addBtn);
+      const removeBtn = screen.getByTestId("remove-button");
+      act(() => {
+        removeBtn.click();
+      });
       expect(cartDisp.children.length).toBe(0);
     });
 
     it("총액이 올바르게 계산되는지 확인", () => {
-      sel.value = "p1";
-      addBtn.click();
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p1" } });
+      });
+      fireEvent.click(addBtn);
+      fireEvent.click(addBtn);
       expect(sum.textContent).toContain("총액: 20000원(포인트: 20)");
     });
 
     it("할인이 올바르게 적용되는지 확인", () => {
-      sel.value = "p1";
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p1" } });
+      });
       for (let i = 0; i < 10; i++) {
-        addBtn.click();
+        act(() => {
+          fireEvent.click(addBtn);
+        });
       }
       expect(sum.textContent).toContain("(10.0% 할인 적용)");
     });
 
     it("포인트가 올바르게 계산되는지 확인", () => {
-      sel.value = "p2";
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p2" } });
+      });
+      fireEvent.click(addBtn);
       expect(document.getElementById("loyalty-points").textContent).toContain("(포인트: 128)");
     });
 
@@ -159,8 +177,11 @@ describe("advanced test", () => {
       //TODO: 모듈로 불러와서 테스트하는 형태, but 실제로 프러덕트에서는 실행되지 않는다면?
       // 조건 충족, 추가버튼을 통해 마지막으로 추가한 상품이 있어야함
       // p1 이 마지막이면 find를 통해 만족하는 첫 번쨰 요소는 p2가 됨
-      sel.value = "p1";
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p1" } });
+      });
+      fireEvent.click(addBtn);
 
       vi.spyOn(Math, "random").mockReturnValue(0.1);
 
@@ -188,15 +209,19 @@ describe("advanced test", () => {
     it("화요일 할인이 적용되는지 확인", () => {
       const mockDate = new Date("2024-10-15"); // 화요일
       vi.setSystemTime(mockDate);
-      sel.value = "p1";
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p1" } });
+      });
+      fireEvent.click(addBtn);
       expect(document.getElementById("cart-total").textContent).toContain("(10.0% 할인 적용)");
     });
 
     it("재고가 부족한 경우 추가되지 않는지 확인", () => {
       // p4 상품 선택 (재고 없음)
-      sel.value = "p4";
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      fireEvent.change(selectElement, { target: { value: "p4" } });
+      fireEvent.click(addBtn);
 
       // p4 상품이 장바구니에 없는지 확인
       const p4InCart = Array.from(cartDisp.children).some((item) => item.id === "p4");
@@ -205,8 +230,11 @@ describe("advanced test", () => {
     });
 
     it("재고가 부족한 경우 추가되지 않고 알림이 표시되는지 확인", () => {
-      sel.value = "p5";
-      addBtn.click();
+      const selectElement = screen.getByRole("combobox");
+      act(() => {
+        fireEvent.change(selectElement, { target: { value: "p5" } });
+      });
+      fireEvent.click(addBtn);
 
       // p5 상품이 장바구니에 추가되었는지 확인
       const p5InCart = Array.from(cartDisp.children).some((item) => item.id === "p5");
@@ -218,7 +246,9 @@ describe("advanced test", () => {
 
       // 수량을 10번 증가시키기
       for (let i = 0; i < 10; i++) {
-        increaseBtn.click();
+        act(() => {
+          increaseBtn.click();
+        });
       }
 
       // 11번째 클릭 시 재고 부족 알림이 표시되어야 함

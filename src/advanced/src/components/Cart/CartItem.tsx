@@ -17,6 +17,7 @@ export default function CartItem({ data, onClick }: CartItemProps) {
           className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
           onClick={() => onClick(QUANTITY_CHANGE.MINUS)}
           data-change={-1}
+          data-testid="minus-button"
         >
           -
         </button>
@@ -24,12 +25,14 @@ export default function CartItem({ data, onClick }: CartItemProps) {
           className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
           onClick={() => onClick(QUANTITY_CHANGE.PLUS)}
           data-change={1}
+          data-testid="plus-button"
         >
           +
         </button>
         <button
           className="remove-item bg-red-500 text-white px-2 py-1 rounded"
           onClick={() => onClick(QUANTITY_CHANGE.REMOVE)}
+          data-testid="remove-button"
         >
           삭제
         </button>
