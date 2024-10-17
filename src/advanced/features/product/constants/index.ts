@@ -1,0 +1,5 @@
+export const FOCUSED_PURCHASE_COUNT = 10;
+export const BULK_PURCHASE_COUNT = 30;
+export const BULK_PURCHASE_DISCOUNT_RATE = 0.25;
+export const TUESDAY_DISCOUNT_RATE = 0.1;
+export const OUT_OF_STOCK_ALERT_QUANTITY = 5;
