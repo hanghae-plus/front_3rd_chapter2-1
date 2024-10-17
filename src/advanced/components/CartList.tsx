@@ -1,7 +1,15 @@
+import useCartStore from '../store/useCartStore';
+import CartItem from './CartItem';
+
 const CartList: React.FC = () => {
+  const { cartList } = useCartStore();
   return (
     <>
-      <div id="cart-items">{/** cartItems.map(<CartItem />) */}</div>
+      <div id="cart-items">
+        {cartList.map((item) => (
+          <CartItem product={item} key={item.id} />
+        ))}
+      </div>
       <CartTotalInfo />
     </>
   );
