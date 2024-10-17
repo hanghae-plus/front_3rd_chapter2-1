@@ -7,6 +7,7 @@ import { MESSAGE, FLASH_SALE_CHANCE, FLASH_SALE_INTERVAL, SUGGESTION_INTERVAL } 
 export function useCart(): [CartState, Dispatch<cartAction>] {
   const [state, dispatch] = useReducer(cartReducer, CartStore)
 
+  // 플래시 세일 프로모션을 실행하는 함수
   const runFlashSale = useCallback(() => {
     const availableProducts = state.products.filter((quantity) => quantity)
     if (!availableProducts.length) return
@@ -20,6 +21,7 @@ export function useCart(): [CartState, Dispatch<cartAction>] {
     }
   }, [state.products])
 
+  // 추천 상품 프로모션을 실행하는 함수
   const runSuggestion = useCallback(() => {
     if (state.selectedCartId) {
       const availableProducts = state.products.filter(({ id, quantity }) => id !== state.selectedCartId && quantity)
@@ -37,6 +39,7 @@ export function useCart(): [CartState, Dispatch<cartAction>] {
   }, [state.cart])
 
   useEffect(() => {
+    // 상품 가격을 할인해주는 프로모션을 설정.
     const setupPromotions = () => {
       const flashSaleTimeout = setTimeout(() => {
         runFlashSale()
@@ -56,6 +59,7 @@ export function useCart(): [CartState, Dispatch<cartAction>] {
       }
     }
 
+    // 프로모션을 정리하는 함수를 실행
     const cleanupPromotions = setupPromotions()
 
     return () => {

@@ -13,7 +13,7 @@ const StockStatus: FC<StockStatusProps> = ({ products }) => {
         .filter(({ quantity }) => quantity < MIN_STOCK)
         .map(({ name, quantity }) => (
           <div key={name}>
-            {name}:{quantity > 0 ? MESSAGE.STOCK_STATUS.LOW(quantity) : MESSAGE.STOCK_STATUS.EMPTY}
+            {name}:{quantity ? MESSAGE.STOCK_STATUS.LOW(quantity) : MESSAGE.STOCK_STATUS.EMPTY}
           </div>
         ))}
     </div>
