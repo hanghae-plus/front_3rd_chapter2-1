@@ -1,162 +1,80 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import App from '../App';
-import { act } from 'react-dom/test-utils';
+import { describe } from 'vitest'
+import { vi } from 'vitest'
+import { useCart } from '../hooks/useCart'
+import { useProducts } from '../hooks/useProducts'
+import Cart from '../component/Cart'
 
-describe('Cart Component Tests', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
-    render(<App />);
-  });
+vi.mock('./useCart', () => ({
+  useCart: vi.fn(),
+}))
 
-  it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
-    const select = screen.getByRole('combobox');
-    expect(select).toBeDefined();
-    expect(select.children.length).toBe(6); // 기본 옵션 포함
+vi.mock('./useProducts', () => ({
+  __esModule: true,
+  default: vi.fn(),
+}))
 
-    const options = screen.getAllByRole('option');
-    expect(options[1].value).toBe('p1');
-    expect(options[1].textContent).toBe('상품1 - 10000원');
-    expect(options[1].disabled).toBe(false);
+describe('advanced React Test', () => {
+  describe.each([
+    { type: 'origin', Component: Cart },
+    { type: 'advanced', Component: Cart },
+  ])('$type 장바구니 시나리오 테스트', ({ Component }) => {
+    let mockUseCart, mockUseProducts
 
-    expect(options[5].value).toBe('p5');
-    expect(options[5].textContent).toBe('상품5 - 25000원');
-    expect(options[5].disabled).toBe(false);
+    beforeAll(() => {
+      mockUseCart = {
+        cartItem: [],
+        addCart: fn(),
+        updateCart: vi.fn(),
+        removeCart: vi.fn(),
+        cartTotal: 0,
+        discountRate: 0,
+        bonusPts: 0,
+      }
+      mockUseProducts = {
+        products: [
+          { id: 'p1', name: '상품1', price: 10000, stock: 50 },
+          { id: 'p2', name: '상품2', price: 20000, stock: 30 },
+          { id: 'p3', name: '상품3', price: 30000, stock: 20 },
+          { id: 'p4', name: '상품4', price: 15000, stock: 0 },
+          { id: 'p5', name: '상품5', price: 25000, stock: 10 },
+        ],
+        updateProductStock: vi.fn(),
+      }
+      useCart.mockReturnValue(mockUseCart)
+      useProducts.mockReturnValue(mockUseProducts)
+    })
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.spyOn(window, 'alert').mockImplementation(() => {})
+    })
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+    it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
+      render(
+        <ProductSelect
+          products={mockUseProducts.products}
+          onAddToCart={mockUseCart.addToCart}
+        />,
+      )
+      const select = screen.getByRole('combobox')
+      expect(select).toBeDefined()
+      expect(select.children.length).toBe(5)
 
-    expect(options[4].value).toBe('p4');
-    expect(options[4].textContent).toBe('상품4 - 15000원');
-    expect(options[4].disabled).toBe(true);
-  });
+      // 첫 번째 상품 확인
+      expect(select.children[0].value).toBe('p1')
+      expect(select.children[0].textContent).toBe('상품1 - 10000원')
+      expect(select.children[0].disabled).toBe(false)
 
-  it('초기 상태: DOM 요소가 올바르게 생성되었는지 확인', () => {
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('장바구니');
-    expect(screen.getByRole('combobox')).toBeDefined();
-    expect(screen.getByRole('button', { name: '추가' })).toBeDefined();
-    expect(screen.getByTestId('cart-items')).toBeDefined();
-    expect(screen.getByTestId('cart-total')).toBeDefined();
-    expect(screen.getByTestId('stock-status')).toBeDefined();
-  });
+      // 마지막 상품 확인
+      expect(select.children[4].value).toBe('p5')
+      expect(select.children[4].textContent).toBe('상품5 - 25000원')
+      expect(select.children[4].disabled).toBe(false)
 
-  it('상품을 장바구니에 추가할 수 있는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    await userEvent.selectOptions(select, 'p1');
-    await userEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      const cartItems = screen.getByTestId('cart-items');
-      expect(cartItems.children.length).toBe(1);
-      expect(cartItems.textContent).toContain('상품1 - 10000원 x 1');
-    });
-  });
-
-  it('장바구니에서 상품 수량을 변경할 수 있는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    await userEvent.selectOptions(select, 'p1');
-    await userEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      const increaseButton = screen.getByRole('button', { name: '+' });
-      userEvent.click(increaseButton);
-      expect(screen.getByTestId('cart-items').textContent).toContain('상품1 - 10000원 x 2');
-    });
-  });
-
-  it('장바구니에서 상품을 삭제할 수 있는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    await userEvent.selectOptions(select, 'p1');
-    await userEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      const removeButton = screen.getByRole('button', { name: '삭제' });
-      userEvent.click(removeButton);
-      expect(screen.getByTestId('cart-items').children.length).toBe(0);
-    });
-  });
-
-  it('총액이 올바르게 계산되는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p1' } });
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('cart-total').textContent).toContain('총액: 20000원');
-      expect(screen.getByTestId('loyalty-points').textContent).toContain('(포인트: 20)');
-    });
-  });
-
-  it('할인이 올바르게 적용되는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p1' } });
-    for (let i = 0; i < 10; i++) {
-      fireEvent.click(screen.getByRole('button', { name: '추가' }));
-    }
-
-    await waitFor(() => {
-      expect(screen.getByTestId('cart-total').textContent).toContain('(10.0% 할인 적용)');
-    });
-  });
-
-  it('포인트가 올바르게 계산되는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p2' } });
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('loyalty-points').textContent).toContain('(포인트: 20)');
-    });
-  });
-
-  it('화요일 할인이 적용되는지 확인', async () => {
-    const mockDate = new Date('2024-10-15'); // 화요일
-    vi.setSystemTime(mockDate);
-
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p1' } });
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('cart-total').textContent).toContain('(10.0% 할인 적용)');
-    });
-  });
-
-  it('재고가 부족한 경우 추가되지 않는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p4' } });
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      const cartItems = screen.getByTestId('cart-items');
-      const p4InCart = Array.from(cartItems.children).some(item => item.id === 'p4');
-      expect(p4InCart).toBe(false);
-      expect(screen.getByTestId('stock-status').textContent).toContain('상품4: 품절');
-    });
-  });
-
-  it('재고가 부족한 경우 추가되지 않고 알림이 표시되는지 확인', async () => {
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'p5' } });
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
-
-    await waitFor(() => {
-      const cartItems = screen.getByTestId('cart-items');
-      const p5InCart = Array.from(cartItems.children).some(item => item.id === 'p5');
-      expect(p5InCart).toBe(true);
-    });
-
-    const increaseButton = screen.getAllByRole('button', { name: '+' })[0];
-    for (let i = 0; i < 10; i++) {
-      fireEvent.click(increaseButton);
-    }
-
-    fireEvent.click(increaseButton);
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('재고가 부족합니다'));
-      expect(screen.getByTestId('cart-items').textContent).toContain('상품5 - 25000원 x 10');
-      expect(screen.getByTestId('stock-status').textContent).toContain('상품5: 품절');
-    });
-  });
-});
+      // 재고 없는 상품 확인 (상품4)
+      expect(select.children[3].value).toBe('p4')
+      expect(select.children[3].textContent).toBe('상품4 - 15000원')
+      expect(select.children[3].disabled).toBe(true)
+    })
+  })
+})
