@@ -3,12 +3,12 @@ let bonusPts = 0;
 let totalAmt = 0;
 let itemCnt = 0;
 
-const prodList = [
-  { id: "p1", name: "상품1", val: 10000, q: 50 },
-  { id: "p2", name: "상품2", val: 20000, q: 30 },
-  { id: "p3", name: "상품3", val: 30000, q: 20 },
-  { id: "p4", name: "상품4", val: 15000, q: 0 },
-  { id: "p5", name: "상품5", val: 25000, q: 10 },
+const PRODUCT_LIST = [
+  { id: "p1", name: "상품1", value: 10000, quantity: 50 },
+  { id: "p2", name: "상품2", value: 20000, quantity: 30 },
+  { id: "p3", name: "상품3", value: 30000, quantity: 20 },
+  { id: "p4", name: "상품4", value: 15000, quantity: 0 },
+  { id: "p5", name: "상품5", value: 25000, quantity: 10 },
 ];
 
 const $root = document.getElementById("app");
@@ -73,9 +73,9 @@ const main = () => {
 
   setTimeout(() => {
     setInterval(() => {
-      const luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-      if (Math.random() < LUCKY_SALE_PROBABILITY && luckyItem.q > 0) {
-        luckyItem.val = Math.round(luckyItem.val * RANDOM_SALE_RATE.LUCKY_SALE);
+      const luckyItem = PRODUCT_LIST[Math.floor(Math.random() * PRODUCT_LIST.length)];
+      if (Math.random() < LUCKY_SALE_PROBABILITY && luckyItem.quantity > 0) {
+        luckyItem.value = Math.round(luckyItem.value * RANDOM_SALE_RATE.LUCKY_SALE);
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
         updateSelOpts();
       }
@@ -85,10 +85,10 @@ const main = () => {
   setTimeout(() => {
     setInterval(() => {
       if (lastSel) {
-        const suggest = prodList.find(item => item.id !== lastSel && item.q > 0);
+        const suggest = PRODUCT_LIST.find(item => item.id !== lastSel && item.quantity > 0);
         if (suggest) {
           alert(suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggest.val = Math.round(suggest.val * RANDOM_SALE_RATE.RECOMMEND_SALE);
+          suggest.value = Math.round(suggest.value * RANDOM_SALE_RATE.RECOMMEND_SALE);
           updateSelOpts();
         }
       }
@@ -98,12 +98,12 @@ const main = () => {
 
 const updateSelOpts = () => {
   $select.innerHTML = "";
-  prodList.forEach(item => {
+  PRODUCT_LIST.forEach(item => {
     const $option = document.createElement("option");
     $option.value = item.id;
 
-    $option.textContent = item.name + " - " + item.val + "원";
-    if (item.q === 0) {
+    $option.textContent = item.name + " - " + item.value + "원";
+    if (item.quantity === 0) {
       $option.disabled = true;
     }
     $select.appendChild($option);
@@ -118,41 +118,32 @@ const calcCart = () => {
   for (let i = 0; i < cartItems.length; i++) {
     (() => {
       let curItem;
-      for (let j = 0; j < prodList.length; j++) {
-        if (prodList[j].id === cartItems[i].id) {
-          curItem = prodList[j];
+      for (let j = 0; j < PRODUCT_LIST.length; j++) {
+        if (PRODUCT_LIST[j].id === cartItems[i].id) {
+          curItem = PRODUCT_LIST[j];
           break;
         }
       }
 
       const SALE_RATE = {
-        P1: 0.1,
-        P2: 0.15,
-        P3: 0.2,
-        P4: 0.05,
-        P5: 0.25,
+        p1: 0.1,
+        p2: 0.15,
+        p3: 0.2,
+        p4: 0.05,
+        p5: 0.25,
       };
+
       const q = parseInt(cartItems[i].querySelector("span").textContent.split("x ")[1]);
-      const itemTot = curItem.val * q;
+      const itemTotal = curItem.value * q;
       let disc = 0;
       itemCnt += q;
-      subTot += itemTot;
+      subTot += itemTotal;
       const MIN_SALE_ITEMS = 10;
 
       if (q >= MIN_SALE_ITEMS) {
-        if (curItem.id === "p1") {
-          disc = SALE_RATE.P1;
-        } else if (curItem.id === "p2") {
-          disc = SALE_RATE.P2;
-        } else if (curItem.id === "p3") {
-          disc = SALE_RATE.P3;
-        } else if (curItem.id === "p4") {
-          disc = SALE_RATE.P4;
-        } else if (curItem.id === "p5") {
-          disc = SALE_RATE.P5;
-        }
+        disc = SALE_RATE[curItem.id];
       }
-      totalAmt += itemTot * (1 - disc);
+      totalAmt += itemTotal * (1 - disc);
     })();
   }
 
@@ -208,30 +199,33 @@ const renderBonusPts = () => {
 };
 
 const updateStockInfo = () => {
-  let infoMsg = "";
+  let infoMessage = "";
   const MIN_STOCK = 5;
-  prodList.forEach(item => {
-    if (item.q < MIN_STOCK) {
-      infoMsg +=
-        item.name + ": " + (item.q > 0 ? "재고 부족 (" + item.q + "개 남음)" : "품절") + "\n";
+  PRODUCT_LIST.forEach(item => {
+    if (item.quantity < MIN_STOCK) {
+      infoMessage +=
+        item.name +
+        ": " +
+        (item.quantity > 0 ? "재고 부족 (" + item.quantity + "개 남음)" : "품절") +
+        "\n";
     }
   });
-  $stockInfo.textContent = infoMsg;
+  $stockInfo.textContent = infoMessage;
 };
 
 main();
 
 $addBtn.addEventListener("click", () => {
-  const selItem = $select.value;
-  const itemToAdd = prodList.find(p => p.id === selItem);
-  if (itemToAdd && itemToAdd.q > 0) {
+  const selectedItem = $select.value;
+  const itemToAdd = PRODUCT_LIST.find(p => p.id === selectedItem);
+  if (itemToAdd && itemToAdd.quantity > 0) {
     const $item = document.getElementById(itemToAdd.id);
     if ($item) {
-      const newQty = parseInt($item.querySelector("span").textContent.split("x ")[1]) + 1;
-      if (newQty <= itemToAdd.q) {
+      const newQuantity = parseInt($item.querySelector("span").textContent.split("x ")[1]) + 1;
+      if (newQuantity <= itemToAdd.quantity) {
         $item.querySelector("span").textContent =
-          itemToAdd.name + " - " + itemToAdd.val + "원 x " + newQty;
-        itemToAdd.q--;
+          itemToAdd.name + " - " + itemToAdd.value + "원 x " + newQuantity;
+        itemToAdd.quantity--;
       } else {
         alert("재고가 부족합니다.");
       }
@@ -243,7 +237,7 @@ $addBtn.addEventListener("click", () => {
         "<span>" +
         itemToAdd.name +
         " - " +
-        itemToAdd.val +
+        itemToAdd.value +
         "원 x 1</span><div>" +
         '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
         itemToAdd.id +
@@ -255,10 +249,10 @@ $addBtn.addEventListener("click", () => {
         itemToAdd.id +
         '">삭제</button></div>';
       $cartDisp.appendChild($newItem);
-      itemToAdd.q--;
+      itemToAdd.quantity--;
     }
     calcCart();
-    lastSel = selItem;
+    lastSel = selectedItem;
   }
 });
 
@@ -268,27 +262,28 @@ $cartDisp.addEventListener("click", event => {
   if (tgt.classList.contains("quantity-change") || tgt.classList.contains("remove-item")) {
     const prodId = tgt.dataset.productId;
     const $itemElement = document.getElementById(prodId);
-    const prod = prodList.find(p => p.id === prodId);
+    const prod = PRODUCT_LIST.find(p => p.id === prodId);
     if (tgt.classList.contains("quantity-change")) {
-      const qtyChange = parseInt(tgt.dataset.change);
-      const newQty =
-        parseInt($itemElement.querySelector("span").textContent.split("x ")[1]) + qtyChange;
+      const QuantityChange = parseInt(tgt.dataset.change);
+      const newQuantity =
+        parseInt($itemElement.querySelector("span").textContent.split("x ")[1]) + QuantityChange;
       if (
-        newQty > 0 &&
-        newQty <= prod.q + parseInt($itemElement.querySelector("span").textContent.split("x ")[1])
+        newQuantity > 0 &&
+        newQuantity <=
+          prod.quantity + parseInt($itemElement.querySelector("span").textContent.split("x ")[1])
       ) {
         $itemElement.querySelector("span").textContent =
-          $itemElement.querySelector("span").textContent.split("x ")[0] + "x " + newQty;
-        prod.q -= qtyChange;
-      } else if (newQty <= 0) {
+          $itemElement.querySelector("span").textContent.split("x ")[0] + "x " + newQuantity;
+        prod.quantity -= QuantityChange;
+      } else if (newQuantity <= 0) {
         $itemElement.remove();
-        prod.q -= qtyChange;
+        prod.quantity -= QuantityChange;
       } else {
         alert("재고가 부족합니다.");
       }
     } else if (tgt.classList.contains("remove-item")) {
-      const remQty = parseInt($itemElement.querySelector("span").textContent.split("x ")[1]);
-      prod.q += remQty;
+      const remQuantity = parseInt($itemElement.querySelector("span").textContent.split("x ")[1]);
+      prod.quantity += remQuantity;
       $itemElement.remove();
     }
     calcCart();
