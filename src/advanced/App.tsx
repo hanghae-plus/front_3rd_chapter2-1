@@ -1,5 +1,5 @@
 import React from "react";
-import ProductContainer from "./components/ProductContainer";
+import ProductContainer from "./components/product-container";
 
 const App = () => (
   <div className="bg-gray-100 p-8">

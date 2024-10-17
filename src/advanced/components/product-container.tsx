@@ -1,11 +1,16 @@
 import React, { ChangeEvent, useState } from "react";
-import ProductCart from "./ProductCart";
+import ProductCart from "./product-cart";
+// import cartReducer from "../reducers/cartReducer";
 
 export interface ProductType {
   id: string;
   name: string;
   price: number;
   quantity: number;
+}
+
+export interface CartProductType extends ProductType {
+  count: number;
 }
 
 const productList: ProductType[] = [
@@ -18,11 +23,24 @@ const productList: ProductType[] = [
 
 const ProductContainer = () => {
   const [selectProduct, setSelectProduct] = useState<ProductType>(productList[0]);
+  const [cartProductList, setCartProductList] = useState<CartProductType[]>([]);
+  // useReducer 관련
+  // const initialCartState: CartProductType[] = [];
+  // const [cartState, cartDispatch] = useReducer(cartReducer, initialCartState);
 
   const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const newProduct = productList.find(product => product.id === e.target.value);
     if (newProduct !== undefined) {
       setSelectProduct(newProduct);
+    }
+  };
+
+  const handleClickAddButton = () => {
+    const isProductInCart = !cartProductList.some(product => product.id === selectProduct.id);
+    if (isProductInCart) {
+      setCartProductList(prev =>
+        [...prev, { ...selectProduct, count: 1 }].sort((a, b) => a.id.localeCompare(b.id)),
+      );
     }
   };
 
@@ -41,16 +59,21 @@ const ProductContainer = () => {
 
   return (
     <>
-      <ProductCart selectProduct={selectProduct} />
+      <ProductCart cartProductList={cartProductList} setCartProductList={setCartProductList} />
       <select onChange={handleChangeSelect} className="border rounded p-2 mr-2" id="product-select">
         {productList.map(product => (
           <option
             value={product.id}
             key={product.id}
+            disabled={product.quantity === 0}
           >{`${product.name} - ${product.price}원`}</option>
         ))}
       </select>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded" id="add-to-cart">
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        id="add-to-cart"
+        onClick={handleClickAddButton}
+      >
         추가
       </button>
       <div className="text-sm text-gray-500 mt-2" id="stock-status">
