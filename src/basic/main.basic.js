@@ -22,8 +22,6 @@ let $stockStatus;
 
 let recentlyAddedProductId = null;
 let loyaltyPoints = 0;
-let cartTotalPrice = 0;
-let cartTotalCount = 0;
 
 const productList = [
   { id: 'p1', name: '상품1', price: 10000, stock: 50, bulkDiscountPercentage: 10 },
@@ -110,65 +108,69 @@ function calcLoyaltyPoints(currentPoints = 0, cartTotal = 0) {
   return currentPoints + Math.floor(cartTotal * (LOYALTY_POINT_PERCENTAGE / 100));
 }
 
-function calcCart() {
-  cartTotalPrice = 0;
-  cartTotalCount = 0;
-
-  // bulkDiscount가 적용되지 않은 장바구니 상품 금액 합계
+function calculateCart() {
+  let cartTotalPrice = 0;
+  let cartTotalCount = 0;
   let subTotalPrice = 0;
 
-  // 장바구니 상품 마다 장바구니에 추가된 개수, 총 금액을 계산
-  // itemCount, totalPrice에 더해주는 로직
-  Array.from($cartItems.children).forEach(($cartItem) => {
-    const targetProduct = productList.find((p) => p.id === $cartItem.id);
-    const itemCount = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
-    const itemPrice = targetProduct.price * itemCount;
+  // 장바구니 아이템 계산
+  const cartItems = Array.from($cartItems.children).map(($cartItem) => {
+    const productId = $cartItem.id;
+    const product = productList.find((p) => p.id === productId);
+    const count = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
+    const itemPrice = product.price * count;
 
-    cartTotalCount += itemCount;
+    cartTotalCount += count;
     subTotalPrice += itemPrice;
 
-    if (itemCount >= BULK_PURCHASE_DISCOUNT_MIN_COUNT_PER_PRODUCT) {
-      cartTotalPrice += discountPrice(itemPrice, targetProduct.bulkDiscountPercentage);
+    return { product, count, itemPrice };
+  });
+
+  // 개별 상품 할인 적용
+  cartItems.forEach(({ product, count, itemPrice }) => {
+    if (count >= BULK_PURCHASE_DISCOUNT_MIN_COUNT_PER_PRODUCT) {
+      cartTotalPrice += discountPrice(itemPrice, product.bulkDiscountPercentage);
     } else {
       cartTotalPrice += itemPrice;
     }
   });
 
-  let discountRate = 0;
+  // 전체 할인율 계산
+  let discountRate = (subTotalPrice - cartTotalPrice) / subTotalPrice;
 
-  // 장바구니에 담긴 상품 개수가 30개 이상이면
-  const isCanBulkDiscount = cartTotalCount >= BULK_PURCHASE_DISCOUNT_MIN_COUNT;
-  if (isCanBulkDiscount) {
-    // 대량 구매 할인
-    const bulkDiscountedPrice = discountPrice(cartTotalPrice, BULK_PURCHASE_DISCOUNT_PERCENTAGE);
+  // 대량 구매 할인 적용
+  if (cartTotalCount >= BULK_PURCHASE_DISCOUNT_MIN_COUNT) {
+    const bulkDiscountedPrice = discountPrice(subTotalPrice, BULK_PURCHASE_DISCOUNT_PERCENTAGE);
 
-    // 상품 개별 할인이 적용되어서 할인 받을 수 있는 금액 = 상품 개별 할인(개별 상품 10개 이상 구매)이 적용된 장바구니 금액 합계 - 할인이 적용되지 않은 금액 합계
-    // (대량 상품 구매에 따라서 일괄 적용되는 할인된 금액) > (상품 개별 할인이 적용되어서 할인 받을 수 있는 금액)
-    if (bulkDiscountedPrice > subTotalPrice - cartTotalPrice) {
+    if (bulkDiscountedPrice < cartTotalPrice) {
       discountRate = BULK_PURCHASE_DISCOUNT_PERCENTAGE / 100;
-      cartTotalPrice = discountPrice(subTotalPrice, BULK_PURCHASE_DISCOUNT_PERCENTAGE);
-    } else {
-      discountRate = (subTotalPrice - cartTotalPrice) / subTotalPrice;
+      cartTotalPrice = bulkDiscountedPrice;
     }
-  } else {
-    discountRate = (subTotalPrice - cartTotalPrice) / subTotalPrice;
   }
 
-  // 화요일 특별 할인 최소 10% 적용
-  const isTuesDay = new Date().getDay() === 2;
-  if (isTuesDay) {
+  // 화요일 특별 할인 적용
+  const isTuesday = new Date().getDay() === 2;
+  if (isTuesday) {
     cartTotalPrice = discountPrice(cartTotalPrice, TUESDAY_DISCOUNT_PERCENTAGE);
     discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_PERCENTAGE / 100);
   }
 
+  loyaltyPoints = calcLoyaltyPoints(loyaltyPoints, cartTotalPrice);
+
+  return {
+    cartTotalPrice,
+    cartTotalCount,
+    discountRate,
+    loyaltyPoints,
+  };
+}
+
+function updateCart() {
+  const { cartTotalPrice, discountRate, loyaltyPoints } = calculateCart();
+
   renderCartTotal(cartTotalPrice, discountRate);
-
   renderStockStatus(productList);
-
-  // 장바구니에 담긴 상품 금액을 기준으로 포인트 업데이트
-  const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, cartTotalPrice);
-  renderLoyaltyPoints(newLoyaltyPoints);
-  loyaltyPoints = newLoyaltyPoints;
+  renderLoyaltyPoints(loyaltyPoints);
 }
 
 // Lucky Draw 이벤트를 시작합니다.
@@ -311,7 +313,7 @@ function main() {
       productToAdd.stock -= 1;
     }
 
-    calcCart();
+    updateCart();
   });
 
   $cartItems.addEventListener('click', (event) => {
@@ -347,7 +349,7 @@ function main() {
         $item.remove();
       }
 
-      calcCart();
+      updateCart();
     }
   });
 
@@ -368,7 +370,7 @@ function main() {
   $root.appendChild($cart);
 
   renderProductSelect(productList);
-  calcCart();
+  updateCart();
 
   randomDelay(LUCKY_DRAW_DELAY).then(() => {
     startLuckyDrawInterval();
