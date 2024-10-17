@@ -16,7 +16,7 @@ const App: React.FC = () => {
 
   const [cart, setCart] = useState<Cart[]>([]);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [discRate, setDiscRate] = useState(0);
+  const [discountRate, setDiscountRate] = useState(0);
   const [bonusPoints, setBonusPoints] = useState(0);
   const [lastSelectedProductId, setLastSelectedProductId] = useState<string | null>(null);
 
@@ -55,24 +55,21 @@ const App: React.FC = () => {
       return { ...item };
     });
 
-    // Bulk discount
-    let bulkDisc = 0;
+    let bulkDiscount = 0;
     if (itemCount >= 30) {
-      bulkDisc = totalAmount * 0.25;
+      bulkDiscount = totalAmount * 0.25;
     }
-    const itemDisc = subTotal - totalAmount;
+    const itemDiscount = subTotal - totalAmount;
 
-    if (bulkDisc > itemDisc) {
+    if (bulkDiscount > itemDiscount) {
       total = subTotal * (1 - 0.25);
-      setDiscRate(0.25);
+      setDiscountRate(0.25);
     } else {
-      setDiscRate((subTotal - total) / subTotal);
+      setDiscountRate((subTotal - total) / subTotal);
     }
 
-    // Tuesday discount
     const today = new Date().getDay();
     if (today === 2) {
-      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
       total *= 0.9;
     }
 
@@ -167,7 +164,6 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    // Lightning Sale every ~10-40 seconds
     const lightningSaleTimeout = setTimeout(() => {
       const lightningInterval = setInterval(() => {
         const availableProducts = products.filter((p) => p.quantity > 0);
@@ -211,7 +207,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Recalculate cart whenever cart or products change
   useEffect(() => {
     calculateCart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -229,8 +224,10 @@ const App: React.FC = () => {
         {/* sum */}
         <div id="cart-total" className="text-xl font-bold my-4">
           총액: {totalAmount}원
-          {discRate > 0 && (
-            <span className="text-green-500 ml-2">({(discRate * 100).toFixed(1)}% 할인 적용)</span>
+          {discountRate > 0 && (
+            <span className="text-green-500 ml-2">
+              ({(discountRate * 100).toFixed(1)}% 할인 적용)
+            </span>
           )}
           <BonusPoints points={bonusPoints} />
         </div>
