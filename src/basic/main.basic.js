@@ -99,6 +99,7 @@ const main = () => {
         const suggest = PRODUCT_LIST.find(
           item => item.id !== lastSelectedItem && item.quantity > 0,
         );
+
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
@@ -129,6 +130,7 @@ const renderDiscountInfo = discountRate => {
   span.textContent = `(${(discountRate * RATE_TO_PERCENT).toFixed(1)}% 할인 적용)`;
   $cartTotal.appendChild(span);
 };
+
 const calculateCartTotal = () => {
   totalAmount = 0;
   itemCount = 0;
@@ -140,9 +142,9 @@ const calculateCartTotal = () => {
   for (let i = 0; i < cartItemList.length; i++) {
     const currentItem = PRODUCT_LIST.find(product => product.id === cartItemList[i].id);
 
-    const cartItem = cartItemList[i].querySelector("span");
+    const $cartItem = cartItemList[i].querySelector("span");
 
-    const quantity = parseInt(cartItem.textContent.split("x ")[1]);
+    const quantity = parseInt($cartItem.textContent.split("x ")[1]);
     const itemTotalPrice = currentItem.price * quantity;
 
     let discount = 0;
@@ -233,13 +235,11 @@ $addToCartButton.addEventListener("click", () => {
         alert("재고가 부족합니다.");
       }
     } else {
-      const newItem = document.createElement("div");
+      const $newItem = document.createElement("div");
 
-      newItem.id = itemToAdd.id;
-
-      newItem.className = "flex justify-between items-center mb-2";
-
-      newItem.innerHTML = `
+      $newItem.id = itemToAdd.id;
+      $newItem.className = "flex justify-between items-center mb-2";
+      $newItem.innerHTML = `
       <span>${itemToAdd.name} - ${itemToAdd.price}원 x 1</span>
       <div>
         <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="-1">-</button>
@@ -248,7 +248,7 @@ $addToCartButton.addEventListener("click", () => {
       </div>
       `;
 
-      $cartItemList.appendChild(newItem);
+      $cartItemList.appendChild($newItem);
 
       itemToAdd.quantity--;
     }
