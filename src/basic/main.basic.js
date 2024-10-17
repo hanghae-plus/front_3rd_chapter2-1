@@ -14,16 +14,24 @@ import {
   TUESDAY_DISCOUNT_PERCENTAGE,
 } from './constants';
 
-let prodList;
 let $productSelect;
 let $addButton;
 let $cartItems;
 let $cartTotal;
 let $stockStatus;
+
 let lastAddedProductId = null;
 let loyaltyPoints = 0;
 let totalPrice = 0;
 let itemCount = 0;
+
+const productList = [
+  { id: 'p1', name: '상품1', val: 10000, q: 50, bulkDiscountPercentage: 10 },
+  { id: 'p2', name: '상품2', val: 20000, q: 30, bulkDiscountPercentage: 15 },
+  { id: 'p3', name: '상품3', val: 30000, q: 20, bulkDiscountPercentage: 20 },
+  { id: 'p4', name: '상품4', val: 15000, q: 0, bulkDiscountPercentage: 5 },
+  { id: 'p5', name: '상품5', val: 25000, q: 10, bulkDiscountPercentage: 25 },
+];
 
 // Utils
 function discountProduct(product, percentage, round = false) {
@@ -43,7 +51,7 @@ function randomDelay(delay = 1) {
 function renderProductSelect() {
   $productSelect.innerHTML = '';
 
-  prodList.forEach((product) => {
+  productList.forEach((product) => {
     const opt = document.createElement('option');
 
     opt.value = product.id;
@@ -72,7 +80,7 @@ function renderLoyaltyPoints(points) {
 }
 
 function renderStockStatus() {
-  $stockStatus.textContent = prodList
+  $stockStatus.textContent = productList
     .filter(({ q }) => q < 5)
     .map(({ q, name }) => {
       return `${name}: ${q > 0 ? `재고 부족 (${q}개 남음)` : '품절'}`;
@@ -112,7 +120,7 @@ function calcCart() {
   // 장바구니 상품 마다 장바구니에 추가된 개수, 총 금액을 계산
   // itemCount, totalPrice에 더해주는 로직
   Array.from($cartItems.children).forEach(($cartItem) => {
-    const targetProduct = prodList.find((p) => p.id === $cartItem.id);
+    const targetProduct = productList.find((p) => p.id === $cartItem.id);
     const quantity = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
     const itemPrice = targetProduct.val * quantity;
 
@@ -168,7 +176,7 @@ function startLuckyDrawInterval() {
   setInterval(() => {
     const isCanLuckyDraw = probability(LUCKY_DRAW_PERCENTAGE);
     if (isCanLuckyDraw) {
-      const luckyProduct = getRandomItem(prodList);
+      const luckyProduct = getRandomItem(productList);
 
       if (luckyProduct.q > 0) {
         discountProduct(luckyProduct, LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE);
@@ -191,7 +199,7 @@ function startSuggestedProductInterval() {
     }
 
     // 장바구니에 최근 추가된 상품은 추첨 대상에서 제외됩니다.
-    const suggestedProduct = prodList.find((item) => {
+    const suggestedProduct = productList.find((item) => {
       return item.id !== lastAddedProductId && item.q > 0;
     });
 
@@ -208,15 +216,6 @@ function startSuggestedProductInterval() {
 }
 
 function main() {
-  // 상품 리스트 초기화
-  prodList = [
-    { id: 'p1', name: '상품1', val: 10000, q: 50, bulkDiscountPercentage: 10 },
-    { id: 'p2', name: '상품2', val: 20000, q: 30, bulkDiscountPercentage: 15 },
-    { id: 'p3', name: '상품3', val: 30000, q: 20, bulkDiscountPercentage: 20 },
-    { id: 'p4', name: '상품4', val: 15000, q: 0, bulkDiscountPercentage: 5 },
-    { id: 'p5', name: '상품5', val: 25000, q: 10, bulkDiscountPercentage: 25 },
-  ];
-
   // 엘리먼트 생성 및 초기화
   const $root = document.getElementById('app');
 
@@ -286,7 +285,7 @@ function main() {
 
     // 현재 선택된 상품
     const selectedProductId = $productSelect.value;
-    const productToAdd = prodList.find((p) => p.id === selectedProductId);
+    const productToAdd = productList.find((p) => p.id === selectedProductId);
 
     if (!productToAdd || productToAdd.q === 0) {
       return;
@@ -322,7 +321,7 @@ function main() {
     if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
       const { productId } = target.dataset;
       const $item = document.getElementById(productId);
-      const targetProduct = prodList.find((product) => product.id === productId);
+      const targetProduct = productList.find((product) => product.id === productId);
       const [title, quantity] = $item.querySelector('span').textContent.split('x ');
       const currentQuantity = parseInt(quantity);
 
