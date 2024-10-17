@@ -1,46 +1,68 @@
 import { prodList } from "../constants/prodList";
 import updateSelectOptions from "../views/updateSelectOptions";
 
-/**
- * @function initiateLuckySale
- * @description 지정된 시간 간격으로 "번개세일" 이벤트를 초기화
- * prodList에서 무작위로 선택된 상품에 대해 할인을 적용하고 사용자에게 알림 전송
- * @param {HTMLElement} sel - 업데이트할 select HTML 요소
- */
+const LUCKY_SALE_PROBABILITY = 0.3;
+const LUCKY_SALE_DISCOUNT = 0.8;
+const LUCKY_SALE_INTERVAL = 30000;
+const RANDOM_DELAY = 10000;
+const SUGGESTION_SALE_DISCOUNT = 0.95;
+const SUGGESTION_SALE_INTERVAL = 60000;
+const SUGGESTION_RANDOM_DELAY = 20000;
 
-export function initiateLuckySale(sel) {
-  setTimeout(() => {
-    setInterval(() => {
-      const luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-      if (Math.random() < 0.3 && luckyItem.q > 0) {
-        luckyItem.val = Math.round(luckyItem.val * 0.8);
-        alert(`번개세일! ${luckyItem.name}이(가) 20% 할인 중입니다!`);
-        updateSelectOptions(sel, prodList);
-      }
-    }, 30000);
-  }, Math.random() * 10000);
+function applyDiscount(product, discountRate) {
+  return Math.round(product.val * discountRate);
 }
 
-/**
- * @function initiateSuggestSale
- * @description 지정된 시간 간격으로 "제안 판매" 이벤트를 초기화
- * 사용자가 마지막으로 선택한 상품이 아닌 다른 상품 중에서 재고가 있는 상품에 대해 할인을 적용하고,
- * 사용자에게 구매를 제안하는 알림 전송
- * @param {HTMLElement} sel - 업데이트할 select HTML 요소
- * @param {string} lastSel - 마지막으로 선택된 상품의 ID
- */
+function notifySale(product, discountRate) {
+  const discountPercentage = discountRate * 100;
+  alert(`번개세일! ${product.name}이(가) ${discountPercentage}% 할인 중입니다!`);
+}
 
-export function initiateSuggestSale(sel, lastSel) {
+function updateUI(select) {
+  updateSelectOptions(select, prodList);
+}
+
+function applySuggestionDiscount(product, discountRate) {
+  return Math.round(product.price * discountRate);
+}
+
+function notifySuggestion(product, discountRate) {
+  const discountPercentage = (1 - discountRate) * 100;
+  alert(`${product.name}은(는) 어떠세요? 지금 구매하시면 ${discountPercentage}% 추가 할인!`);
+}
+
+export function initiateLuckySale(select) {
+  const randomDelay = Math.random() * RANDOM_DELAY;
   setTimeout(() => {
-    setInterval(() => {
-      if (lastSel) {
-        const suggest = prodList.find(item => item.id !== lastSel && item.q > 0);
-        if (suggest) {
-          alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
-          suggest.val = Math.round(suggest.val * 0.95);
-          updateSelectOptions(sel, prodList);
+    const intervalId = setInterval(() => {
+      const luckyItemIndex = Math.floor(Math.random() * prodList.length);
+      const luckyItem = prodList[luckyItemIndex];
+
+      if (Math.random() < LUCKY_SALE_PROBABILITY && luckyItem.quality > 0) {
+        luckyItem.val = applyDiscount(luckyItem, LUCKY_SALE_DISCOUNT);
+        notifySale(luckyItem, LUCKY_SALE_DISCOUNT);
+        updateUI(select);
+      }
+    }, LUCKY_SALE_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, randomDelay);
+}
+
+export function initiateSuggestSale(select, lastSelect) {
+  const randomDelay = Math.random() * SUGGESTION_RANDOM_DELAY;
+  setTimeout(() => {
+    const intervalId = setInterval(() => {
+      if (lastSelect) {
+        const suggestion = prodList.find(item => item.id !== lastSelect && item.quantity > 0);
+        if (suggestion) {
+          suggestion.price = applySuggestionDiscount(suggestion, SUGGESTION_SALE_DISCOUNT);
+          notifySuggestion(suggestion, SUGGESTION_SALE_DISCOUNT);
+          updateUI(select);
         }
       }
-    }, 60000);
-  }, Math.random() * 20000);
+    }, SUGGESTION_SALE_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, randomDelay);
 }

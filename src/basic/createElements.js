@@ -36,9 +36,9 @@ export const createSelect = ({ id, className }) => {
   return createElement('select', { id, className });
 };
 
-export const createOptions = ({ val, text, disabled }) => {
+export const createOptions = ({ price, text, disabled }) => {
   return createElement('option', {
-    value: val,
+    value: price,
     text: text,
     disabled: disabled
   });

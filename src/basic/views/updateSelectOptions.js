@@ -8,14 +8,14 @@ import { prodList } from "../constants/prodList";
  * @param {HTMLElement} sel - 업데이트할 select HTML 요소.
  */
 
-function updateSelectOptions(sel) {
-  if (!sel) return;
+function updateSelectOptions(select) {
+  if (!select) return;
 
-  sel.innerHTML = '';
+  select.innerHTML = '';
   prodList.forEach((item) => {
-    const { id, name, val, q } = item;
-    const opt = createOptions({ val: id, text: `${name} - ${val}원`, disabled: q === 0 });
-    sel.appendChild(opt);
+    const { id, name, price, quantity } = item;
+    const option = createOptions({ price: id, text: `${name} - ${price}원`, disabled: quantity === 0 });
+    select.appendChild(option);
   });
 }
 

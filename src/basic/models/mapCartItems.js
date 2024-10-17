@@ -13,7 +13,7 @@ export const mapCartItems = (cartsDiv, prodList) => {
     const product = findProductById(prodList, id);
     const quantity = extractQuantity(element);
 
-    return { ...product, q: quantity };
+    return { ...product, quantity: quantity };
   });
 };
 

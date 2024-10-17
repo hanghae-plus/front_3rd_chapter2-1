@@ -1,42 +1,40 @@
 import { calculateCart } from './controller/calculateCart';
-export function handleExistingCartItem(itemElement, product) {
-  let currentQty = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
-  let newQty = currentQty + 1;
 
-  if (newQty <= product.q) {
-    updateCartItem(itemElement, product.name, product.val, newQty);
-    product.q--;
+export function handleExistingCartItem(itemElement, product) {
+  let currentQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  let newQuantity = currentQuantity + 1;
+
+  if (newQuantity <= product.quantity) {
+    updateCartItem(itemElement, product.name, product.price, newQuantity);
+    product.quantity--;
   } else {
     alert('재고가 부족합니다.');
   }
 }
 
-// 새 아이템 추가
 export function addNewItemToCart(product, cartsDiv) {
   let newItem = document.createElement('div');
   newItem.id = product.id;
   newItem.className = 'flex justify-between items-center mb-2';
   newItem.innerHTML =
-    `<span>${product.name} - ${product.val}원 x 1</span>
+    `<span>${product.name} - ${product.price}원 x 1</span>
     <div>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${product.id}" data-change="-1">-</button>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${product.id}" data-change="1">+</button>
       <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${product.id}">삭제</button>
     </div>`;
   cartsDiv.appendChild(newItem);
-  product.q--;
+  product.quantity--;
 }
 
-// 장바구니 아이템 업데이트
 export function updateCartItem(itemElement, productName, productPrice, quantity) {
   itemElement.querySelector('span').textContent = `${productName} - ${productPrice}원 x ${quantity}`;
 }
 
-// 장바구니에 아이템 추가
 export function addItemToCart(selectedProductId, prodList, cartsDiv, sumDiv, stockInfoDiv, lastSelRef) {
   const selectedProduct = prodList.find(product => product.id === selectedProductId);
   
-  if (!selectedProduct || selectedProduct.q <= 0) {
+  if (!selectedProduct || selectedProduct.quantity <= 0) {
     return alert('선택한 상품의 재고가 없습니다.');
   }
 
@@ -52,46 +50,44 @@ export function addItemToCart(selectedProductId, prodList, cartsDiv, sumDiv, sto
   lastSelRef.current = selectedProductId;
 }
 
-// 수량 변경 핸들러
-export function handleQuantityChange(itemElem, prod, qtyChange) {
-  let currentQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
-  let newQty = currentQty + qtyChange;
+export function handleQuantityChange(itemElem, prod, quantityChange) {
+  let currentQuantity = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
+  let newQuantity = currentQuantity + quantityChange;
 
-  if (newQty > 0 && newQty <= prod.q + currentQty) {
+  if (newQuantity > 0 && newQuantity <= prod.quantity + currentQuantity) {
     itemElem.querySelector('span').textContent =
-      `${itemElem.querySelector('span').textContent.split('x ')[0]}x ${newQty}`;
-    prod.q -= qtyChange;
-  } else if (newQty <= 0) {
+      `${itemElem.querySelector('span').textContent.split('x ')[0]}x ${newQuantity}`;
+    prod.quantity -= quantityChange;
+  } else if (newQuantity <= 0) {
     itemElem.remove();
-    prod.q -= qtyChange;
+    prod.quantity -= quantityChange;
   } else {
     alert('재고가 부족합니다.');
   }
 }
 
-// 아이템 삭제 핸들러
-export function handleRemoveItem(itemElem, prod) {
-  let remQty = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
-  prod.q += remQty;
-  itemElem.remove();
+export function handleRemoveItem(itemElement, product) {
+  let removedQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  product.quantity += removedQuantity;
+  itemElement.remove();
 }
 
-// 장바구니 이벤트 핸들러
 export function handleCartEvent(event, prodList, cartsDiv, sumDiv, stockInfoDiv) {
-  let tgt = event.target;
+  let target = event.target;
   
-  if (!tgt.classList.contains('quantity-change') && !tgt.classList.contains('remove-item')) return;
+  if (!target.classList.contains('quantity-change') && !target.classList.contains('remove-item')) return;
 
-  let prodId = tgt.dataset.productId;
-  let itemElem = document.getElementById(prodId);
-  let prod = prodList.find(product => product.id === prodId);
+  let productId = target.dataset.productId;
+  let itemElement = document.getElementById(productId);
+  let product = prodList.find(prod => prod.id === productId);
 
-  if (tgt.classList.contains('quantity-change')) {
-    let qtyChange = parseInt(tgt.dataset.change);
-    handleQuantityChange(itemElem, prod, qtyChange);
-  } else if (tgt.classList.contains('remove-item')) {
-    handleRemoveItem(itemElem, prod);
+  if (target.classList.contains('quantity-change')) {
+    let quantityChange = parseInt(target.dataset.change);
+    handleQuantityChange(itemElement, product, quantityChange);
+  } else if (target.classList.contains('remove-item')) {
+    handleRemoveItem(itemElement, product);
   }
 
   calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv });
 }
+
