@@ -74,11 +74,9 @@ function main() {
   setTimeout(function () {
     setInterval(function () {
       var saleProduct = products[Math.floor(Math.random() * products.length)];
-      if (Math.random() < 0.3 && saleProduct.quantity > 0) {
-        saleProduct.price = Math.round(saleProduct.price * 0.8);
-        alert('번개세일! ' + saleProduct.name + '이(가) 20% 할인 중입니다!');
       if (Math.random() < FLASH_SALE_PROBABILITY && saleProduct.quantity > 0) {
         saleProduct.price = Math.round(saleProduct.price * FLASH_SALE_DISCOUNT);
+        alert(`번개세일! ${saleProduct.name}이(가) 20% 할인 중입니다!`);
         addProductSelectOptions();
       }
     }, FLASH_SALE_INTERVAL_TIME);
@@ -91,8 +89,7 @@ function main() {
         });
         if (suggestedProduct) {
           alert(
-            suggestedProduct.name +
-              '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
+            `${suggestedProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
           );
           suggestedProduct.price = Math.round(
             suggestedProduct.price * SUGGESTION_SALE_DISCOUNT
@@ -164,11 +161,11 @@ function calcCart() {
     total *= 1 - TUESDAY_DISCOUNT;
     discountRate = Math.max(discountRate, TUESDAY_DISCOUNT);
   }
-  $cartTotal.textContent = '총액: ' + Math.round(total) + '원';
+  $cartTotal.textContent = `총액: ${Math.round(total)}원`;
   if (discountRate > 0) {
     var span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
-    span.textContent = '(' + (discountRate * 100).toFixed(1) + '% 할인 적용)';
+    span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
     $cartTotal.appendChild(span);
   }
   updateStockStatusMessage();
@@ -189,15 +186,10 @@ const renderbonusPoints = () => {
 function updateStockStatusMessage() {
   var message = '';
   products.forEach(function (product) {
-    if (product.quantity < 5) {
-      message +=
-        product.name +
-        ': ' +
-        (product.quantity > 0
-          ? '재고 부족 (' + product.quantity + '개 남음)'
-          : '품절') +
-        '\n';
     if (product.quantity < LOW_STOCK) {
+      message += `${product.name}: ${
+        product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : '품절'
+      }\n`;
     }
   });
   $stockStatus.textContent = message;
@@ -217,11 +209,7 @@ $addToCartButton.addEventListener('click', function () {
         ) + 1;
       if (updatedQuantity <= productToAdd.quantity) {
         $cartProduct.querySelector('span').textContent =
-          productToAdd.name +
-          ' - ' +
-          productToAdd.price +
-          '원 x ' +
-          updatedQuantity;
+          `${productToAdd.name} - ${productToAdd.price}원 x ${updatedQuantity}`;
         productToAdd.quantity--;
       } else {
         alert('재고가 부족합니다.');
@@ -230,21 +218,13 @@ $addToCartButton.addEventListener('click', function () {
       var newProduct = document.createElement('div');
       newProduct.id = productToAdd.id;
       newProduct.className = 'flex justify-between items-center mb-2';
-      newProduct.innerHTML =
-        '<span>' +
-        productToAdd.name +
-        ' - ' +
-        productToAdd.price +
-        '원 x 1</span><div>' +
-        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
-        productToAdd.id +
-        '" data-change="-1">-</button>' +
-        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
-        productToAdd.id +
-        '" data-change="1">+</button>' +
-        '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
-        productToAdd.id +
-        '">삭제</button></div>';
+      newProduct.innerHTML = newProduct.innerHTML = `
+        <span>${productToAdd.name} - ${productToAdd.price}원 x 1</span>
+        <div>
+          <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${productToAdd.id}" data-change="-1">-</button>
+          <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${productToAdd.id}" data-change="1">+</button>
+          <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${productToAdd.id}">삭제</button>
+        </div>`;
       $cartProducts.appendChild(newProduct);
       productToAdd.quantity--;
     }
