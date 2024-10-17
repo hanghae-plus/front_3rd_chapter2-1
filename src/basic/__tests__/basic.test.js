@@ -8,6 +8,7 @@ describe("basic test", () => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
     beforeAll(async () => {
+      vi.useRealTimers();
       // DOM 초기화
       document.body.innerHTML = '<div id="app"></div>';
       await loadFile();
@@ -22,6 +23,7 @@ describe("basic test", () => {
 
     beforeEach(() => {
       vi.useFakeTimers();
+      // eslint-disable-next-line prettier/prettier
       vi.spyOn(window, "alert").mockImplementation(() => { });
     });
 
