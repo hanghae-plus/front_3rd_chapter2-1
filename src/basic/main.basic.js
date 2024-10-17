@@ -148,8 +148,7 @@ function setRollBackCost(inSaleItem, originalCost, duration) {
   }, duration);
 }
 
-function setLuckyVickyItem() {
-  setInterval(() => {
+export function setLuckyVickyItem() {
     const luckyVickyItem =
       globalState.inventory[
         Math.floor(Math.random() * globalState.inventory.length)
@@ -160,14 +159,14 @@ function setLuckyVickyItem() {
       const originalCost = luckyVickyItem.cost;
       const discountedCost = Math.round(originalCost * 0.8);
       luckyVickyItem.cost = discountedCost;
+    const productSeletElement = document.getElementById('product-select');
+    updateProducts(productSeletElement);
       alert(`번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`);
       setRollBackCost(luckyVickyItem, originalCost, ONE_MINUTE);
     }
-  }, 30 * ONE_SECOND);
 }
 
 function fishHogu() {
-  setInterval(() => {
     if (globalState.lastSelected) {
       const mikkiProduct = globalState.inventory.find((item) => {
         return item.id !== globalState.lastSelected && item.stock > 0;
@@ -182,7 +181,6 @@ function fishHogu() {
         setRollBackCost(mikkiProduct, originalCost, ONE_MINUTE);
       }
     }
-  }, ONE_MINUTE);
 }
 
 function makeNewItemButtons(productId) {
@@ -396,8 +394,14 @@ function renderElements() {
 
 function main() {
   renderElements();
-  setTimeout(setLuckyVickyItem, Math.random() * 10 * ONE_SECOND);
-  setTimeout(fishHogu, Math.random() * 20 * ONE_SECOND);
+  setTimeout(
+    () => setInterval(setLuckyVickyItem, 30 * ONE_SECOND),
+    Math.random() * 10 * ONE_SECOND
+  );
+  setTimeout(
+    () => setInterval(fishHogu, ONE_MINUTE),
+    Math.random() * 20 * ONE_SECOND
+  );
 }
 
 main();

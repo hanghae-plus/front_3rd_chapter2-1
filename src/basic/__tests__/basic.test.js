@@ -12,15 +12,17 @@ describe('basic test', () => {
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js') },
     { type: 'basic', loadFile: () => import('../main.basic.js') },
-  ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
-    let sel, addBtn, cartDisp, sum, stockInfo;
+  ])('$type 장바구니 시나리오 테스트', ({ type, loadFile }) => {
+    let sel, addBtn, cartDisp, sum, stockInfo, globalState, setLuckyVickyItem;
 
     beforeAll(async () => {
       // DOM 초기화
       document.body.innerHTML = '<div id="app"></div>';
-      await loadFile();
+      const module = await loadFile();
 
       // 전역 변수 참조
+      globalState = module.globalState;
+      setLuckyVickyItem = module.setLuckyVickyItem;
       sel = document.getElementById('product-select');
       addBtn = document.getElementById('add-to-cart');
       cartDisp = document.getElementById('cart-items');
@@ -118,8 +120,19 @@ describe('basic test', () => {
       );
     });
 
-    it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+    it('번개세일 기능이 정상적으로 동작하는지 확인', async () => {
+      if (type === 'origin') return;
+
+      vi.spyOn(Math, 'random').mockReturnValue(0.2);
+      setLuckyVickyItem();
+      const luckyVickyItem = globalState.inventory[1];
+
+      expect(global.alert).toHaveBeenCalledWith(
+        `번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`
+      );
+      expect(luckyVickyItem.cost).toBe(16000);
+
+      vi.spyOn(Math, 'random').mockReturnValue(1);
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
