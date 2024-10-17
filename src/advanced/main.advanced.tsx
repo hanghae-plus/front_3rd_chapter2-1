@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom/client';
-
-function App() {
-  return <h1>Hello, React!</h1>;
-}
+import Home from './pages/Home';
+import { StrictMode } from 'react';
 
 const root = ReactDOM.createRoot(document.getElementById('app') as HTMLElement);
-root.render(<App />);
+root.render(
+  <StrictMode>
+    <Home />
+  </StrictMode>
+);
