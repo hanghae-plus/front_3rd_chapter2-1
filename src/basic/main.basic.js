@@ -3,7 +3,7 @@ import renderApp from './renderApp';
 import { prodList } from "./constants/prodList";
 import { initiateLuckySale, initiateSuggestSale } from "./controller/salesPromotions";
 import updateSelectOptions from "./views/updateSelectOptions";
-import { addItemToCart, handleCartEvent } from './cartHandlers';
+import { addItemToCart, handleCartEvent } from './controller/handleCart';
 
 let select, addButton, cartsDiv, sumDiv, stockInfoDiv;
 let lastSelect = { current: null };

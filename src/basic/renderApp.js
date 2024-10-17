@@ -1,6 +1,6 @@
 import { createTitle } from './createElements';
 import { createCartItemsDiv, createContainer, createWrapper, createCartTotalDiv, createProductSelect, createAddToCartButton, createStockStatusDiv } from "./views/components";
-import { assembleComponents } from "./views/utils";
+import { assembleComponents } from "./views/utils"
 
 
 /**
