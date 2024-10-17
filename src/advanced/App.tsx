@@ -11,6 +11,13 @@ import {
   TCartList,
 } from './model/product';
 
+export type HandleUpsertCart = (
+  selectedId: string | undefined,
+  quantity?: number
+) => void;
+
+export type HandleDeleteCart = (targetCartItem: TCartItem) => void;
+
 export const App = () => {
   const [stockList, setStockList] = useState<StockList>(DEFAULT_PRODUCT_LIST);
   const [cartList, setCartList] = useState<TCartList>([]);
@@ -35,8 +42,13 @@ export const App = () => {
       ...prevCartList,
       { ...targetStockItem, quantity: quantityToAdd },
     ]);
+  };
 
-    // TODO: 카드계산함수 실행
+  const deleteCart = (targetCartItem: TCartItem) => {
+    updateStock(targetCartItem.id, targetCartItem.quantity);
+    setCartList((prevCartList) =>
+      prevCartList.filter((item) => item.id !== targetCartItem.id)
+    );
   };
 
   const updateCart = (
@@ -52,6 +64,11 @@ export const App = () => {
       return;
     }
 
+    if (newQuantity <= 0) {
+      deleteCart(targetCartItem);
+      return;
+    }
+
     updateStock(targetCartItem.id, -quantityToUpdate);
     setCartList((prevCartList) =>
       prevCartList.map((item) =>
@@ -62,21 +79,21 @@ export const App = () => {
     );
   };
 
-  const handleAddCart = (selectedId: string, quantity = 1) => {
-    const targetStockItem = stockList.find(({ id }) => id === selectedId);
+  // TODO: useEffect로 cartList 변경될 때마다 calc하면 될듯?
 
+  const handleUpsertCart: HandleUpsertCart = (selectedId, quantity = 1) => {
+    if (!selectedId) return;
+
+    const targetStockItem = stockList.find(({ id }) => id === selectedId);
     if (!targetStockItem?.quantity) {
       alert('재고가 부족합니다.');
       return;
     }
 
     const targetCartItem = cartList.find(({ id }) => id === selectedId);
-
     targetCartItem
       ? updateCart(targetStockItem, targetCartItem, quantity)
       : addCart(targetStockItem, quantity);
-
-    // TODO: 카드계산함수 실행
   };
 
   return (
@@ -85,13 +102,15 @@ export const App = () => {
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
 
         <CartTotal cartTotal={cartTotal} />
-        <CartList cartList={cartList} />
+        <CartList
+          cartList={cartList}
+          handleUpsertCart={handleUpsertCart}
+          handleDeleteCart={deleteCart}
+        />
 
         <ProductSelector
           defaultValue={stockList[0].id}
-          handleAddCart={(selectedId) =>
-            selectedId && handleAddCart(selectedId)
-          }
+          handleAddCart={(selectedId) => handleUpsertCart(selectedId)}
           options={stockList.map(({ id, name, price, quantity }) => ({
             value: id,
             label: `${name} - ${price}원`,

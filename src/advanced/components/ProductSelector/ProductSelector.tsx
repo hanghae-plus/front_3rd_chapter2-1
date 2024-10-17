@@ -23,7 +23,6 @@ export const ProductSelector = ({
   return (
     <div>
       <select
-        id="product-select"
         className="border rounded p-2 mr-2"
         defaultValue={defaultValue}
         onChange={(e) => setSelectedId(e.target.value)}
@@ -35,12 +34,7 @@ export const ProductSelector = ({
         ))}
       </select>
 
-      <Button
-        id="add-to-cart"
-        text="추가"
-        size="l"
-        onClick={() => handleAddCart(selectedId)}
-      />
+      <Button text="추가" size="l" onClick={() => handleAddCart(selectedId)} />
     </div>
   );
 };
