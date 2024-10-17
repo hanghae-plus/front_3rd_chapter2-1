@@ -32,6 +32,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     { id: 'p4', name: '상품4', price: 15000, stock: 0 },
     { id: 'p5', name: '상품5', price: 25000, stock: 10 },
   ]);
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
 
   return (
     <AppContext.Provider
@@ -46,6 +47,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         cartProductList,
         bonusPointsSpan,
         productList,
+        selectedProductId,
         setRenderCart,
         setProductSum,
         setProductSelectDropDown,
@@ -56,6 +58,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         setCartProductList,
         setBonusPointsSpan,
         setProductList,
+        setSelectedProductId,
       }}>
       {children}
     </AppContext.Provider>
