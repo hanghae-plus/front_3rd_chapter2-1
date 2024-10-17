@@ -11,6 +11,8 @@ describe('basic test', () => {
     beforeAll(async () => {
       // DOM 초기화
       document.body.innerHTML='<div id="app"></div>';
+      window.history.pushState({}, 'Test page', '/index.basic.html');
+
       await loadFile();
 
       // 전역 변수 참조
@@ -27,6 +29,7 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      vi.clearAllTimers();
       vi.restoreAllMocks();
     });
 
