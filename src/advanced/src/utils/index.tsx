@@ -13,7 +13,7 @@ export const calculateTotalAmount = (cartItems: CartItem[], discounts: Discounts
     itemCount += item.quantity;
     subTotal += itemTotal;
   });
-
+  console.log(subTotal)
   let discountRate = 0;
   if (itemCount >= 30) {
     const bulkDiscount = totalAmount * 0.25;

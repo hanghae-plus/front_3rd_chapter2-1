@@ -10,12 +10,10 @@ interface CartItemProps {
 
 const CartItem: React.FC<CartItemProps> = ({ item, handleQuantityChange, handleRemoveItem }) => {
   const handleDecrease = () => {
-    console.log('handleDecrease');
     handleQuantityChange(item.id, -1);
   };
 
   const handleIncrease = () => {
-    console.log('handleIncrease');
     handleQuantityChange(item.id, 1);
   };
 

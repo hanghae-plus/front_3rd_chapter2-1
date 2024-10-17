@@ -4,12 +4,12 @@ import ProductSelect from './components/ProductSelect';
 import Cart from './components/Cart';
 import CartTotal from './components/CartTotal';
 import StockStatus from './components/StockStatus';
-import { productList as initialProductList } from './data/dummy';
+import { productList } from './data/dummy';
 import useCart from './hooks/useCart';
 
 const App: React.FC = () => {
   const { products, cartItems, state, addToCart, updateCartItem, removeFromCart } = useCart({
-    initialProducts: initialProductList,
+    productList: productList,
   });
 
   return (

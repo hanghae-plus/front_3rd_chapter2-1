@@ -5,11 +5,11 @@ import { discountsOfProduct } from '../data/dummy';
 import { calculateTotalAmount } from '../utils/index';
 
 interface UseCartProps {
-  initialProducts: Product[];
+  productList: Product[];
 }
 
-const useCart = ({ initialProducts }: UseCartProps) => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+const useCart = ({ productList }: UseCartProps) => {
+  const [products, setProducts] = useState<Product[]>(productList);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [state, setState] = useState<AppState>({
     lastSelected: null,
@@ -89,16 +89,15 @@ const useCart = ({ initialProducts }: UseCartProps) => {
       finalTotal *= 0.9;
       finalDiscountRate = Math.max(finalDiscountRate, 0.1);
     }
-
     // 포인트 업데이트
     const bonusPoints = Math.floor(finalTotal / 1000);
-
+    
     setState((prev) => ({
       ...prev,
       totalAmount: Math.round(finalTotal),
       itemCount,
       discountRate: finalDiscountRate,
-      bonusPoints: prev.bonusPoints + bonusPoints,
+      bonusPoints: bonusPoints,
     }));
   };
 
