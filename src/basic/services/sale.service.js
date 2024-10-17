@@ -4,6 +4,10 @@ import { lastAddedItem, updateSelectOptionStatus } from './render.service';
 const RANDOM_RATE_LIMIT = 0.3;
 const LUCKY_DISCOUNT_RATE = 0.2;
 const EXTRA_DISCOUNT_RATE = 0.05;
+const THIRTY_SECONDS = 30000;
+const TEN_SECONDES = 10000;
+const ONE_MINUTES = 60000;
+const TWENTY_SECONDS = 20000;
 
 export function applyLuckySale() {
   setTimeout(() => {
@@ -17,8 +21,8 @@ export function applyLuckySale() {
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
         updateSelectOptionStatus();
       }
-    }, 30000);
-  }, Math.random() * 10000);
+    }, THIRTY_SECONDS);
+  }, Math.random() * TEN_SECONDES);
 }
 
 export function applyExtraSale() {
@@ -34,6 +38,6 @@ export function applyExtraSale() {
       alert(`${product.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
       product.val = Math.round(product.val * (1 - EXTRA_DISCOUNT_RATE));
       updateSelectOptionStatus();
-    }, 60000);
-  }, Math.random() * 20000);
+    }, ONE_MINUTES);
+  }, Math.random() * TWENTY_SECONDS);
 }
