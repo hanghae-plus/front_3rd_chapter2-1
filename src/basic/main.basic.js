@@ -199,7 +199,8 @@ const BulkCartItemTotalCalc = (
 
 //요일 할인 계산
 const dayOfWeeklyDiscount = (totalAmount, discountRate) => {
-  const isTuesday = new Date().getDay() === 2;
+  const DAY_OF_WEEKLY_DISCOUNT = 2;
+  const isTuesday = new Date().getDay() === DAY_OF_WEEKLY_DISCOUNT;
   if (isTuesday) {
     totalAmount *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
@@ -353,8 +354,8 @@ const updateCartItemQuantity = (item, cartItemData, qtyChange) => {
     spanElement.textContent = `${cartItemData.name} - ${cartItemData.val}원 x ${newQuantity}`;
     cartItemData.q -= qtyChange;
   } else if (newQuantity <= 0) {
-    item.remove(); // 수량이 0 이하라면 삭제
-    cartItemData.q += currentQuantity; // 남은 재고 반환
+    item.remove();
+    cartItemData.q += currentQuantity;
   } else {
     alert("재고가 부족합니다.");
   }
