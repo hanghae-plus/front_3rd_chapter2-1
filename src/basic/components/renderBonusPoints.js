@@ -1,7 +1,7 @@
 import { getBonusPoints } from '../data/point';
 import { createSpan } from '../utils/createElements';
 
-const BonusPoints = () => {
+const renderBonusPoints = () => {
   const $sum = document.getElementById('cart-total');
   let $point = document.getElementById('loyalty-points');
   const bonusPoints = getBonusPoints();
@@ -17,4 +17,4 @@ const BonusPoints = () => {
   $point.textContent = `(포인트: ${bonusPoints})`;
 };
 
-export default BonusPoints;
+export default renderBonusPoints;

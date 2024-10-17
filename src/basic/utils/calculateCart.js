@@ -1,4 +1,4 @@
-import BonusPoints from '../components/BonusPoints';
+import renderBonusPoints from '../components/renderBonusPoints';
 import { cartList, productList } from '../data/global';
 import { increaseBonusPoints } from '../data/point';
 import { createSpan } from './createElements';
@@ -89,7 +89,7 @@ function calculateCart() {
 
   updateStock();
   increaseBonusPoints(totalPrice);
-  BonusPoints();
+  renderBonusPoints();
 }
 
 export default calculateCart;
