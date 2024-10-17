@@ -17,8 +17,6 @@ export function calculateFinalPrice() {
   const { totalItemCount, totalPriceOrigin, totalDiscountPrice } =
     calculateTotalPrice(cartItemList);
 
-  console.table({ totalItemCount, totalPriceOrigin, totalDiscountPrice });
-
   const { appliedPrice, discountRate } = applyDiscountRate(
     totalItemCount,
     totalPriceOrigin,
@@ -27,8 +25,6 @@ export function calculateFinalPrice() {
 
   const finalPrice = isTuesday() ? appliedPrice * 0.9 : appliedPrice;
   const finalDiscRate = isTuesday() ? Math.max(discountRate, 0.1) : discountRate;
-
-  console.table({ finalPrice, finalDiscRate });
 
   return { finalPrice, finalDiscRate };
 }

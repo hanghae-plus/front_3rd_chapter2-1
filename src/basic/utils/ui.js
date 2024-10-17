@@ -17,8 +17,8 @@ export function createTotalPriceElement(finalPrice, fianlDiscountRate) {
 export function createBonusPoints(finalPrice) {
   bonusPoints += Math.floor(finalPrice / 1000);
 
-  // component 만들어서 컴포넌트에서 계산하는 로직으로 분리
   let $pointsTag = document.getElementById('loyalty-points');
+
   if (!$pointsTag) {
     $pointsTag = document.createElement('span');
     $pointsTag.id = 'loyalty-points';

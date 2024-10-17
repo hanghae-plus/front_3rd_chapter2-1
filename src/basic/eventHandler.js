@@ -47,7 +47,7 @@ function handleClickAddButton() {
   const $productSelect = document.getElementById('product-select');
   const selectedItemId = $productSelect.value;
   const addedItem = ProductStore.getProductById(selectedItemId);
-  console.log(addedItem);
+
   if (!addedItem || addedItem.stock <= 0) {
     console.error('선택한 상품이 없거나 재고가 부족합니다.');
     return;
@@ -59,6 +59,7 @@ function handleClickAddButton() {
   } else {
     addNewCartItem(addedItem);
   }
+
   addedItem.stock--;
   updateCartInfo();
   ProductStore.setLastSelectItemId(selectedItemId);
@@ -78,8 +79,8 @@ function updateCartItem(existItem, addedItem) {
 
 function addNewCartItem(item) {
   const $cartInfo = document.getElementById('cart-items');
-  console.log(item);
   const newCartItem = CartItem(item);
+
   $cartInfo.innerHTML += newCartItem;
 }
 
