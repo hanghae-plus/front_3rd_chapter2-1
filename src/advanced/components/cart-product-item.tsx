@@ -6,18 +6,19 @@ interface CartProductItemProps {
   setCartProductList: Dispatch<SetStateAction<CartProductType[]>>;
 }
 
+const INCREASE_COUNT = 1;
+const DECREASE_COUNT = -1;
 const CartProductItem = ({ cartProduct, setCartProductList }: CartProductItemProps) => {
-  const cartProductText = `${cartProduct.name} - ${cartProduct.price} x ${cartProduct.count}`;
-  const INCREASE_COUNT = 1;
-  const DECREASE_COUNT = -1;
+  const cartProductText = `${cartProduct.name} - ${cartProduct.price}원 x ${cartProduct.count}`;
 
   const setCartProductCount = (prev: CartProductType[], quantity: number) => {
     const productIndex = prev.findIndex(product => product.id === cartProduct.id);
     return prev.with(productIndex, { ...cartProduct, count: cartProduct.count + quantity });
   };
 
-  const removeCartProduct = (prev: CartProductType[]) =>
-    prev.filter(product => product.id !== cartProduct.id);
+  const removeCartProduct = (prev: CartProductType[]) => {
+    return prev.filter(product => product.id !== cartProduct.id);
+  };
 
   const decreaseCount = () => {
     if (cartProduct.count === 1) {
