@@ -1,5 +1,5 @@
-var itemList, sel, addBtn, cartDisp, sum, stockInfo;
-var g_LastSel, g_bonusPts=0; //전역변수명은 어떻게?
+let itemList;
+let g_LastSel, g_bonusPts=0; //전역변수명은 어떻게?
 let g_TotalAmt=0;
 let itemCnt=0;
 
@@ -105,11 +105,8 @@ function updateStockInfo() {
  * 포인트 업데이트
  */
 function renderBonusPts () {
-    console.log("베이직>>")
   const $cartTotal = document.getElementById('cart-total'); //장바구니 총액 div
   g_bonusPts += Math.floor(g_TotalAmt / 1000);
-  console.log(g_TotalAmt);
-  console.log(g_bonusPts);
   
   let $pointsDisplay = document.getElementById('loyalty-points');
 

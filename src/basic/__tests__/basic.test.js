@@ -24,9 +24,16 @@ describe('basic test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const isTuesday = new Date().getDay() === 2
+      if (isTuesday) {
+        const mockDate=new Date('2024-10-14'); // 월요일
+        vi.setSystemTime(mockDate);
+      }
     });
 
     afterEach(() => {
+      vi.clearAllTimers();
       vi.restoreAllMocks();
     });
 
