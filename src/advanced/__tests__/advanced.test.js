@@ -4,7 +4,7 @@ describe('advanced test', () => {
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js'), },
+    { type: 'advanced', loadFile: () => import('../main.advanced.jsx'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
