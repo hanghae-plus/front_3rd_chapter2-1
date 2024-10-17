@@ -11,6 +11,9 @@ const FLASH_SALE_CHANCE = 0.3;
 const FLASH_SALE_DISCOUNT = 0.8;
 const SUGGESTION_INTERVAL = 60000;
 const SUGGESTION_DISCOUNT = 0.95;
+const BULK_PURCHASE_THRESHOLD = 10;
+const BULK_DISCOUNT_RATE = 0.25;
+const TUESDAY_DISCOUNT_RATE = 0.1;
 
 // store/cartStore.js
 let $productSelect, $addButton, $cartProduct, $cartTotal, $stockStatus;
@@ -21,42 +24,31 @@ let productCount = 0;
 
 // services/discountService.js
 const getDiscount = (product, quantity) => {
-  if (quantity >= 10) {
-    switch (product.id) {
-      case 'p1':
-        return 0.1;
-      case 'p2':
-        return 0.15;
-      case 'p3':
-        return 0.2;
-      case 'p4':
-        return 0.05;
-      case 'p5':
-        return 0.25;
-      default:
-        return 0;
-    }
+  if (quantity >= BULK_PURCHASE_THRESHOLD) {
+    return product.discountRate;
   }
   return 0;
 };
 
 const applyTuesdayDiscount = (totalAmount, discountRate) => {
-  if (new Date().getDay() === 2) {
-    totalAmount *= 1 - 0.1;
-    return (discountRate = Math.max(discountRate, 0.1));
+  const isTuesday = new Date().getDay() === 2;
+  if (isTuesday) {
+    const tuesdayDiscountAmount = totalAmount * TUESDAY_DISCOUNT_RATE;
+    const currentDiscountAmount = totalAmount * discountRate;
+    if (tuesdayDiscountAmount > currentDiscountAmount) {
+      return TUESDAY_DISCOUNT_RATE;
+    }
   }
   return discountRate;
 };
 
 const getDiscountRate = (productCount, subtotal, totalAmount) => {
   if (productCount >= 30) {
-    const bulkDiscount = subtotal * 0.25;
-    const itemDiscount = subtotal - totalAmount;
-    if (bulkDiscount > itemDiscount) {
-      totalAmount = subtotal * (1 - 0.25);
-      return 0.25;
+    const bulkDiscount = subtotal * BULK_DISCOUNT_RATE;
+    const productDiscount = subtotal - totalAmount;
+    if (bulkDiscount > productDiscount) {
+      return BULK_DISCOUNT_RATE;
     }
-    return (subtotal - totalAmount) / subtotal;
   }
   return (subtotal - totalAmount) / subtotal;
 };
