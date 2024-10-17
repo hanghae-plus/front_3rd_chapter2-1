@@ -114,26 +114,33 @@ describe('basic test', () => {
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
       vi.useFakeTimers();
       const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});
-      // Math.random()을 그냥 아예 0.2로 고정
-      vi.spyOn(Math, 'random').mockReturnValue(0.2);
     
-      const discountProduct = prodList[0];
-      discountProduct.val = 10000;
-      discountProduct.q = 10;
-      
-      setInterval(function () {
-        if (Math.random() < 0.3 && discountProduct.q > 0) {
-          discountProduct.val = Math.round(discountProduct.val * 0.8);
-          alert('번개세일! ' + discountProduct.name + '이(가) 20% 할인 중입니다!');
-        }
-      }, 30000);
+      const randomValues = [0.01, 0.2, 0.1];
+      vi.spyOn(Math, 'random').mockImplementation(() => randomValues.shift());
     
+      const prodList = [
+        { name: '상품1', val: 10000, q: 10 },
+        { name: '상품2', val: 20000, q: 0 }
+      ];
+    
+      setTimeout(function () {
+        setInterval(function () {
+          const index = Math.floor(Math.random() * prodList.length);
+          var luckyItem = prodList[index];
+          if (Math.random() < 0.3 && luckyItem.q > 0) {
+            luckyItem.val = Math.round(luckyItem.val * 0.8);
+            alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+          }
+        }, 30000);
+      }, Math.random() * 10000);
+    
+      vi.advanceTimersByTime(10000);
       vi.advanceTimersByTime(30000);
     
       expect(mockAlert).toHaveBeenCalledWith('번개세일! 상품1이(가) 20% 할인 중입니다!');
-      
+    
       mockAlert.mockRestore();
-      Math.random.mockRestore(); // 위에서 구현한 모의를 여기서 되돌림
+      Math.random.mockRestore();
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
