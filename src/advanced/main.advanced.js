@@ -1,5 +1,1 @@
-function main() {
-
-}
-
-main();
+export * from './main';
