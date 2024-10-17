@@ -23,6 +23,7 @@ const productOptions = [
 const CartClient = () => {
   const { options, updateOption } = useOptions<ProductOption>(productOptions);
   const { cartItems, updateCartItem } = useCart<ProductOption>(productOptions);
+
   const { discountedTotalPrice, discountRate } = useCalculate(cartItems);
 
   const discountTargetIdRef = useAdditionalDiscountEvent(options, updateOption);
@@ -32,7 +33,7 @@ const CartClient = () => {
   const manageProduct = useCallback(
     (data: ProductOption) => {
       discountTargetIdRef.current = data.id;
-      updateCartItem(data.id, { q: data.q });
+      updateCartItem(data.id, data);
     },
     [updateCartItem, discountTargetIdRef],
   );

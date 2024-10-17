@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 
 import { QUANTITY_CHANGE } from "@/constants";
 import type { ProductOption } from "@/types";
@@ -10,27 +10,22 @@ type SelectSectionProps = {
 
 export default function SelectSection({ onSelect, options: optionsProp }: SelectSectionProps) {
   const [selectedProductId, setSelectedProductId] = useState(() => optionsProp[0].id);
-  const [options, setOption] = useState<ProductOption[]>(() => optionsProp);
 
-  const handleSelectProduct = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectProduct = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedProductId(e.target.value);
-  };
+  }, []);
 
-  const addProduct = () => {
-    const selectedOption = optionsProp.find((options) => options.id === selectedProductId);
+  const addProduct = useCallback(() => {
+    const selectedOption = optionsProp.find((option) => option.id === selectedProductId);
     if (selectedOption) {
       onSelect?.({ ...selectedOption, q: QUANTITY_CHANGE.PLUS });
     }
-  };
-
-  useEffect(() => {
-    setOption(options);
-  }, [options]);
+  }, [onSelect, optionsProp, selectedProductId]);
 
   return (
     <div>
       <select id="product-select" className="border rounded p-2 mr-2" onChange={handleSelectProduct}>
-        {options.map((option) => (
+        {optionsProp.map((option) => (
           <option key={option.id} value={option.id} disabled={option.q === 0}>
             {`${option.name} - ${option.val}원`}
           </option>
