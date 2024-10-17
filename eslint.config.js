@@ -75,4 +75,11 @@ export default [
       },
     },
   },
+  {
+    // JavaScript 파일에 대한 설정
+    files: ['**/*.js', '**/*.jsx'],
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'off', // JavaScript 파일에서는 경고 비활성화
+    },
+  },
 ];
