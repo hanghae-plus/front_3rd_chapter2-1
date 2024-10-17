@@ -1,14 +1,10 @@
 {
   "printWidth": 120,
   "tabWidth": 2,
+  "trailingComma": "all",
 
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "importOrder": [
-    "<THIRD_PARTY_MODULES>",
-    "^(@emotion|@/styles|@/assets)(.*)$",
-    "^@/(.*)$",
-    "^[./]"
-  ],
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^(@emotion|@/styles|@/assets)(.*)$", "^@/(.*)$", "^[./]"],
 
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
