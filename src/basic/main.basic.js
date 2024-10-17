@@ -227,9 +227,9 @@ addBtn.addEventListener('click', () => {
   const itemToAdd = prodList.find((p) => p.id === selItem);
 
   if (itemToAdd && itemToAdd.count > 0) {
-    const existingItem = document.getElementById(itemToAdd.id);
+    const allreadyAddItem = document.getElementById(itemToAdd.id);
 
-    if (existingItem) {
+    if (allreadyAddItem) {
       updateCartItemQuantity(existingItem, 1, itemToAdd);
     } else {
       addNewItemToCart(itemToAdd);
