@@ -32,6 +32,7 @@ export default [
       'no-alert': 'off',
       radix: 'off',
       'no-param-reassign': 'off',
+      'no-promise-executor-return': 'off',
     },
   },
 ];

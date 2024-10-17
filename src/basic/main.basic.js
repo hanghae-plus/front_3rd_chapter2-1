@@ -1,10 +1,12 @@
-import { discountPrice, getRandomItem, probability } from './utils';
+import { discountPrice, getRandomItem, probability, sleep } from './utils';
 
 // 상수 변수
+const LUCKY_DRAW_DELAY = 10000;
 const LOYALTY_POINT_PERCENTAGE = 0.1;
 const LUCKY_DRAW_INTERVAL = 30 * 1000; // 30초
 const LUCKY_DRAW_PERCENTAGE = 30;
 const LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE = 20;
+const SUGGESTED_PRODUCT_DELAY = 20000;
 const SUGGESTED_PRODUCT_INTERVAL = 60 * 1000; // 1분
 const SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE = 5;
 
@@ -33,6 +35,10 @@ function discountProduct(product, percentage, round = false) {
   product.val = round ? Math.round(discountedPrice) : discountedPrice;
 
   return product;
+}
+
+function randomDelay(delay = 1) {
+  return sleep(Math.random() * delay);
 }
 
 /**
@@ -149,6 +155,49 @@ function calcCart() {
   const newLoyaltyPoints = calcLoyaltyPoints(loyaltyPoints, totalPrice);
   renderLoyaltyPoints(newLoyaltyPoints);
   loyaltyPoints = newLoyaltyPoints;
+}
+
+// Lucky Draw 이벤트를 시작합니다.
+function startLuckyDrawInterval() {
+  setInterval(() => {
+    if (canLuckyDraw()) {
+      const luckyProduct = getRandomProduct();
+
+      if (luckyProduct.q > 0) {
+        discountProduct(luckyProduct, LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE);
+
+        alert(`번개세일! ${luckyProduct.name}이(가) ${LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE}% 할인 중입니다!`);
+
+        renderProductSelect();
+      }
+    }
+  }, LUCKY_DRAW_INTERVAL);
+}
+
+// 상품 추천 이벤트를 시작합니다.
+function startSuggestedProductInterval() {
+  // 장바구니에 마지막으로 추가된 상품을 제외하고, 무작위로 상품을 하나 선택해서 5% 할인을 적용
+  setInterval(() => {
+    // 장바구니에 최근 추가된 상품이 없을 경우 상품 추천을 하지 않습니다
+    if (lastAddedProductId === null) {
+      return;
+    }
+
+    // 장바구니에 최근 추가된 상품은 추첨 대상에서 제외됩니다.
+    const suggestedProduct = prodList.find((item) => {
+      return item.id !== lastAddedProductId && item.q > 0;
+    });
+
+    if (suggestedProduct) {
+      alert(
+        `${suggestedProduct.name}은(는) 어떠세요? 지금 구매하시면 ${SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE}% 추가 할인!`,
+      );
+
+      discountProduct(suggestedProduct, SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE);
+
+      renderProductSelect();
+    }
+  }, SUGGESTED_PRODUCT_INTERVAL);
 }
 
 function main() {
@@ -315,45 +364,13 @@ function main() {
   renderProductSelect();
   calcCart();
 
-  // 30초 마다 무작위로 상품을 하나 선택하고, 30%의 확률로 20% 할인을 적용
-  setTimeout(() => {
-    setInterval(() => {
-      if (canLuckyDraw()) {
-        const luckyProduct = getRandomProduct();
+  randomDelay(LUCKY_DRAW_DELAY).then(() => {
+    startLuckyDrawInterval();
+  });
 
-        if (luckyProduct.q > 0) {
-          discountProduct(luckyProduct, LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE);
-
-          alert(`번개세일! ${luckyProduct.name}이(가) ${LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE}% 할인 중입니다!`);
-
-          renderProductSelect();
-        }
-      }
-    }, LUCKY_DRAW_INTERVAL);
-  }, Math.random() * 10000);
-
-  // 장바구니에 마지막으로 추가된 상품을 제외하고, 무작위로 상품을 하나 선택해서 5% 할인을 적용
-  setTimeout(() => {
-    setInterval(() => {
-      if (lastAddedProductId === null) {
-        return;
-      }
-
-      const suggestedProduct = prodList.find((item) => {
-        return item.id !== lastAddedProductId && item.q > 0;
-      });
-
-      if (suggestedProduct) {
-        alert(
-          `${suggestedProduct.name}은(는) 어떠세요? 지금 구매하시면 ${SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE}% 추가 할인!`,
-        );
-
-        discountProduct(suggestedProduct, SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE);
-
-        renderProductSelect();
-      }
-    }, SUGGESTED_PRODUCT_INTERVAL);
-  }, Math.random() * 20000);
+  randomDelay(SUGGESTED_PRODUCT_DELAY).then(() => {
+    startSuggestedProductInterval();
+  });
 }
 
 main();

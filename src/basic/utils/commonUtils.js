@@ -29,4 +29,14 @@ const discountPrice = (price, percentage = 0) => {
   return price * (1 - percentage / 100);
 };
 
-export { probability, getRandomItem, discountPrice };
+/**
+ * 지정된 시간(밀리초) 동안 실행을 지연시키는 Promise를 반환합니다
+ *
+ * @param {number} [delay=0] - 지연 시간 (밀리초)
+ * @returns {Promise<void>} 지정된 시간 후에 resolve되는 Promise
+ */
+const sleep = (delay = 0) => {
+  return new Promise((resolve) => setTimeout(resolve, delay));
+};
+
+export { probability, getRandomItem, discountPrice, sleep };
