@@ -1,13 +1,13 @@
 import { productList } from '../shared/product.js';
 import { getDOMElements } from '../shared/domSelectors.js';
-import ProductOption from '../components/ProductOption.js';
+import ProductOptionPage from '../views/ProductOptionPage.js';
 import { MAX_QUANTITY } from '../shared/constants.js';
 
 const updateProductOptions = () => {
   const { $productSelect } = getDOMElements();
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
-    $productSelect.innerHTML += ProductOption(product);
+    $productSelect.innerHTML += ProductOptionPage(product);
   });
 };
 

@@ -1,6 +1,6 @@
-import CartProduct from '../components/CartProduct.js';
-import BonusPoints from '../components/BonusPoints.js';
-import DiscountInfo from '../components/DiscountInfo.js';
+import CartProductPage from '../views/CartProductPage.js';
+import BonusPointsPage from '../views/BonusPointsPage.js';
+import DiscountInfoPage from '../views/DiscountInfoPage.js';
 import { productList } from '../shared/product.js';
 import { getDOMElements } from '../shared/domSelectors.js';
 import {
@@ -22,7 +22,7 @@ let bonusPoints = 0;
 
 const addNewCartProduct = (product) => {
   const { $cartProduct } = getDOMElements();
-  const newItem = CartProduct(product);
+  const newItem = CartProductPage(product);
 
   $cartProduct.insertAdjacentHTML('beforeend', newItem);
   product.quantity--;
@@ -100,7 +100,7 @@ const updateCartDisplay = (totalAmount, discountRate) => {
 
   $cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
   if (discountRate > 0) {
-    $cartTotal.innerHTML += DiscountInfo(discountRate);
+    $cartTotal.innerHTML += DiscountInfoPage(discountRate);
   }
 };
 
@@ -115,7 +115,7 @@ const updateBonusPointsDisplay = (bonusPoints) => {
   const { $cartTotal, $pointsTag } = getDOMElements();
 
   if (!$pointsTag) {
-    $cartTotal.innerHTML += BonusPoints(bonusPoints);
+    $cartTotal.innerHTML += BonusPointsPage(bonusPoints);
   } else {
     $pointsTag.textContent = `보너스 포인트: ${bonusPoints}점`;
   }

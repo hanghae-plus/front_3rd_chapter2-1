@@ -1,4 +1,4 @@
-import Cart from './components/Cart.js';
+import CartPage from './views/CartPage.js';
 import {
   handleClickAddToCart,
   handleClickCartAction,
@@ -13,7 +13,7 @@ import { updateProductOptions } from './services/productService.js';
 
 const main = () => {
   const { $root } = getDOMElements();
-  $root.innerHTML = Cart();
+  $root.innerHTML = CartPage();
 
   updateProductOptions();
   calculateCart();
