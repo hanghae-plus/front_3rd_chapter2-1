@@ -4,7 +4,7 @@ describe('advanced test', () => {
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js'), },
+    { type: 'advanced', loadFile: () => import('../App.jsx'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
@@ -24,6 +24,8 @@ describe('advanced test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+      const mockDate = new Date('2024-10-14'); // 월요일
+      vi.setSystemTime(mockDate);
     });
 
     afterEach(() => {
