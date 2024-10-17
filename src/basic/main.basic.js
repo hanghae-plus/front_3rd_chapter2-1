@@ -295,7 +295,7 @@
     if (isCountChangeBtn || isDeleteBtn) {
       const targetId = eventTarget.dataset.productId;
       const targetElement = document.getElementById(targetId);
-      const targetProduct = productList.find(product => product.id === targetId);
+      const targetProduct = productList.find((product) => product.id === targetId);
       const targetCount = getItemCount(targetElement);
 
       if (isCountChangeBtn) {
@@ -303,7 +303,7 @@
       } else if (isDeleteBtn) {
         handleDelete(targetProduct, targetElement, targetCount);
       }
-      
+
       calcCart();
     }
   };
