@@ -1,10 +1,12 @@
 import React from 'react';
+import Layout from './components/Layout';
+import { AppProvider } from './context/appContext';
 
 const App = () => {
   return (
-    <div>
-      <h1>안녕하세요, React!</h1>
-    </div>
+    <AppProvider>
+      <Layout />
+    </AppProvider>
   );
 };
 
