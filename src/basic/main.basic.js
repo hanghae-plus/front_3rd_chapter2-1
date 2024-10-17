@@ -1,4 +1,4 @@
-import { discountPrice, getRandomItem, probability, sleep } from './utils';
+import { discountPrice, getRandomItem, probability, randomDelay } from './utils';
 import {
   LUCKY_DRAW_DELAY,
   LOYALTY_POINT_PERCENTAGE,
@@ -37,10 +37,6 @@ function discountProduct(product, percentage, round = false) {
   product.price = round ? Math.round(discountedPrice) : discountedPrice;
 
   return product;
-}
-
-function randomDelay(delay = 1) {
-  return sleep(Math.random() * delay);
 }
 
 /**

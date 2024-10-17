@@ -39,4 +39,8 @@ const sleep = (delay = 0) => {
   return new Promise((resolve) => setTimeout(resolve, delay));
 };
 
-export { probability, getRandomItem, discountPrice, sleep };
+const randomDelay = (delay = 1) => {
+  return sleep(Math.random() * delay);
+};
+
+export { probability, getRandomItem, discountPrice, sleep, randomDelay };
