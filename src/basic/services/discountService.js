@@ -13,9 +13,10 @@ const getDiscount = (product, quantity) => {
 
 const applyTuesdayDiscount = (totalAmount, discountRate) => {
   const isTuesday = new Date().getDay() === 2;
+  const tuesdayDiscountAmount = totalAmount * TUESDAY_DISCOUNT_RATE;
+  const currentDiscountAmount = totalAmount * discountRate;
+
   if (isTuesday) {
-    const tuesdayDiscountAmount = totalAmount * TUESDAY_DISCOUNT_RATE;
-    const currentDiscountAmount = totalAmount * discountRate;
     if (tuesdayDiscountAmount > currentDiscountAmount) {
       return TUESDAY_DISCOUNT_RATE;
     }
@@ -27,6 +28,7 @@ const getDiscountRate = (productCount, subtotal, totalAmount) => {
   if (productCount >= 30) {
     const bulkDiscount = subtotal * BULK_DISCOUNT_RATE;
     const productDiscount = subtotal - totalAmount;
+
     if (bulkDiscount > productDiscount) {
       return BULK_DISCOUNT_RATE;
     }
