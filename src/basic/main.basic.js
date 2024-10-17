@@ -24,7 +24,7 @@ export const globalState = {
   lastSelected: '',
 };
 
-function updateProducts(productSeletElement) {
+function updateProducts(productSelectElement) {
   const productOptionElements = [];
   globalState.inventory.forEach(({ id, name, cost, stock }) => {
     const nameAndCost = name + ' - ' + cost + '원';
@@ -40,7 +40,9 @@ function updateProducts(productSeletElement) {
     productOptionElements.push(productOptionElement);
   });
 
-  productSeletElement.replaceChildren(...productOptionElements);
+  const psElement =
+    productSelectElement ?? document.getElementById('product-select');
+  psElement.replaceChildren(...productOptionElements);
 }
 
 function findProductById(targetId) {
