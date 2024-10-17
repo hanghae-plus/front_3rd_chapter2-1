@@ -116,6 +116,7 @@ describe('basic test', () => {
       sel.value='p1';
       addBtn.click();
       expect(document.getElementById('cart-total').textContent).toContain('(10.0% 할인 적용)');
+      vi.useRealTimers();
     });
 
     it('재고가 부족한 경우 추가되지 않는지 확인', () => {
