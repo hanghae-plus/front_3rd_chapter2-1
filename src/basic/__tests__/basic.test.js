@@ -133,6 +133,14 @@ describe('basic test', () => {
       expect(luckyVickyItem.cost).toBe(16000);
 
       vi.spyOn(Math, 'random').mockReturnValue(1);
+
+      // 롤백 로직은 어떻게 테스트하지?? 멘토링 때 물오바야징
+      // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      // await delay(60000);
+      // vi.useRealTimers();
+      // vi.useFakeTimers();
+      // vi.advanceTimersByTimeAsync(60000);
+      // expect(luckyVickyItem.cost).toBe(20000);
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
