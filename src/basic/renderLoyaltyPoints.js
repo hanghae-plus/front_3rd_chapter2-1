@@ -1,6 +1,8 @@
 import { createSpan } from './createElements';
 
 let accumulatedBonusPoints = 0;
+// 포인트 계산을 위한 나눗셈 상수 선언
+const POINTS_DIVISOR = 1000;
 
 /**
  * @function calculateBounsPoints
@@ -8,9 +10,8 @@ let accumulatedBonusPoints = 0;
  * @param {number} totalPrice - 총 구매 금액
  * @returns {number} 계산된 보너스 포인트
  */
-
 const calculateBonusPoints = (totalPrice) => {
-  return Math.floor(totalPrice / 1000);
+  return Math.floor(totalPrice / POINTS_DIVISOR);
 };
 
 /**
