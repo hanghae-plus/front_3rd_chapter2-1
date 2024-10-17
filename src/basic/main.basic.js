@@ -1,4 +1,4 @@
-import { createElement } from './utils';
+import { createElement, updateSelectOptions } from './utils';
 
 const products = [
   { id: 'p1', name: '상품1', val: 10000, q: 50 },
@@ -51,7 +51,7 @@ function main() {
     className: 'text-sm text-gray-500 mt-2'
   });
 
-  updateSelOpts();
+  updateSelectOptions(products, productSelect);
   wrapper.appendChild(headerText);
   wrapper.appendChild(cartItemsDisplay);
   wrapper.appendChild(cartTotalDisplay);
@@ -68,7 +68,7 @@ function main() {
       if (Math.random() < 0.3 && luckyItem.q > 0) {
         luckyItem.val = Math.round(luckyItem.val * 0.8);
         alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
-        updateSelOpts();
+        updateSelectOptions(products, productSelect);
       }
     }, 30000);
   }, Math.random() * 10000);
@@ -84,28 +84,11 @@ function main() {
             suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'
           );
           suggest.val = Math.round(suggest.val * 0.95);
-          updateSelOpts();
+          updateSelectOptions(products, productSelect);
         }
       }
     }, 60000);
   }, Math.random() * 20000);
-}
-
-function updateSelOpts() {
-  const fragment = document.createDocumentFragment();
-
-  products.forEach((product) => {
-    const option = document.createElement('option');
-    Object.assign(option, {
-      value: product.id,
-      textContent: `${product.name} - ${product.val}원`,
-      disabled: product.q === 0
-    });
-    fragment.appendChild(option);
-  });
-
-  productSelect.innerHTML = '';
-  productSelect.appendChild(fragment);
 }
 
 function calcCart() {
