@@ -24,6 +24,6 @@ const main = () => {
 
 main();
 
-const { $addButton, $cartProduct } = getDOMElements();
-$addButton.addEventListener('click', handleClickAddToCart);
+const { $addToCartButton, $cartProduct } = getDOMElements();
+$addToCartButton.addEventListener('click', handleClickAddToCart);
 $cartProduct.addEventListener('click', handleClickCartAction);
