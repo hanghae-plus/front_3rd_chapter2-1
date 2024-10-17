@@ -1,12 +1,17 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { setSuggestDiscount, setSurpriseDiscount } from "../services/discount.js";
+import { SUGGEST_TIME_INTERVAL, SURPRISE_TIME_INTERVAL } from "../const/discount.js";
+import { products } from "../data/products.js";
 
 describe('basic test', () => {
+  let originalProducts;
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
     { type: 'basic', loadFile: () => import('../main.basic.js'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
+    let mockSetInterval, mockSetTimeout;
 
     beforeAll(async () => {
       // DOM 초기화
@@ -22,7 +27,11 @@ describe('basic test', () => {
     });
 
     beforeEach(() => {
+      originalProducts = JSON.parse(JSON.stringify(products))
+
       vi.useFakeTimers();
+      mockSetInterval = vi.spyOn(global, 'setInterval')
+      mockSetTimeout = vi.spyOn(global, 'setTimeout')
       vi.spyOn(window, 'alert').mockImplementation(() => {});
 
       const isTuesday = new Date().getDay() === 2
@@ -33,6 +42,8 @@ describe('basic test', () => {
     });
 
     afterEach(() => {
+      products.splice(0, products.length, ...originalProducts);
+      
       vi.clearAllTimers();
       vi.restoreAllMocks();
     });
@@ -111,10 +122,43 @@ describe('basic test', () => {
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
       // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
-    });
+      Math.random = vi.fn();
+      Math.random
+        .mockReturnValueOnce(0.5) // setTimeout
+        .mockReturnValueOnce(0.1) // item
+        .mockReturnValueOnce(0.2); // SURPRISE_DISCOUNT_PROBABILITY보다 낮은 값
 
+      setSurpriseDiscount();
+
+      vi.runOnlyPendingTimers();
+      vi.runOnlyPendingTimers();
+      vi.runOnlyPendingTimers();
+
+      expect(mockSetTimeout).toHaveBeenCalledTimes(1);
+      expect(mockSetInterval).toHaveBeenCalledTimes(1);
+      expect(mockSetInterval).toHaveBeenCalledWith(expect.any(Function), SURPRISE_TIME_INTERVAL);
+
+      expect(window.alert).toHaveBeenCalledWith('번개세일! 상품1이(가) 20% 할인 중입니다!');
+      expect(products[0].price).toBe(8000);  // 10000 * 0.8 = 8000
+    });
+    
     it('추천 상품 알림이 표시되는지 확인', () => {
       // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
+      Math.random = vi.fn();
+      Math.random
+        .mockReturnValueOnce(0.5) // setTimeout
+
+      setSuggestDiscount('p1');
+
+      vi.runOnlyPendingTimers();
+      vi.runOnlyPendingTimers();
+
+      expect(mockSetTimeout).toHaveBeenCalledTimes(1);
+      expect(mockSetInterval).toHaveBeenCalledTimes(1);
+      expect(mockSetInterval).toHaveBeenCalledWith(expect.any(Function), SUGGEST_TIME_INTERVAL);
+
+      expect(window.alert).toHaveBeenCalledWith('상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
+      expect(products[1].price).toBe(19000);  // 20000 * 0.95 = 19000
     });
 
     it('화요일 할인이 적용되는지 확인', () => {

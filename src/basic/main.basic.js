@@ -6,7 +6,7 @@ import { getTargetItemElementQuantity } from './utils/cart';
 import { renderProductOptions } from './views/product';
 
 let $addToCartBtn, $cartItemsDisplay;
-let lastAddedProduct,
+let lastAddedProductId,
   bonusPoints = 0;
 
 const main = () => {
@@ -58,7 +58,7 @@ const renderCartUI = () => {
 };
 const scheduleRandomDiscount = () => {
   setSurpriseDiscount();
-  setSuggestDiscount(lastAddedProduct);
+  setSuggestDiscount(lastAddedProductId);
 };
 const setEventListeners = () => {
   $addToCartBtn.addEventListener('click', handleAddToCart);
@@ -76,7 +76,7 @@ const handleAddToCart = () => {
 
     addToCart($targetCartItem, targetProduct);
     bonusPoints = updateCartInfos(bonusPoints);
-    lastAddedProduct = selectedProductId;
+    lastAddedProductId = selectedProductId;
   }
 };
 const handleCartItemsDisplay = (event) => {

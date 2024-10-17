@@ -27,16 +27,18 @@ const setSurpriseDiscount = () => {
     }, SURPRISE_TIME_INTERVAL);
   }, Math.random() * 10000);
 };
-const setSuggestDiscount = (lastAddedProduct) => {
+const setSuggestDiscount = (lastAddedProductId) => {
   setTimeout(() => {
     setInterval(() => {
-      if (lastAddedProduct) {
+      if (lastAddedProductId) {
         const suggest = products.find((product) => {
-          return product.id !== lastAddedProduct && product.quantity > 0;
+          return product.id !== lastAddedProductId && product.quantity > 0;
         });
+
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
+          console.log(suggest.price, SUGGEST_DISCOUNT_RATE);
           renderProductOptions();
         }
       }
