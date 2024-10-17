@@ -22,7 +22,9 @@ describe('advanced test', () => {
     });
 
     beforeEach(() => {
-      vi.useFakeTimers();
+      // vi.useFakeTimers();
+      const mockDate = new Date('2024-10-17'); // 목요일
+      vi.setSystemTime(mockDate);
       vi.spyOn(window, 'alert').mockImplementation(() => {});
     });
 
