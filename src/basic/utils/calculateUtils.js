@@ -24,15 +24,15 @@ export function calculateTotalDiscountRate({
       totalAmount = totalAmountWithoutDiscount * (1 - TOTAL_DISCOUNT_RATE);
       totalDiscountRate = TOTAL_DISCOUNT_RATE;
     } else {
-      totalDiscountRate = itemDiscount / totalAmountWithoutDiscount;
+      totalDiscountRate = itemDiscount / (totalAmountWithoutDiscount || 1);
     }
   } else {
-    totalDiscountRate = itemDiscount / totalAmountWithoutDiscount;
+    totalDiscountRate = itemDiscount / (totalAmountWithoutDiscount || 1);
   }
   if (isTuesday()) {
     totalDiscountRate = Math.max(totalDiscountRate, TUESDAY_DISCOUNT_RATE);
   }
-  return totalDiscountRate;
+  return { totalDiscountRate, totalAmount };
 }
 
 export function calculateTotalAmountWithoutDiscount($cartItems) {

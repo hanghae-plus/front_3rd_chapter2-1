@@ -110,13 +110,12 @@ export function getItemQuantity($cartItem) {
 
 export function renderCart($cartItemsDiv, $cartTotalDiv, $stockStatusDiv) {
   const $cartItems = $cartItemsDiv.children;
-  let totalAmount = calculateTotalAmount($cartItems);
   const totalAmountWithoutDiscount =
     calculateTotalAmountWithoutDiscount($cartItems);
   const totalQuantity = calculateTotalQuantity({ $cartItems });
-  const totalDiscountRate = calculateTotalDiscountRate({
+  let { totalDiscountRate, totalAmount } = calculateTotalDiscountRate({
     totalAmountWithoutDiscount,
-    totalAmount,
+    totalAmount: calculateTotalAmount($cartItems),
     totalQuantity,
   });
 
