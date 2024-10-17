@@ -1,12 +1,25 @@
-import pluginJs from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
-import globals from 'globals';
+// https://typescript-eslint.io/packages/typescript-eslint/
+// https://brunch.co.kr/@hongjyoun/118
 
-export default [
-  pluginJs.configs.recommended,
+// // import pluginJs from '@eslint/js';
+// import js from '@eslint/js';
+
+//   languageOptions: { globals: globals.browser, parser: tseslint.parser },
+import eslint from '@eslint/js';
+import globals from 'globals';
+import importPlugin from 'eslint-plugin-import';
+import eslintPluginReact from 'eslint-plugin-react';
+import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
   importPlugin.flatConfigs.recommended,
   {
-    languageOptions: { globals: globals.browser },
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: { globals: globals.browser, parser: tseslint.parser },
+    plugins: { react: eslintPluginReact, 'react-hooks': eslintPluginReactHooks },
     rules: {
       'no-unused-vars': 'error',
       'no-undef': 'error',
@@ -36,4 +49,4 @@ export default [
       ],
     },
   },
-];
+);

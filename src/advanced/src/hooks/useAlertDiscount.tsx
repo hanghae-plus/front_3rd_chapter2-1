@@ -1,11 +1,12 @@
+import { useEffect, useRef } from 'react';
+
 import {
+  SUGGEST_DISCOUNT_RATE,
+  SUGGEST_TIME_INTERVAL,
   SURPRISE_DISCOUNT_PROBABILITY,
   SURPRISE_DISCOUNT_RATE,
   SURPRISE_TIME_INTERVAL,
-  SUGGEST_DISCOUNT_RATE,
-  SUGGEST_TIME_INTERVAL,
 } from '../constants';
-import { useEffect, useRef } from 'react';
 import { useCartStore, useProductStore } from '../stores';
 
 const useEvents = () => {

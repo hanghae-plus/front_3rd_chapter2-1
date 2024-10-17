@@ -1,6 +1,8 @@
 import { MouseEvent } from 'react';
-import type { CartItemModel } from '../types/cart';
+
 import { useCartStore, useProductStore } from '../stores';
+
+import type { CartItemModel } from '../types/cart';
 
 const useCartOperations = () => {
   const storeCartItems = useCartStore((state) => state.cartItems);

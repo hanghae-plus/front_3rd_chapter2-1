@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
+
+import { SALE_DAY, SALE_DAY_DISCOUNT_RATE, TOTAL_BULK_DISCOUNT_AMOUNT, TOTAL_BULK_DISCOUNT_RATE } from '../constants';
 import { useCartStore } from '../stores';
 import { calculateDiscountedPrice, calculateDiscountRate, getProductBulkDiscountRate } from '../utils/discount';
-import { SALE_DAY, SALE_DAY_DISCOUNT_RATE, TOTAL_BULK_DISCOUNT_AMOUNT, TOTAL_BULK_DISCOUNT_RATE } from '../constants';
 
 const useCartTotalPrice = () => {
   const storeCartItems = useCartStore((state) => state.cartItems);

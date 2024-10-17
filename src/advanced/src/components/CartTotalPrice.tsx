@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+
 import useCartTotalPrice from '../hooks/useCartTotalPrice';
-import { discountRateToPercent } from '../utils/discount';
 import { useCartStore } from '../stores';
+import { discountRateToPercent } from '../utils/discount';
 
 const CartTotalPrice = () => {
   const storeCartItems = useCartStore((state) => state.cartItems);

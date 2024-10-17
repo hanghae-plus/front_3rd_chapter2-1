@@ -1,7 +1,9 @@
 import { useCartOperations } from '../hooks';
 import { useCartStore } from '../stores';
-import type { CartItemModel } from '../types/cart';
+
 import OperationButton from './OperationButton';
+
+import type { CartItemModel } from '../types/cart';
 
 type Props = {
   cartItem: CartItemModel;

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import type { ProductModel } from '../types/cart';
+
 import { products } from '../data/products';
+
+import type { ProductModel } from '../types/cart';
 
 type State = {
   products: ProductModel[];

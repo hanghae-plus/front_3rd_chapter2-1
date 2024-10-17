@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+
 import App from './src/App';
 
 // Clear the existing HTML content
