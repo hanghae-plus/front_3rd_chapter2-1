@@ -1,7 +1,7 @@
 import updateSelectOptions from '../components/updateSelectOptions';
 import { productList } from '../data/product';
 
-export function setLuckySale() {
+export function activateLuckySale() {
   setTimeout(function () {
     setInterval(function () {
       const randomIndex = Math.floor(
@@ -20,7 +20,7 @@ export function setLuckySale() {
   }, Math.random() * 10000);
 }
 
-export function setSuggestSale() {
+export function activateSuggestSale() {
   setTimeout(function () {
     setInterval(function () {
       const lastSelectedId = productList.getLastSelectedId();

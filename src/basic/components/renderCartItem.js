@@ -4,9 +4,8 @@ import {
   createRemoveBtn,
   createSpan,
 } from '../utils/createElements';
-import { cartList } from '../data/cart';
 
-export const renderCartItem = ({ id, name, price }) => {
+const renderCartItem = ({ id, name, price }) => {
   const $cartList = document.getElementById('cart-items');
 
   const $wrap = createDiv({
@@ -33,12 +32,4 @@ export const renderCartItem = ({ id, name, price }) => {
   $cartList.appendChild($wrap);
 };
 
-export const reRenderCartItem = (id) => {
-  const $cartItem = document.getElementById(id);
-  if (!cartList.hasItem(id)) return $cartItem.remove();
-
-  const { name, price, quantity } = cartList.getItem(id).toObject();
-
-  const $cartSpan = $cartItem.querySelector('span');
-  $cartSpan.textContent = `${name} - ${price}원 x ${quantity}`;
-};
+export default renderCartItem;

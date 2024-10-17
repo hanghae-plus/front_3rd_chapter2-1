@@ -7,7 +7,8 @@ import {
 } from '../utils/createElements';
 import { cartList } from '../data/cart';
 import { productList } from '../data/product';
-import { renderCartItem, reRenderCartItem } from '../components/renderCartItem';
+import renderCartItem from '../components/renderCartItem';
+import updateCartItem from '../components/updateCartItem';
 
 const renderHome = () => {
   const $content = createDiv({ className: 'bg-gray-100 p-8' });
@@ -53,7 +54,7 @@ function handleAdd() {
   // 장바구니에 이미 있는 상품인 경우
   if (cartList.hasItem(id)) {
     cartList.getItem(id).increaseQuantity();
-    reRenderCartItem(id);
+    updateCartItem(id);
   }
   // 장바구니에 없는 상품인 경우
   else {
@@ -99,7 +100,7 @@ function handleClickCartList(event) {
     cartList.removeItem(id);
   }
 
-  reRenderCartItem(id);
+  updateCartItem(id);
   calculateCart();
 }
 

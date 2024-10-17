@@ -1,25 +1,28 @@
 import renderBonusPoints from '../components/renderBonusPoints';
 import { cartList } from '../data/cart';
-import { productList } from '../data/product';
 import { increaseBonusPoints } from '../data/point';
-import { createSpan } from './createElements';
+import updateStock from '../components/updateStock';
+import renderCartTotal from '../components/renderCartTotal';
 
+const PRODUCT_DISCOUNT_QUANTITY = 10;
+const PRODUCT_DISCOUNT_RATE = {
+  p1: 0.1,
+  p2: 0.15,
+  p3: 0.2,
+  p4: 0.05,
+  p5: 0.25,
+};
 const getDiscountRate = (cart) => {
   const { id, quantity } = cart;
   let rate = 0;
-
-  if (quantity >= 10) {
-    if (id === 'p1') rate = 0.1;
-    else if (id === 'p2') rate = 0.15;
-    else if (id === 'p3') rate = 0.2;
-    else if (id === 'p4') rate = 0.05;
-    else if (id === 'p5') rate = 0.25;
-  }
+  if (quantity >= PRODUCT_DISCOUNT_QUANTITY) rate = PRODUCT_DISCOUNT_RATE[id];
 
   return rate;
 };
 
-const applyBulkDiscount = () => {
+const BULK_DISCOUNT_QUANTITY = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+const calculateBulkDiscount = () => {
   const totalCount = cartList.getTotalQuantity();
   const totalOriginPrice = cartList.getTotalPrice();
   let totalDiscountPrice = cartList
@@ -31,8 +34,8 @@ const applyBulkDiscount = () => {
     );
   let rate = 0;
 
-  if (totalCount >= 30) {
-    let bulkDiscount = totalDiscountPrice * 0.25;
+  if (totalCount >= BULK_DISCOUNT_QUANTITY) {
+    let bulkDiscount = totalDiscountPrice * BULK_DISCOUNT_RATE;
     let itemDiscount = totalOriginPrice - totalDiscountPrice;
 
     if (bulkDiscount > itemDiscount) {
@@ -46,10 +49,12 @@ const applyBulkDiscount = () => {
   return [rate, totalDiscountPrice];
 };
 
-const getSpecialDiscountRate = (rate, totalPrice) => {
-  if (new Date().getDay() === 2) {
-    totalPrice *= 1 - 0.1;
-    rate = Math.max(rate, 0.1);
+const SPECIAL_DISCOUNT_DAY = 2; // 화요일
+const SPECIAL_DISCOUNT_RATE = 0.1;
+const calculateSpecialDiscount = (rate, totalPrice) => {
+  if (new Date().getDay() === SPECIAL_DISCOUNT_DAY) {
+    totalPrice *= 1 - SPECIAL_DISCOUNT_RATE;
+    rate = Math.max(rate, SPECIAL_DISCOUNT_RATE);
   }
 
   rate = isNaN(rate) ? 0 : rate;
@@ -57,38 +62,14 @@ const getSpecialDiscountRate = (rate, totalPrice) => {
   return [rate, totalPrice];
 };
 
-function updateStock() {
-  const $stock = document.getElementById('stock-status');
-  let infoMsg = '';
-
-  productList.toObject().forEach(function (item) {
-    const quantity = item.quantity;
-    const name = item.name;
-
-    if (quantity < 5)
-      infoMsg += `${name}: ${quantity > 0 ? `재고 부족 (${quantity}개 남음)` : '품절'}\n\n`;
-  });
-
-  $stock.textContent = infoMsg;
-}
-
 function calculateCart() {
-  const $sum = document.getElementById('cart-total');
+  let [rate, totalPrice] = calculateBulkDiscount();
+  [rate, totalPrice] = calculateSpecialDiscount(rate, totalPrice);
 
-  let [rate, totalPrice] = applyBulkDiscount();
-  [rate, totalPrice] = getSpecialDiscountRate(rate, totalPrice);
-
-  $sum.textContent = `총액: ${Math.round(totalPrice)}원`;
-
-  if (rate > 0) {
-    let span = createSpan({
-      text: `(${(rate * 100).toFixed(1)}% 할인 적용)`,
-      className: 'text-green-500 ml-2',
-    });
-    $sum.appendChild(span);
-  }
+  renderCartTotal(totalPrice, rate);
 
   updateStock();
+
   increaseBonusPoints(totalPrice);
   renderBonusPoints();
 }
