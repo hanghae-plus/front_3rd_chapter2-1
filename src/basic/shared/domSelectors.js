@@ -5,4 +5,5 @@ export const getDOMElements = () => ({
   $cartProduct: document.getElementById('cart-items'),
   $cartTotal: document.getElementById('cart-total'),
   $stockStatus: document.getElementById('stock-status'),
+  $pointsTag: document.getElementById('loyalty-points'),
 });

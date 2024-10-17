@@ -112,13 +112,12 @@ const calculateAndUpdateBonusPoints = (totalAmount) => {
 };
 
 const updateBonusPointsDisplay = (bonusPoints) => {
-  const { $cartTotal } = getDOMElements();
-  const pointsTag = document.getElementById('loyalty-points');
+  const { $cartTotal, $pointsTag } = getDOMElements();
 
-  if (!pointsTag) {
+  if (!$pointsTag) {
     $cartTotal.innerHTML += BonusPoints(bonusPoints);
   } else {
-    pointsTag.textContent = `보너스 포인트: ${bonusPoints}점`;
+    $pointsTag.textContent = `보너스 포인트: ${bonusPoints}점`;
   }
 };
 
