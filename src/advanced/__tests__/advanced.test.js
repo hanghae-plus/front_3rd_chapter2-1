@@ -1,10 +1,9 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
 describe('advanced test', () => {
-
   describe.each([
-    { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js'), },
+    { type: 'origin', loadFile: () => import('../../main.js') },
+    { type: 'advanced', loadFile: () => import('../App.tsx') }
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
@@ -24,6 +23,8 @@ describe('advanced test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+      const mockDate = new Date('2024-10-14');
+      vi.setSystemTime(mockDate);
     });
 
     afterEach(() => {
@@ -74,7 +75,7 @@ describe('advanced test', () => {
     });
 
     it('장바구니에서 상품을 삭제할 수 있는지 확인', () => {
-      sel.value='p1';
+      sel.value = 'p1';
       addBtn.click();
       const removeBtn=cartDisp.querySelector('.remove-item');
       removeBtn.click();
