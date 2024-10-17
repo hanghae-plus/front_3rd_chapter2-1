@@ -17,7 +17,7 @@ export default function SelectSection({ onSelect, options: optionsProp }: Select
 
   const addProduct = useCallback(() => {
     const selectedOption = optionsProp.find((option) => option.id === selectedProductId);
-    if (selectedOption) {
+    if (selectedOption && selectedOption.quantity > 0) {
       onSelect?.({ ...selectedOption, quantity: QUANTITY_CHANGE.PLUS });
     }
   }, [onSelect, optionsProp, selectedProductId]);
