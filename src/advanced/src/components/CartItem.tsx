@@ -1,4 +1,3 @@
-// src/components/CartItem.tsx
 import React from 'react';
 import { CartItem as Item } from '../types';
 

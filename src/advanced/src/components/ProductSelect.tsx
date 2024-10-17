@@ -14,7 +14,6 @@ const ProductSelect: React.FC<ProductSelectProps> = ({ products, onAddToCart }) 
   };
 
   const handleAdd = () => {
-    console.log(selectedId);
     if (selectedId) {
       onAddToCart(selectedId);
       // setSelectedId('');

@@ -1,4 +1,3 @@
-// src/components/CartTotal.tsx
 import React from 'react';
 
 interface CartTotalProps {
