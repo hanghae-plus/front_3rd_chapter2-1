@@ -14,7 +14,7 @@
 // - 코드가 Prettier를 통해 일관된 포맷팅이 적용되어 있는가? O
 // - 적절한 줄바꿈과 주석을 사용하여 코드의 논리적 단위를 명확히 구분했는가? O <- 함수별, 버튼별 단위 분리. 추가로 더 나눌 부분 있는지 확인할 예정
 // - 변수명과 함수명이 그 역할을 명확히 나타내며, 일관된 네이밍 규칙을 따르는가?
-// - 매직 넘버와 문자열을 의미 있는 상수로 추출했는가?
+// - 매직 넘버와 문자열을 의미 있는 상수로 추출했는가? O
 // - 중복 코드를 제거하고 재사용 가능한 형태로 리팩토링했는가?
 // - 함수가 단일 책임 원칙을 따르며, 한 가지 작업만 수행하는가?
 // - 조건문과 반복문이 간결하고 명확한가? 복잡한 조건을 함수로 추출했는가?
@@ -32,12 +32,34 @@
 // - 리팩토링 시 기존 기능을 그대로 유지하면서 점진적으로 개선했는가?
 // - 코드 리뷰를 통해 다른 개발자들의 피드백을 반영하고 개선했는가?
 
-import createElem from '../component/createElem';
+import createElem from '../utils/createElem';
 
 // * 전역변수
 
-let prodList, sel, addBtn, cartDisp, sum, stockInfo, lastSel = '';
-let bonusPts = 0, totalAmt = 0, itemCnt = 0;
+let prodList,
+  lastSel = '';
+let bonusPts = 0,
+  totalAmt = 0,
+  itemCnt = 0;
+
+const LUCK_DISCOUNT_PROBABILITY = 0.3;
+const LUCK_DISCOUNT_RATE = 0.8;
+const LUCK_TIME_INTERVAL = 30000;
+const LUCK_TIME_TIMEOUT_1 = 10000;
+const LUCK_TIME_TIMEOUT_2 = 20000;
+
+const SUGGEST_DISCOUNT_RATE = 0.95;
+const SUGGEST_TIME_INTERVAL = 60000;
+
+const PRODUCT_BULK_DISCOUNT_AMOUNT = 10;
+
+const SALE_DAY = 2;
+const SALE_DAY_DISCOUNT_RATE = 0.1;
+
+const ITEM_DISCOUNT_AMOUNT = 30;
+const ITEM_DISCOUNT_RATE = 0.25;
+
+// 돔 생성
 
 const elements = {
   root: document.getElementById('app'),
@@ -45,9 +67,10 @@ const elements = {
   wrap: createElem('div', { className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8' }),
   hTxt: createElem('h1', { className: 'text-2xl font-bold mb-4' }, '장바구니'),
   cartDisp: createElem('div', { id: 'cart-items' }),
-  sum: createElem('div', { 
-    id: 'cart-total', 
-    className: 'text-xl font-bold my-4' }),
+  sum: createElem('div', {
+    id: 'cart-total',
+    className: 'text-xl font-bold my-4',
+  }),
   sel: createElem('select', {
     id: 'product-select',
     className: 'border rounded p-2 mr-2',
@@ -57,13 +80,16 @@ const elements = {
     {
       id: 'add-to-cart',
       className: 'bg-blue-500 text-white px-4 py-2 rounded',
-    }, '추가'
+    },
+    '추가'
   ),
   stockInfo: createElem('div', {
     id: 'stock-status',
     className: 'text-sm text-gray-500 mt-2',
   }),
 };
+
+// 돔 초기화
 
 const initializeElements = () => {
   elements.root.appendChild(elements.cont);
@@ -116,17 +142,18 @@ const main = () => {
     updatePrice();
     initializeElements();
     calcCart();
-    
+
     setTimeout(() => {
       setInterval(() => {
         var luckyItem = prodList[Math.floor(Math.random() * prodList.length)];
-        if (Math.random() < 0.3 && luckyItem.stock > 0) {
-          luckyItem.price = Math.round(luckyItem.price * 0.8);
+        if (Math.random() < LUCK_DISCOUNT_PROBABILITY && luckyItem.stock > 0) {
+          // LUCK_DISCOUNT_PROBABILITY : 0.3
+          luckyItem.price = Math.round(luckyItem.price * LUCK_DISCOUNT_RATE); // LUCK_DISCOUNT_RATE : 0.8
           alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
           updatePrice();
         }
-      }, 30000);
-    }, Math.random() * 10000);
+      }, LUCK_TIME_INTERVAL); // LUCK_TIME_INTERVAL : 30초
+    }, Math.random() * LUCK_TIME_TIMEOUT_1); // LUCK_TIME_TIMEOUT_1 : 10초
     setTimeout(() => {
       setInterval(() => {
         if (lastSel) {
@@ -135,12 +162,12 @@ const main = () => {
           });
           if (suggest) {
             alert(suggest.name + '은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!');
-            suggest.price = Math.round(suggest.price * 0.95);
+            suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE); // 0.95
             updatePrice();
           }
         }
-      }, 60000);
-    }, Math.random() * 20000);
+      }, SUGGEST_TIME_INTERVAL); // SUGGEST_TIME_INTERVAL : 60초
+    }, Math.random() * LUCK_TIME_TIMEOUT_2); //LUCK_TIME_TIMEOUT_2 : 20초
   } catch (e) {}
 };
 
@@ -179,7 +206,9 @@ const calcCart = () => {
       itemCnt += stock;
       subTot += itemTot;
 
-      if (stock >= 10) {
+      if (stock >= PRODUCT_BULK_DISCOUNT_AMOUNT) {
+        // PRODUCT_BULK_DISCOUNT_AMOUNT : 10개
+        // 할인율 퍼센테이지
         switch (curItem.id) {
           case 'p1':
             disc = 0.1;
@@ -202,12 +231,13 @@ const calcCart = () => {
     })();
   }
   let discRate = 0;
-  if (itemCnt >= 30) {
-    var bulkDisc = totalAmt * 0.25;
+  if (itemCnt >= ITEM_DISCOUNT_AMOUNT) {
+    // ITEM_DISCOUNT_AMOUNT : 30개
+    var bulkDisc = totalAmt * ITEM_DISCOUNT_RATE; // ITEM_DISCOUNT_RATE : 0.25%
     var itemDisc = subTot - totalAmt;
     if (bulkDisc > itemDisc) {
-      totalAmt = subTot * (1 - 0.25);
-      discRate = 0.25;
+      totalAmt = subTot * (1 - ITEM_DISCOUNT_RATE); // ITEM_DISCOUNT_RATE : 0.25%
+      discRate = ITEM_DISCOUNT_RATE; // ITEM_DISCOUNT_RATE : 0.25%
     } else {
       discRate = (subTot - totalAmt) / subTot;
     }
@@ -215,9 +245,10 @@ const calcCart = () => {
     discRate = (subTot - totalAmt) / subTot;
   }
 
-  if (new Date().getDay() === 2) {
-    totalAmt *= 1 - 0.1;
-    discRate = Math.max(discRate, 0.1);
+  if (new Date().getDay() === SALE_DAY) {
+    // SALE_DAY : 2일
+    totalAmt *= 1 - SALE_DAY_DISCOUNT_RATE; // SALE_DAY_DISCOUNT_RATE : 0.1%
+    discRate = Math.max(discRate, SALE_DAY_DISCOUNT_RATE); // SALE_DAY_DISCOUNT_RATE : 0.1%
   }
   elements.sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
   if (discRate > 0) {
@@ -233,7 +264,7 @@ const calcCart = () => {
 // * 보너스포인트 계산
 
 const renderBonusPts = () => {
-  bonusPts += Math.floor(totalAmt / 1000);
+  bonusPts += Math.floor(totalAmt / 1000); // 금액의 10% 포인트로 적립
   var ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
     ptsTag = document.createElement('span');
@@ -318,10 +349,10 @@ elements.cartDisp.addEventListener('click', (event) => {
     let prod = prodList.find((p) => {
       return p.id === prodId;
     });
+
     if (quantity_change) {
       let qtyChange = parseInt(target.dataset.change); // 1 또는 -1
       let newQty = span_textContent + qtyChange;
-      console.log(newQty);
       if (newQty > 0 && newQty <= prod.stock + span_textContent) {
         itemElem.querySelector('span').textContent = itemElem.querySelector('span').textContent.split('x ')[0] + 'x ' + newQty;
         prod.stock -= qtyChange;
