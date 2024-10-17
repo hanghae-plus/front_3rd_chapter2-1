@@ -20,15 +20,15 @@ const CartProductItem = ({ cartProduct, setCartProductList }: CartProductItemPro
     return prev.filter(product => product.id !== cartProduct.id);
   };
 
-  const decreaseCount = () => {
+  const handleClickDecrease = () => {
     if (cartProduct.count === 1) {
-      removeProduct();
+      handleClickRemove();
     } else {
       setCartProductList(prev => setCartProductCount(prev, DECREASE_COUNT));
     }
   };
 
-  const increaseCount = () => {
+  const handleClickIncrease = () => {
     if (cartProduct.count === cartProduct.quantity) {
       alert("재고가 부족합니다!");
     } else {
@@ -36,7 +36,7 @@ const CartProductItem = ({ cartProduct, setCartProductList }: CartProductItemPro
     }
   };
 
-  const removeProduct = () => {
+  const handleClickRemove = () => {
     setCartProductList(prev => removeCartProduct(prev));
   };
 
@@ -48,7 +48,7 @@ const CartProductItem = ({ cartProduct, setCartProductList }: CartProductItemPro
           className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
           data-product-id={cartProduct.id}
           data-change="-1"
-          onClick={decreaseCount}
+          onClick={handleClickDecrease}
         >
           -
         </button>
@@ -56,14 +56,14 @@ const CartProductItem = ({ cartProduct, setCartProductList }: CartProductItemPro
           className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
           data-product-id={cartProduct.id}
           data-change="1"
-          onClick={increaseCount}
+          onClick={handleClickIncrease}
         >
           +
         </button>
         <button
           className="remove-item bg-red-500 text-white px-2 py-1 rounded"
           data-product-id={cartProduct.id}
-          onClick={removeProduct}
+          onClick={handleClickRemove}
         >
           삭제
         </button>
