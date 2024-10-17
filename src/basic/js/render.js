@@ -2,8 +2,6 @@ import { calcCart } from './cart.js';
 import { ALERT_SHORT_STOCK, PRODUCT_LIST } from './constants.js';
 import { productSelectDropDown, renderCart } from './layout.js';
 
-let renderTotalAmount = 0;
-
 const renderProductList = () => {
   productSelectDropDown.innerHTML = '';
 
@@ -46,6 +44,7 @@ const renderCartProductElement = (productToAdd, qty = 1) => {
     `;
   return newProduct;
 };
+
 const initRenderCartBtnEventListeners = () => {
   renderCart.addEventListener('click', (event) => {
     const target = event.target;
@@ -82,10 +81,4 @@ const initRenderCartBtnEventListeners = () => {
   });
 };
 
-export {
-  renderProductList,
-  renderBonusPoints,
-  renderCartProductElement,
-  renderTotalAmount,
-  initRenderCartBtnEventListeners,
-};
+export { renderProductList, renderBonusPoints, renderCartProductElement, initRenderCartBtnEventListeners };
