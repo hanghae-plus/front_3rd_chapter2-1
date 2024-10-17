@@ -9,6 +9,7 @@ interface RenderElementType {
   cartProductList: IProduct[];
   bonusPointsSpan: string;
   productList: IProduct[];
+  selectedProductId: string;
   setRenderCart: React.Dispatch<React.SetStateAction<JSX.Element>>;
   setProductSum: React.Dispatch<React.SetStateAction<string>>;
   setProductSelectDropDown: React.Dispatch<React.SetStateAction<JSX.Element>>;
@@ -19,6 +20,7 @@ interface RenderElementType {
   setCartProductList: React.Dispatch<React.SetStateAction<IProduct[]>>;
   setBonusPointsSpan: React.Dispatch<React.SetStateAction<string>>;
   setProductList: React.Dispatch<React.SetStateAction<IProduct[]>>;
+  setSelectedProductId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface IProduct {
