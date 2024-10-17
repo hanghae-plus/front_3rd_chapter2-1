@@ -30,6 +30,11 @@ export default [
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       'no-alert': 'off',
+      radix: 'off',
+      'no-param-reassign': 'off',
+      'no-promise-executor-return': 'off',
+      'no-plusplus': 'off',
+      'no-shadow': 'off',
     },
   },
 ];
