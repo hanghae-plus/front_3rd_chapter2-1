@@ -100,6 +100,7 @@ function calcCart() {
 }
 
 main();
+function applyDiscount() {}
 
 function addEvent() {
   addBtn.addEventListener('click', function () {
@@ -150,7 +151,7 @@ function addEvent() {
           alert('재고가 부족합니다.');
         }
       } else if (tgt.classList.contains('remove-item')) {
-        var remQty = getAmount(itemElem);
+        const remQty = getAmount(itemElem);
         prod.amount += remQty;
         itemElem.remove();
       }

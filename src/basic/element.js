@@ -1,4 +1,4 @@
-import { calcDiscountPrice } from './calc';
+import { calcDiscountPrice, calTotalAmount } from './calc';
 
 export const createElement = (type, props) => {
   const element = document.createElement(type);
@@ -57,11 +57,17 @@ export const renderElement = (prodList) => {
 
   return container;
 };
-
+export const renderTotalAmount = (discRate, totalAmt) => {
+  if (new Date().getDay() === 2) {
+    totalAmt = calTotalAmount(totalAmt, 0.1);
+    discRate = Math.max(discRate, 0.1);
+  }
+  sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
+};
 export const renderOptions = (prodList) => {
   sel.innerHTML = '';
-  prodList.forEach(function (item) {
-    var opt = document.createElement('option');
+  prodList.forEach((item) => {
+    const opt = document.createElement('option');
     opt.value = item.id;
 
     opt.textContent = item.name + ' - ' + item.price + '원';
@@ -105,7 +111,13 @@ export const setDiscountAlert = (prodList, lastSel) => {
     }
   }
 };
-
+export const renderTotalTxt = (totalAmt, discRate) => {
+  if (new Date().getDay() === 2) {
+    totalAmt = calTotalAmount(totalAmt, 0.1);
+    discRate = Math.max(discRate, 0.1);
+  }
+  sum.textContent = '총액: ' + Math.round(totalAmt) + '원';
+};
 export const renderPointTag = (bonusPts) => {
   let ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
