@@ -58,7 +58,7 @@ const useCartUtils = () => {
       discountRate = Math.max(discountRate, DISCOUNT_10_PERCENT);
     }
 
-    setProductSum(`총액: ${Math.round(totalAmount)}원   ${stockCnt}`);
+    setProductSum(`총액: ${Math.round(totalAmount)}원`);
 
     if (discountRate > 0) {
       setDiscountSpan(`(${(discountRate * 100).toFixed(1)}% 할인 적용)`);
