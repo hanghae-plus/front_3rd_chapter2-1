@@ -1,5 +1,5 @@
 import { appendChildren, createElement, getElementById } from '../../util/element.js';
-import { CART_VIEW_ID, SUM_VIEW_ID } from '../../const/VIEW_ID.js';
+import { CART_VIEW_ID, POINT_VIEW_ID, STOCK_VIEW_ID, SUM_VIEW_ID } from '../../const/VIEW_ID.js';
 import { PROD_LIST } from '../../const/PROD_LIST.js';
 import plusPurchaseCount from '../../util/plusPurchaseCount.js';
 import {
@@ -22,8 +22,8 @@ export default function calcCart() {
   const { finalPaymentPrice, highestDiscountRatio } = applyTuesdayDiscount(paymentPrice, discountRatio);
   updateSumView(finalPaymentPrice, highestDiscountRatio);
 
-  // updateStockInfo();
-  // renderBonusPts();
+  updateStockView();
+  renderBonusPoints(finalPaymentPrice);
 }
 
 function calculatePrices(itemViewsInCart) {
@@ -100,4 +100,39 @@ function updateSumView(paymentPrice, discountRatio) {
     spanView.textContent = '(' + (discountRatio * 100).toFixed(1) + '% 할인 적용)';
     appendChildren(sumView, spanView);
   }
+}
+
+function updateStockView() {
+  let productMessage = '';
+
+  PROD_LIST.forEach((product) => {
+    if (product.quantity < 5) {
+      productMessage += product.name + ': ' + (product.quantity > 0 ? '재고 부족 (' + product.quantity + '개 남음)' : '품절') + '\n';
+    }
+  });
+
+  const stockView = getElementById(STOCK_VIEW_ID);
+  stockView.textContent = productMessage;
+}
+
+function renderBonusPoints(paymentPrice) {
+  const bonusPoints = Math.floor(paymentPrice / 1000);
+
+  let ptsTag = getElementById(POINT_VIEW_ID);
+  if (!ptsTag) {
+    ptsTag = createBonusPointsView();
+  }
+
+  ptsTag.textContent = `(포인트: ${bonusPoints})`;
+}
+
+function createBonusPointsView() {
+  const ptsTag = createElement('span');
+  ptsTag.id = POINT_VIEW_ID;
+  ptsTag.className = 'text-blue-500 ml-2';
+
+  const sumView = getElementById(SUM_VIEW_ID);
+  appendChildren(sumView, ptsTag);
+
+  return ptsTag;
 }
