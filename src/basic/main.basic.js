@@ -1,7 +1,7 @@
-let prodList, containerWrap, container, title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList;
+let prodList, containerWrap, container, title, cartList, cartcartTotalAmount, cartItemSelect, addBtn, soldoutList;
 let lastSelectedProduct,
   bonusPoints = 0,
-  totalPrice = 0,
+  cartTotalAmount = 0,
   itemCnt = 0;
 
 // 돔 생성 함수
@@ -74,7 +74,7 @@ const main = () => {
     id: 'cart-items',
   });
 
-  cartTotalPrice = createElementWithAttributes('div', {
+  cartcartTotalAmount = createElementWithAttributes('div', {
     id: 'cart-total',
     className: 'text-xl font-bold my-4',
   });
@@ -97,7 +97,7 @@ const main = () => {
 
   updateProdList();
 
-  container.append(title, cartList, cartTotalPrice, cartItemSelect, addBtn, soldoutList);
+  container.append(title, cartList, cartcartTotalAmount, cartItemSelect, addBtn, soldoutList);
   containerWrap.appendChild(container);
   root.appendChild(container);
 
@@ -122,11 +122,11 @@ const updateProdList = () => {
 
 // 금액 계산 함수
 const calcCartPrice = () => {
-  let totalPrice = 0;
+  let cartTotalAmount = 0;
   let totalCount = 0;
   const cartItems = cartList.children;
 
-  let subtotal = 0;
+  let originalPrice = 0;
   for (const item of cartItems) {
     let currentItem = null;
 
@@ -140,11 +140,11 @@ const calcCartPrice = () => {
     if (!currentItem) return;
 
     const quantity = parseInt(item.querySelector('span').textContent.split('x ')[1]);
-    const itemTotal = currentItem.price * quantity;
+    const totalPrice = currentItem.price * quantity;
     let discount = 0;
 
     totalCount += quantity;
-    subtotal += itemTotal;
+    originalPrice += totalPrice;
     if (quantity >= 10) {
       if (currentItem.id === 'p1') {
         discount = 0.1;
@@ -161,54 +161,52 @@ const calcCartPrice = () => {
       }
     }
 
-    totalPrice += itemTotal * (1 - discount);
+    cartTotalAmount += totalPrice * (1 - discount);
   }
   let discountRate = 0;
 
   if (totalCount >= 30) {
-    const bulkDiscount = totalPrice * 0.25;
-    const itemDiscount = subtotal - totalPrice;
+    const bulkDiscount = cartTotalAmount * 0.25;
+    const itemDiscount = originalPrice - cartTotalAmount;
 
     if (bulkDiscount > itemDiscount) {
-      totalPrice = subtotal * 0.75;
+      cartTotalAmount = originalPrice * 0.75;
       discountRate = 0.25;
     } else {
-      discountRate = (subtotal - totalPrice) / subtotal;
+      discountRate = (originalPrice - cartTotalAmount) / originalPrice;
     }
   } else {
-    discountRate = (subtotal - totalPrice) / subtotal;
+    discountRate = (originalPrice - cartTotalAmount) / originalPrice;
   }
 
   // 화요일에 추가 할인 적용
   if (new Date().getDay() === 2) {
-    totalPrice *= 1 - 0.1;
+    cartTotalAmount *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
   }
 
-  cartTotalPrice.textContent = '총액: ' + Math.round(totalPrice) + '원';
+  cartcartTotalAmount.textContent = '총액: ' + Math.round(cartTotalAmount) + '원';
 
   if (discountRate > 0) {
     const discountSpan = document.createElement('span');
     discountSpan.className = 'text-green-500 ml-2';
     discountSpan.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-    cartTotalPrice.appendChild(discountSpan);
+    cartcartTotalAmount.appendChild(discountSpan);
   }
 
   updateSoldoutList();
-  renderBonusPts(totalPrice);
+  renderBonusPts(cartTotalAmount);
 };
 
-const renderBonusPts = (totalPrice) => {
-  console.log('kyj renderBonusPts totalPrice', totalPrice, 'bonusPoints:', bonusPoints);
-  bonusPoints = Math.floor(totalPrice / 1000);
-  console.log('kyj bonusPoints 결과 ', bonusPoints);
+const renderBonusPts = (cartTotalAmount) => {
+  bonusPoints += Math.floor(cartTotalAmount / 1000);
   let ptsTag = document.getElementById('loyalty-points');
   if (!ptsTag) {
     ptsTag = createElementWithAttributes('span', {
       id: 'loyalty-points',
       className: 'text-blue-500 ml-2',
     });
-    cartTotalPrice.appendChild(ptsTag);
+    cartcartTotalAmount.appendChild(ptsTag);
   }
   ptsTag.textContent = '(포인트: ' + bonusPoints + ')';
 };
