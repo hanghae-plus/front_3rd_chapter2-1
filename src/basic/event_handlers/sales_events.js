@@ -1,7 +1,7 @@
 import { prodList } from '../constant';
 import { lastSelObservable } from '../observable';
-import { updateSelOpts } from '../elements';
-import { updateCartItemPrices, calcCart } from '../services';
+import { updateSelOpts, calcCart } from '../elements';
+import { updateCartItemPrices } from '../services';
 
 // 세일 이벤트 초기화
 export const initSales = (productSel, cartItems, cartTotal, stockStatus) => {
