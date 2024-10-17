@@ -1,79 +1,88 @@
-import { main } from './mmain.js';
-import { createElementWithProps } from './createElement.js';
+import cartPage from './page/cartPage.js';
+import { PRODUCT_LIST } from './components/productList.js';
+import { updateProductSelect } from './components/productSelect.js';
+import { updateProductStock } from './components/productStock.js'
+import { calculateCart } from './components/cartTotal.js';
+import { createCartItem, updateCartItem } from './components/cartItem.js';
+import { handleAddCart } from './events/handleAddCart.js';
+
+document.getElementById('app').innerHTML = cartPage();
+const cartTotal = document.getElementById('cart-total');
+const productSelect = document.getElementById('product-select');
+const addCartBtn = document.getElementById('add-to-cart');
+const cartList = document.getElementById('cart-items');
+const stockStatus = document.getElementById('stock-status');
+const productList = PRODUCT_LIST;
 
 
-// 1.변수 표기 통일 let | 변수명 camelCase 사용
-/* 일단 역할 정의
-prodList, : 상품목록 -> productList
-sel, : 상품선택 드롭다운 -> productSelect
-addBtn, : 상품 추가 -> addCartBtn //
-cartDisp, : 장바구니 -> cartList
-sum, : 총 금액을 표시할 영역 -> cartTotal
-stockInfo; : 재고상태 -> stockStatus
-lastSel, : 마지막으로 선택한 상품 ID 저장 -> lastProduct
-bonusPts = 0, : 포인트 시스템을 위한 변수 -> pointSystem
-totalAmt = 0, : 총 금액을 저장 -> totalPrice
-itemCnt = 0; : 총 구매한 상품의 개수 -> totalItem
-*/
-// 동일한 변수 생략 cont -> containerDiv / wrap -> containerWrap / hTxt -> containerTitle
-// 함수로 묶어주기..!!
+function main() {
+  updateProductSelect(productList, productSelect);
+  calculateCart(cartList, productList, cartTotal);
 
 
+  // 상품 추가 이벤트
+  addCartBtn.addEventListener('click', handleAddCart(productSelect, productList, cartList, cartTotal, stockStatus));
 
-const root = document.getElementById('app');
-const containerDiv = createElementWithProps('div', {
-  className: 'bg-gray-100 p-8'
-});
-const containerWrap = createElementWithProps('div', {
-  className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
-});
-const containerTitle = createElementWithProps('h1', {
-  className: 'text-2xl font-bold mb-4',
-  textContent: '장바구니'
-});
+  // 수량변경 및 삭제
+  cartList.addEventListener('click', function (event) {
+    const target = event.target;
 
-const cartList = createElementWithProps('div', {
-  id: 'cart-items',
-});
+    if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
+      const productId = target.dataset.productId;
+      const product = productList.find(item => item.id === productId);
+      const cartItemElement = document.getElementById(productId);
 
-const cartTotal = createElementWithProps('div', {
-  id: 'cart-total',
-  className: 'text-xl font-bold my-4'
-});
+      if (target.classList.contains('quantity-change')) {
+        const countChange = parseInt(target.dataset.change); // +1인지 -1인지 값 받아오기
+        updateCartItem(cartItemElement, product, countChange);
+      } else if (target.classList.contains('remove-item')) {
+        product.stock += parseInt(cartItemElement.querySelector('span').textContent.split('x ')[1]);
+        cartItemElement.remove();
+      }
+      
+      calculateCart(cartList, productList, cartTotal);  // 장바구니 총액 재계산
+      updateProductStock(productList, stockStatus);
 
-const productSelect = createElementWithProps('select', {
-  id: 'product-select',
-  className: 'border rounded p-2 mr-2'
-});
+    }
 
-const addCartBtn = createElementWithProps('button', {
-  id: 'add-to-cart',
-  className: 'bg-blue-500 text-white px-4 py-2 rounded',
-  textContent: '추가'
-});
-
-const stockStatus = createElementWithProps('div', {
-  id: 'stock-status',
-  className: 'text-sm text-gray-500 mt-2',
-});
+  });
+  
 
 
-root.appendChild(containerDiv);
-containerDiv.appendChild(containerWrap);
-containerWrap.appendChild(containerTitle);
-containerWrap.appendChild(cartList);
-containerWrap.appendChild(cartTotal);
-containerWrap.appendChild(productSelect);
-containerWrap.appendChild(addCartBtn);
-containerWrap.appendChild(stockStatus);
+  // 20%할인 안내
+  setTimeout(function () {
+    setInterval(function () {
+      let luckyItem = productList[Math.floor(Math.random() * productList.length)];
+      if(Math.random() < 0.3 && luckyItem.stock > 0) {
+        luckyItem.price = Math.round(luckyItem.price * 0.8);
+        alert('번개세일! ' + luckyItem.name + '이(가) 20% 할인 중입니다!');
+        updateProductSelect();
+      }
+    }, 30000);
+  }, Math.random() * 10000);
 
-const productList = [
-  {id: 'p1', name: '상품1', price: 10000, stock: 50},
-  {id: 'p2', name: '상품2', price: 20000, stock: 30},
-  {id: 'p3', name: '상품3', price: 30000, stock: 20},
-  {id: 'p4', name: '상품4', price: 15000, stock: 0},
-  {id: 'p5', name: '상품5', price: 25000, stock: 10}
-];
+   // 5%추가할인
+  setTimeout(function () {
+    setInterval(function () {
+      const lastProduct = getLastPurchasedProduct();  // 마지막으로 구매한 상품을 추적하는 함수
+      if (lastProduct) {
+        const suggest = productList.find(item => item.id !== lastProduct.id && item.stock > 0);
+        if (suggest) {
+          alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
+          suggest.price = Math.round(suggest.price * 0.95);
+          updateProductSelect(productList);  // 상품 목록 업데이트
+        }
+      }
+    }, 60000);
+  }, Math.random() * 20000);
 
-main(productList, cartList, productSelect, cartTotal, stockStatus);
+}
+
+function getLastPurchasedProduct() {
+  // 구매 기록에서 마지막 상품을 가져오는 로직 구현
+  // 현재는 더미로 null 반환
+  return null;
+}
+
+main();
 

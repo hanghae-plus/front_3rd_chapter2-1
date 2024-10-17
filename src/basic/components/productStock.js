@@ -1,4 +1,4 @@
-export function updateStockStatus(productList, stockStatus) {
+export function updateProductStock(productList, stockStatus) {
     let infoMsg = '';
     productList.forEach(product => {
       if (product.stock < 5) {

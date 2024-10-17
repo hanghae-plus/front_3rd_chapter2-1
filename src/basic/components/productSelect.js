@@ -1,10 +1,8 @@
-// 상품 선택 드롭다운 
-import { createElementWithProps } from './createElement.js';
+import { createElementWithProps } from '../utils/createElement.js';
 
-export function updateSelOpts(productList, productSelect) {
+export function updateProductSelect(productList, productSelect) {
 
   productSelect.innerHTML = '';
-
   productList.forEach((product) => {
     const option = createElementWithProps('option', {
       value: product.id,

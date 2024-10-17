@@ -1,5 +1,5 @@
 // 장바구니 상품추가, 수정
-import { createElementWithProps } from './createElement.js';
+import { createElementWithProps } from '../utils/createElement.js';
 
 export function createCartItem(item) {
   return createElementWithProps('div', {
@@ -8,13 +8,15 @@ export function createCartItem(item) {
     innerHTML: `
       <span>${item.name} - ${item.price}원 x 1</span>
       <div>
-        <button class="quantity-change" data-product-id="${item.id}" data-change="-1">-</button>
-        <button class="quantity-change" data-product-id="${item.id}" data-change="1">+</button>
-        <button class="remove-item" data-product-id="${item.id}">삭제</button>
+        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${item.id}" data-change="-1">-</button>
+        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${item.id}" data-change="1">+</button>
+        <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${item.id}">삭제</button>
       </div>
     `,
   });
 }
+// updateCartItem(cartItem, selectedItem, 1);
+// cartItem는 선택한 상품의 도큐먼트
 
 export function updateCartItem(cartItemElement, product, countChange) {
   const remQty = parseInt(cartItemElement.querySelector('span').textContent.split('x ')[1]);
