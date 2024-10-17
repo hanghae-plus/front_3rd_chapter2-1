@@ -3,10 +3,20 @@ import { CartTotal } from './components/CartTotal/CartTotal';
 import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { useCart } from './hooks/useCart';
 import { useCartTotal } from './hooks/useCartTotal';
+import { useInitSales } from './hooks/useInitSales';
 
 export const App = () => {
-  const { cartList, deleteCart, handleUpsertCart, stockList } = useCart();
+  const {
+    cartList,
+    deleteCart,
+    lastSelectedId,
+    handleUpsertCart,
+    stockList,
+    updateStockPrice,
+  } = useCart();
   const cartTotal = useCartTotal(cartList);
+
+  useInitSales({ lastSelectedId, stockList, updateStockPrice });
 
   return (
     <div className="bg-gray-100 p-8">

@@ -10,28 +10,29 @@ export type HandleUpsertCart = (
 export type HandleDeleteCart = (targetCartItem: TCartItem) => void;
 
 export const useCart = () => {
+  const [lastSelectedId, setLastSelectedId] = useState('');
   const [cartList, setCartList] = useState<TCartList>([]);
-  const { stockList, updateStock } = useStock();
+  const { stockList, updateStockQuantity, updateStockPrice } = useStock();
 
   const addCart = useCallback(
     (targetStockItem: StockItem, quantityToAdd = 1) => {
-      updateStock(targetStockItem.id, -quantityToAdd);
+      updateStockQuantity(targetStockItem.id, -quantityToAdd);
       setCartList((prevCartList) => [
         ...prevCartList,
         { ...targetStockItem, quantity: quantityToAdd },
       ]);
     },
-    [updateStock]
+    [updateStockQuantity]
   );
 
   const deleteCart = useCallback<HandleDeleteCart>(
     (targetCartItem: TCartItem) => {
-      updateStock(targetCartItem.id, targetCartItem.quantity);
+      updateStockQuantity(targetCartItem.id, targetCartItem.quantity);
       setCartList((prevCartList) =>
         prevCartList.filter((item) => item.id !== targetCartItem.id)
       );
     },
-    [updateStock]
+    [updateStockQuantity]
   );
 
   const updateCart = useCallback(
@@ -53,7 +54,8 @@ export const useCart = () => {
         return;
       }
 
-      updateStock(targetCartItem.id, -quantityToUpdate);
+      setLastSelectedId(targetCartItem.id);
+      updateStockQuantity(targetCartItem.id, -quantityToUpdate);
       setCartList((prevCartList) =>
         prevCartList.map((item) =>
           item.id === targetCartItem.id
@@ -62,7 +64,7 @@ export const useCart = () => {
         )
       );
     },
-    [deleteCart, updateStock]
+    [deleteCart, updateStockQuantity]
   );
 
   const handleUpsertCart: HandleUpsertCart = useCallback(
@@ -83,7 +85,12 @@ export const useCart = () => {
     [addCart, cartList, stockList, updateCart]
   );
 
-  // TODO: useEffect로 cartList 변경될 때마다 calc하면 될듯?
-
-  return { stockList, cartList, handleUpsertCart, deleteCart };
+  return {
+    stockList,
+    cartList,
+    lastSelectedId,
+    handleUpsertCart,
+    deleteCart,
+    updateStockPrice,
+  };
 };
