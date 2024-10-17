@@ -21,15 +21,18 @@ export const useCart = () => {
         { ...targetStockItem, quantity: quantityToAdd },
       ]);
     },
-    []
+    [updateStock]
   );
 
-  const deleteCart = useCallback((targetCartItem: TCartItem) => {
-    updateStock(targetCartItem.id, targetCartItem.quantity);
-    setCartList((prevCartList) =>
-      prevCartList.filter((item) => item.id !== targetCartItem.id)
-    );
-  }, []);
+  const deleteCart = useCallback(
+    (targetCartItem: TCartItem) => {
+      updateStock(targetCartItem.id, targetCartItem.quantity);
+      setCartList((prevCartList) =>
+        prevCartList.filter((item) => item.id !== targetCartItem.id)
+      );
+    },
+    [updateStock]
+  );
 
   const updateCart = useCallback(
     (
@@ -59,7 +62,7 @@ export const useCart = () => {
         )
       );
     },
-    []
+    [deleteCart, updateStock]
   );
 
   const handleUpsertCart: HandleUpsertCart = useCallback(
@@ -77,7 +80,7 @@ export const useCart = () => {
         ? updateCart(targetStockItem, targetCartItem, quantity)
         : addCart(targetStockItem, quantity);
     },
-    []
+    [addCart, cartList, stockList, updateCart]
   );
 
   // TODO: useEffect로 cartList 변경될 때마다 calc하면 될듯?
