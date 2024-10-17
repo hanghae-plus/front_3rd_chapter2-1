@@ -33,7 +33,7 @@ class ShoppingCartApp {
 
   //#region UI Management
   /**
-   * DOM 요소를 생성하는 함수
+   * 확장 가능한 DOM 요소 생성 함수 ( 추후 확장 해야함 )
    * @param {string} tag - HTML 태그 이름
    * @param {Object} attributes - 속성 객체
    * @param {Array} children - 자식 노드 배열
@@ -41,13 +41,16 @@ class ShoppingCartApp {
    */
   createElement(tag, attributes = {}, children = []) {
     const $element = document.createElement(tag);
-    Object.keys(attributes).forEach((key) => {
-      if (key === "className") {
-        $element.className = attributes[key];
-      } else if (key === "textContent") {
-        $element.textContent = attributes[key];
-      } else {
-        $element.setAttribute(key, attributes[key]);
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (value === false || value === null || value === undefined) { // false, null, undefined는 무시
+        return;
+      }
+      if (typeof value === 'boolean') { // Boolean 속성 처리 (예: disabled, checked 등)
+        $element[key] = true;
+      } else if (key in $element) { // DOM 속성 처리 (예: className, textContent 등)
+        $element[key] = value;
+      } else { // 그 외 일반 속성 처리
+        $element.setAttribute(key, value);
       }
     });
     children.forEach((child) => $element.appendChild(child));
@@ -89,10 +92,11 @@ class ShoppingCartApp {
   updateProductOptions() {
     this.productSelect.innerHTML = "";
     this.productList.forEach((product) => {
-      const option = document.createElement("option");
-      option.value = product.id;
-      option.textContent = `${product.name} - ${product.value}원`;
-      option.disabled = product.quantity === 0;
+      const option = this.createElement("option", {
+        value: product.id,
+        textContent: `${product.name} - ${product.value}원`,
+        disabled: product.quantity === 0
+      });
       this.productSelect.appendChild(option);
     });
   }
@@ -131,10 +135,13 @@ class ShoppingCartApp {
 
     this.totalSumDisplay.textContent = `총액: ${Math.round(this.cartTotalPrice)}원`;
     if (discountRate > 0) {
-      const span = document.createElement("span");
-      span.className = "text-green-500 ml-2";
-      span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
+      const span = this.createElement("span", {
+        className: "text-green-500 ml-2",
+        textContent: `(${(discountRate * 100).toFixed(1)}% 할인 적용)`
+      });
+
       this.totalSumDisplay.appendChild(span);
+
     }
 
     this.updateStockInfo();
