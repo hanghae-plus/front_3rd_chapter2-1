@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { CartProductType } from "./product-container";
 import CartProductItem from "./cart-product-item";
+import TotalCost from "./total-cost";
 
 interface ProductCartProps {
   cartProductList: CartProductType[];
@@ -21,7 +22,7 @@ const ProductCart = ({ cartProductList, setCartProductList }: ProductCartProps) 
           );
         })}
       </div>
-      <div className="text-xl font-bold my-4" id="cart-total"></div>
+      <TotalCost cartProductList={cartProductList} />
     </>
   );
 };
