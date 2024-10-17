@@ -1,25 +1,8 @@
 import React from 'react';
-import { Cart, Product } from '../App';
+import useCart from '../hooks/useCart';
 
-const CartItem = ({ cart, productList, setCart, setProductList }) => {
-  const handleQuantityChange = (productId: string, change: number) => {
-    if ((cart[productId] || 0) + change < 0) {
-      return;
-    }
-
-    setCart((prevCart: Cart) => {
-      const newCart = { ...prevCart, [productId]: (prevCart[productId] || 0) + change };
-      if (newCart[productId] <= 0) {
-        delete newCart[productId];
-      }
-
-      return newCart;
-    });
-
-    setProductList((prevList: Product[]) =>
-      prevList.map((prev: Product) => (prev.id === productId ? { ...prev, quantity: prev.quantity - change } : prev)),
-    );
-  };
+const CartItem = () => {
+  const { cart, productList, changeQuantity } = useCart();
 
   return (
     <div id="cart-items">
@@ -33,19 +16,19 @@ const CartItem = ({ cart, productList, setCart, setProductList }) => {
             <div>
               <button
                 className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                onClick={() => handleQuantityChange(productId, -1)}
+                onClick={() => changeQuantity(productId, -1)}
               >
                 -
               </button>
               <button
                 className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                onClick={() => handleQuantityChange(productId, 1)}
+                onClick={() => changeQuantity(productId, 1)}
               >
                 +
               </button>
               <button
                 className="remove-item bg-red-500 text-white px-2 py-1 rounded"
-                onClick={() => handleQuantityChange(productId, -1 * quantity)}
+                onClick={() => changeQuantity(productId, -1 * quantity)}
               >
                 삭제
               </button>

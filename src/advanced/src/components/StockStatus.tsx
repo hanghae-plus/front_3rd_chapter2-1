@@ -1,7 +1,9 @@
-import { Product } from '../App';
 import { QUANTITY } from '../constants';
+import useCart, { Product } from '../hooks/useCart';
 
-const StockStatus = ({ productList }) => {
+const StockStatus = () => {
+  const { productList } = useCart();
+
   return (
     <div id="stock-status" className="text-sm text-gray-500 mt-2">
       {productList
