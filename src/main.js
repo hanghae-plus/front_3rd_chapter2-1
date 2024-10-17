@@ -117,34 +117,20 @@ const calcCartProduct = () => {
     );
     const productCartCost = productInCart.price * cartProductQuantity;
     cartQuantity += cartProductQuantity;
-    let productDiscountRate = 0;
     cartCost += productCartCost;
 
+    let productDiscountRate = 0;
     const MIN_QUANTITY_PRODUCT_DISCOUNT = 10;
-    const P1_DISCOUNT_RATE = 0.1;
-    const P2_DISCOUNT_RATE = 0.15;
-    const P3_DISCOUNT_RATE = 0.2;
-    const P4_DISCOUNT_RATE = 0.05;
-    const P5_DISCOUNT_RATE = 0.25;
+    const PRODUCT_DISCOUNT_RATE = {
+      p1: 0.1,
+      p2: 0.15,
+      p3: 0.2,
+      p4: 0.05,
+      p5: 0.25,
+    };
 
     if (cartProductQuantity >= MIN_QUANTITY_PRODUCT_DISCOUNT) {
-      switch (productInCart.id) {
-        case "p1":
-          productDiscountRate = P1_DISCOUNT_RATE;
-          break;
-        case "p2":
-          productDiscountRate = P2_DISCOUNT_RATE;
-          break;
-        case "p3":
-          productDiscountRate = P3_DISCOUNT_RATE;
-          break;
-        case "p4":
-          productDiscountRate = P4_DISCOUNT_RATE;
-          break;
-        case "p5":
-          productDiscountRate = P5_DISCOUNT_RATE;
-          break;
-      }
+      productDiscountRate = PRODUCT_DISCOUNT_RATE[productInCart.id];
     }
     finalCost += productCartCost * (1 - productDiscountRate);
   }
@@ -189,15 +175,15 @@ const calcCartProduct = () => {
 };
 
 const updateStock = () => {
-  let textContent = "";
   const MAX_PRODUCT_QUANTITY = 5;
-  productList.forEach(product => {
-    if (product.quantity < MAX_PRODUCT_QUANTITY) {
+  const textContent = productList
+    .filter(product => product.quantity < MAX_PRODUCT_QUANTITY)
+    .reduce((acc, product) => {
       const quantityStatus =
         product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : "품절";
-      textContent += `${product.name}: ${quantityStatus}\n`;
-    }
-  });
+      // eslint-disable-next-line prefer-template
+      return acc + `${product.name}: ${quantityStatus}\n`;
+    }, "");
   $remainedStock.textContent = textContent;
 };
 
