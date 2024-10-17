@@ -11,7 +11,7 @@ const createElement = (tagName, { id, className, text, value, disabled }) => {
 export const createTitle = (text) => {
   return createElement('h1', {
     className: 'text-2xl font-bold mb-4',
-    text: text
+    text: text,
   });
 };
 
@@ -20,7 +20,7 @@ export const createButton = ({ id, className = '', text }) => {
   return createElement('button', {
     id,
     className: `${defaultClass} ${className}`,
-    text: text
+    text: text,
   });
 };
 
@@ -40,6 +40,6 @@ export const createOptions = ({ price, text, disabled }) => {
   return createElement('option', {
     value: price,
     text: text,
-    disabled: disabled
+    disabled: disabled,
   });
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from "./Button";
-import { CartItem } from "../types";
+import { Button } from './Button';
+import { CartItem } from '../types';
 
 interface Props {
   cartItems: CartItem[];
@@ -31,11 +31,7 @@ export const CartItems: React.FC<Props> = ({
               onClick={() => handleQuantityUpdate(id, 'increase')}
               className="bg-blue-500 mr-1"
             />
-            <Button
-              label="삭제"
-              onClick={() => handleRemoveCartItem(id)}
-              className="bg-red-500"
-            />
+            <Button label="삭제" onClick={() => handleRemoveCartItem(id)} className="bg-red-500" />
           </div>
         </div>
       ))}

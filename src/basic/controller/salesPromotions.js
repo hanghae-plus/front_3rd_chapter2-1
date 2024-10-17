@@ -1,5 +1,5 @@
-import { prodList } from "../constants/prodList";
-import updateSelectOptions from "../views/updateSelectOptions";
+import { prodList } from '../constants/prodList';
+import updateSelectOptions from '../views/updateSelectOptions';
 
 const LUCKY_SALE_PROBABILITY = 0.3;
 const LUCKY_SALE_DISCOUNT = 0.8;
@@ -54,7 +54,7 @@ export function initiateSuggestSale(select, lastSelect) {
   setTimeout(() => {
     const intervalId = setInterval(() => {
       if (lastSelect) {
-        const suggestion = prodList.find(item => item.id !== lastSelect && item.quantity > 0);
+        const suggestion = prodList.find((item) => item.id !== lastSelect && item.quantity > 0);
         if (suggestion) {
           suggestion.price = applySuggestionDiscount(suggestion, SUGGESTION_SALE_DISCOUNT);
           notifySuggestion(suggestion, SUGGESTION_SALE_DISCOUNT);

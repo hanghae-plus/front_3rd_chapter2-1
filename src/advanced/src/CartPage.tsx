@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import {prodList} from './constant/productList';
-import {CartItems, CartTotal, StockStatus, AddToCartButton, ProductSelect, Layout} from './component';
+import { prodList } from './constant/productList';
+import {
+  CartItems,
+  CartTotal,
+  StockStatus,
+  AddToCartButton,
+  ProductSelect,
+  Layout,
+} from './component';
 import { updateCartItemQuantity } from './hooks/updateCartItemQuantity';
-import { CartItem } from "./types";
+import { CartItem } from './types';
 
 const findProductById = (productId: string) => {
   return prodList.find((product) => product.id === productId);
@@ -22,7 +29,7 @@ const CartPage = () => {
     const updatedCartItems = updateCartItemQuantity(
       cartItems,
       1,
-      findProductById(selectedProductId),
+      findProductById(selectedProductId)
     );
 
     setCartItems((prevState) => {
@@ -49,7 +56,7 @@ const CartPage = () => {
     const updatedCartItems = updateCartItemQuantity(
       cartItems,
       quantityChange,
-      findProductById(productId),
+      findProductById(productId)
     );
 
     setCartItems(updatedCartItems);
@@ -68,15 +75,15 @@ const CartPage = () => {
   return (
     <Layout>
       <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-        <CartItems
-          cartItems={cartItems}
-          handleQuantityUpdate={handleQuantityUpdate}
-          handleRemoveCartItem={handleRemoveCartItem}
-        />
-        <CartTotal cartItems={cartItems} />
-        <ProductSelect handleSelectChange={handleSelectChange} />
-        <AddToCartButton handleAddCartItem={handleAddCartItem} />
-        <StockStatus cartItems={cartItems} />
+      <CartItems
+        cartItems={cartItems}
+        handleQuantityUpdate={handleQuantityUpdate}
+        handleRemoveCartItem={handleRemoveCartItem}
+      />
+      <CartTotal cartItems={cartItems} />
+      <ProductSelect handleSelectChange={handleSelectChange} />
+      <AddToCartButton handleAddCartItem={handleAddCartItem} />
+      <StockStatus cartItems={cartItems} />
     </Layout>
   );
 };

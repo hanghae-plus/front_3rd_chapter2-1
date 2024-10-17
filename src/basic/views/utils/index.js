@@ -1,1 +1,1 @@
-export { assembleComponents } from './assembleComponents'
+export { assembleComponents } from './assembleComponents';

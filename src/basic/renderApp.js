@@ -1,12 +1,19 @@
 import { createTitle } from './createElements';
-import { createCartItemsDiv, createContainer, createWrapper, createCartTotalDiv, createProductSelect, createAddToCartButton, createStockStatusDiv } from "./views/components";
-import { assembleComponents } from "./views/utils"
-
+import {
+  createCartItemsDiv,
+  createContainer,
+  createWrapper,
+  createCartTotalDiv,
+  createProductSelect,
+  createAddToCartButton,
+  createStockStatusDiv,
+} from './views/components';
+import { assembleComponents } from './views/utils';
 
 /**
  * @function renderApp
  * @description 앱 UI를 초기화하고 구성 요소 반환
- * 
+ *
  * @returns {HTMLElement} 장바구니 앱 컨테이너 요소
  */
 
@@ -20,7 +27,15 @@ const renderApp = () => {
   const addToCartButton = createAddToCartButton();
   const stockStatusDiv = createStockStatusDiv();
 
-  assembleComponents(wrapper, title, cartItemsDiv, cartTotalDiv, productSelect, addToCartButton, stockStatusDiv);
+  assembleComponents(
+    wrapper,
+    title,
+    cartItemsDiv,
+    cartTotalDiv,
+    productSelect,
+    addToCartButton,
+    stockStatusDiv
+  );
   container.appendChild(wrapper);
   return container;
 };

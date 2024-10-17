@@ -1,5 +1,5 @@
-import { createOptions } from "../createElements";
-import { prodList } from "../constants/prodList";
+import { createOptions } from '../createElements';
+import { prodList } from '../constants/prodList';
 
 /**
  * @function updateSelectOptions
@@ -14,7 +14,11 @@ function updateSelectOptions(select) {
   select.innerHTML = '';
   prodList.forEach((item) => {
     const { id, name, price, quantity } = item;
-    const option = createOptions({ price: id, text: `${name} - ${price}원`, disabled: quantity === 0 });
+    const option = createOptions({
+      price: id,
+      text: `${name} - ${price}원`,
+      disabled: quantity === 0,
+    });
     select.appendChild(option);
   });
 }

@@ -1,4 +1,4 @@
-import { createDiv } from '../../createElements'
+import { createDiv } from '../../createElements';
 
 export const createWrapper = () => {
   return createDiv({

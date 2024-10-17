@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { CartItem } from "../types";
-import { useApplyBulkDiscount } from "../hooks/useApplyBulkDiscount"
-import { useItemDiscount } from "../hooks/useItemDiscount";
-import { useRewardPoints } from "../hooks/useRewardPoints";
-import { useSpecialDiscountRate } from "../hooks/useSpecialDiscountRate";
+import { CartItem } from '../types';
+import { useApplyBulkDiscount } from '../hooks/useApplyBulkDiscount';
+import { useItemDiscount } from '../hooks/useItemDiscount';
+import { useRewardPoints } from '../hooks/useRewardPoints';
+import { useSpecialDiscountRate } from '../hooks/useSpecialDiscountRate';
 
 export const CartTotal: React.FC<{ cartItems: CartItem[] }> = ({ cartItems }) => {
   const [totals, setTotals] = useState({

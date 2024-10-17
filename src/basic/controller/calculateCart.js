@@ -1,8 +1,8 @@
-import { getDiscountRate } from '../models/getDiscountRate'
-import { mapCartItems } from "../models/mapCartItems";
-import renderLoyaltyPoints from "./renderLoyaltyPoints";
-import { applyBulkDiscount } from "../models/applyBulkDiscount";
-import { getSpecialDiscountRate } from "../models/getSpecialDiscountRate";
+import { getDiscountRate } from '../models/getDiscountRate';
+import { mapCartItems } from '../models/mapCartItems';
+import renderLoyaltyPoints from './renderLoyaltyPoints';
+import { applyBulkDiscount } from '../models/applyBulkDiscount';
+import { getSpecialDiscountRate } from '../models/getSpecialDiscountRate';
 import { createSpan } from '../createElements';
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -11,7 +11,7 @@ const FULL_PRICE_MULTIPLIER = 1;
 
 export const updateStockInfo = (prodList, stockInfoDiv) => {
   let infoMessage = '';
-  prodList.forEach(item => {
+  prodList.forEach((item) => {
     if (item.quantity < LOW_STOCK_THRESHOLD) {
       infoMessage += `${item.name}: ${item.quantity > NO_STOCK ? `재고 부족 (${item.quantity}개 남음)` : '품절'}\n`;
     }
@@ -34,7 +34,8 @@ export function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   const count = carts.reduce((acc, item) => acc + item.quantity, NO_STOCK);
   const totalOriginPrice = carts.reduce((acc, item) => acc + item.price * item.quantity, NO_STOCK);
   const totalDiscountPrice = carts.reduce(
-    (acc, item) => acc + item.price * item.quantity * (FULL_PRICE_MULTIPLIER - getDiscountRate(item)),
+    (acc, item) =>
+      acc + item.price * item.quantity * (FULL_PRICE_MULTIPLIER - getDiscountRate(item)),
     NO_STOCK
   );
 

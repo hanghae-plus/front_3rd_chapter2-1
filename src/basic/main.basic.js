@@ -1,8 +1,8 @@
-import { calculateCart } from "./controller/calculateCart";
+import { calculateCart } from './controller/calculateCart';
 import renderApp from './renderApp';
-import { prodList } from "./constants/prodList";
-import { initiateLuckySale, initiateSuggestSale } from "./controller/salesPromotions";
-import updateSelectOptions from "./views/updateSelectOptions";
+import { prodList } from './constants/prodList';
+import { initiateLuckySale, initiateSuggestSale } from './controller/salesPromotions';
+import updateSelectOptions from './views/updateSelectOptions';
 import { addItemToCart, handleCartEvent } from './controller/handleCart';
 
 let select, addButton, cartsDiv, sumDiv, stockInfoDiv;

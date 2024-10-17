@@ -51,7 +51,7 @@ const getOrCreateLoyaltyPointsElement = (parentElement) => {
 const renderLoyaltyPoints = (totalPrice, displayContainer) => {
   const newPoints = calculateBonusPoints(totalPrice);
   accumulatedBonusPoints += newPoints;
-  
+
   const loyaltyPointsElement = getOrCreateLoyaltyPointsElement(displayContainer);
   updateLoyaltyPointsDisplay(loyaltyPointsElement, accumulatedBonusPoints);
 };
