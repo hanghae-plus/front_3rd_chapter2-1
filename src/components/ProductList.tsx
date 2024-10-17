@@ -8,7 +8,7 @@ type CartItemProps = {
   onClick: (id: string) => void
 }
 
-const CartList: FC<CartItemProps> = ({ cart, onChange, onClick }) => {
+const ProductList: FC<CartItemProps> = ({ cart, onChange, onClick }) => {
   return (
     <div id="cart-items">
       {cart.map((item) => (
@@ -27,4 +27,4 @@ const CartList: FC<CartItemProps> = ({ cart, onChange, onClick }) => {
   )
 }
 
-export default memo(CartList)
+export default memo(ProductList)

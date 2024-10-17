@@ -11,7 +11,7 @@ const OtherSummary: FC<OtherSummaryProps> = ({ totalAmount, points, discountRate
     <div id="cart-total" className="text-xl font-bold my-4">
       <span>
         총액: {totalAmount.toLocaleString()}원
-        {discountRate && (
+        {discountRate > 0 && (
           <span id="discount-rate" className="text-green-500 ml-2">
             ({discountRate}% 할인 적용)
           </span>

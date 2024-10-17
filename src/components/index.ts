@@ -1,6 +1,6 @@
-export { default as CartList } from './CartList'
+export { default as ProductList } from './ProductList'
 export { default as OtherSummary } from './OtherSummary'
 export { default as SelectField } from './SelectField'
 export { default as Button } from './Button'
-export { default as CartLayout } from './CartLayout'
+export { default as ProductLayout } from './ProductLayout'
 export { default as StockStatus } from './StockStatus'

@@ -9,7 +9,7 @@ import {
   MIN_FOR_DISCOUNT,
   BULK_LIMIT,
 } from '../constants'
-import { CartStore } from '../stores'
+import { ProductStore } from '../stores'
 import { HomePage, CartItem, CustomOption } from '../components/basic'
 
 /**
@@ -36,36 +36,36 @@ function setupEventListeners() {
  */
 function updateSelOpts() {
   const itemSelectElement = document.getElementById('product-select')
-  itemSelectElement.innerHTML = CartStore.products.map(CustomOption).join('')
+  itemSelectElement.innerHTML = ProductStore.products.map(CustomOption).join('')
 }
 
 /**
  * @description 장바구니 계산 함수
  * @returns {void}
  */
-function calculateCart() {
+function calculationTotalAmount() {
   let totalBeforeDiscount = 0
   let itemCount = 0
   const cartElement = document.getElementById('cart-items').children
 
-  CartStore.totalAmount = 0
+  ProductStore.totalAmount = 0
 
   Array.from(cartElement).forEach((cart) => {
-    const currentItem = CartStore.products.find(({ id }) => id === cart.id)
+    const currentItem = ProductStore.products.find(({ id }) => id === cart.id)
     const quantity = parseInt(cart.querySelector('span').textContent.split('x ')[1])
     const itemTotal = currentItem.price * quantity
     itemCount += quantity
     totalBeforeDiscount += itemTotal
-    CartStore.totalAmount += itemTotal * (1 - getDiscountRate(currentItem.id, quantity))
+    ProductStore.totalAmount += itemTotal * (1 - getDiscountRate(currentItem.id, quantity))
   })
 
   const bulkDiscountRate = itemCount >= BULK_LIMIT ? DISCOUNT_RATE.p5 : 0
 
   if (bulkDiscountRate) {
-    CartStore.totalAmount = Math.min(CartStore.totalAmount, totalBeforeDiscount * (1 - bulkDiscountRate))
+    ProductStore.totalAmount = Math.min(ProductStore.totalAmount, totalBeforeDiscount * (1 - bulkDiscountRate))
   }
 
-  const discountRate = (totalBeforeDiscount - CartStore.totalAmount) / totalBeforeDiscount
+  const discountRate = (totalBeforeDiscount - ProductStore.totalAmount) / totalBeforeDiscount
 
   updateCartTotal(discountRate)
   updateStockInfo()
@@ -94,7 +94,7 @@ function updateCartTotal(discountRate) {
   const isTuesday = new Date().getDay() === 2
   const cartTotalElement = document.getElementById('cart-total')
 
-  cartTotalElement.textContent = `총액: ${Math.round(CartStore.totalAmount)}원`
+  cartTotalElement.textContent = `총액: ${Math.round(ProductStore.totalAmount)}원`
 
   if (discountRate || isTuesday) {
     const span = document.createElement('span')
@@ -112,7 +112,7 @@ function updateCartTotal(discountRate) {
  * @returns {void}
  */
 function updateStockInfo() {
-  document.getElementById('stock-status').textContent = CartStore.products
+  document.getElementById('stock-status').textContent = ProductStore.products
     .filter(({ quantity }) => quantity < MIN_STOCK)
     .map(
       ({ name, quantity }) =>
@@ -126,7 +126,7 @@ function updateStockInfo() {
  * @returns {void}
  */
 function renderPoints() {
-  CartStore.points += Math.floor(CartStore.totalAmount / POINT_RATE)
+  ProductStore.points += Math.floor(ProductStore.totalAmount / POINT_RATE)
   const cartTotalElement = document.getElementById('cart-total')
   let pointTag = document.getElementById('loyalty-points')
   if (!pointTag) {
@@ -135,7 +135,7 @@ function renderPoints() {
     pointTag.className = 'text-blue-500 ml-2'
     cartTotalElement.appendChild(pointTag)
   }
-  pointTag.textContent = `(포인트: ${CartStore.points})`
+  pointTag.textContent = `(포인트: ${ProductStore.points})`
 }
 
 /**
@@ -145,12 +145,12 @@ function renderPoints() {
 function handleAddToCart() {
   const itemSelectElement = document.getElementById('product-select')
   const cartElement = document.getElementById('cart-items')
-  const selectedItem = CartStore.products.find(({ id }) => id === itemSelectElement.value)
+  const selectedItem = ProductStore.products.find(({ id }) => id === itemSelectElement.value)
   if (selectedItem && selectedItem.quantity) {
     const item = document.getElementById(selectedItem.id)
     item ? updateExistingCartItem(item, selectedItem) : handleAddNewCart(cartElement, selectedItem)
-    calculateCart()
-    CartStore.selectedCartId = selectedItem.id
+    calculationTotalAmount()
+    ProductStore.selectedProductId = selectedItem.id
   }
 }
 
@@ -194,7 +194,7 @@ function handleAddNewCart(cartElement, product) {
 function handleCartAction({ target }) {
   const { productId, change } = target.dataset
   const cart = document.getElementById(productId)
-  const product = CartStore.products.find(({ id }) => id === productId)
+  const product = ProductStore.products.find(({ id }) => id === productId)
   const handler = change ? handleQuantityChange : handleRemoveCart
   handler(cart, product, parseInt(change))
 }
@@ -223,13 +223,13 @@ function handleQuantityChange(cart, product, change) {
   if (newQuantity && newQuantity <= availableStock) {
     handleUpdateCart(cart, newQuantity)
     product.quantity -= change
-    calculateCart()
+    calculationTotalAmount()
     return
   }
 
   if (!newQuantity) {
     handleRemoveCart(cart, product)
-    calculateCart()
+    calculationTotalAmount()
     return
   }
 
@@ -278,7 +278,7 @@ function handleSetupPromotion() {
  * @returns {void}
  */
 function runFlashSale() {
-  const luckyItem = CartStore.products[Math.floor(Math.random() * CartStore.products.length)]
+  const luckyItem = ProductStore.products[Math.floor(Math.random() * ProductStore.products.length)]
   if (Math.random() < FLASH_SALE_CHANCE && luckyItem.quantity) {
     luckyItem.price = Math.round(luckyItem.price * 0.8)
     alert(MESSAGE.PROMOTION.FLASH_SALE(luckyItem.name))
@@ -291,8 +291,8 @@ function runFlashSale() {
  * @returns {void}
  */
 function runSuggestion() {
-  if (CartStore.selectedCartId) {
-    const suggest = CartStore.products.find(({ id, quantity }) => id !== CartStore.selectedCartId && quantity)
+  if (ProductStore.selectedProductId) {
+    const suggest = ProductStore.products.find(({ id, quantity }) => id !== ProductStore.selectedProductId && quantity)
     if (suggest) {
       alert(MESSAGE.PROMOTION.SUGGESTION(suggest.name))
       suggest.price = Math.round(suggest.price * 0.95)
@@ -309,7 +309,7 @@ function main() {
   renderHome()
   setupEventListeners()
   updateSelOpts()
-  calculateCart()
+  calculationTotalAmount()
   handleSetupPromotion()
 }
 

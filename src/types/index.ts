@@ -9,8 +9,8 @@ export interface CartItem extends Product {
   quantity: number
 }
 
-export type CartState = {
-  selectedCartId: string
+export type ProductState = {
+  selectedProductId: string
   products: Product[]
   totalAmount: number
   points: number
@@ -20,7 +20,7 @@ export type CartState = {
   discountRate: number
 }
 
-export type cartAction =
+export type productAction =
   | { type: 'SELECT_CART'; payload: string }
   | { type: 'ADD_TO_CART' }
   | { type: 'REMOVE_FROM_CART'; payload: string }

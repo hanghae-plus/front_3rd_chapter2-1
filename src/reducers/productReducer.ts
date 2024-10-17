@@ -1,23 +1,23 @@
-import { CartState, cartAction } from '../types'
-import { handleAddToCart, handleChangeQuantity, handleRemoveFromCart, handleUpdateProduct } from './cartActions'
-import { handleUpdateTotal } from '../utils'
+import { ProductState, productAction } from '../types'
+import { handleAddToCart, handleChangeQuantity, handleRemoveProduct, handleUpdateProduct } from './productActions'
+import { calculateTotalAmount } from '../utils'
 
-export function cartReducer(state: CartState, action: cartAction): CartState {
+export function productReducer(state: ProductState, action: productAction): ProductState {
   switch (action.type) {
     case 'SELECT_CART': // 셀렉트 박스에서 선택한 상품의 ID를 저장.
-      return { ...state, selectedCartId: action.payload }
+      return { ...state, selectedProductId: action.payload }
 
     case 'ADD_TO_CART': // 장바구니에 상품을 추가.
       return handleAddToCart(state)
 
     case 'REMOVE_FROM_CART': // 장바구니에서 상품을 제거.
-      return handleRemoveFromCart(state, action.payload)
+      return handleRemoveProduct(state, action.payload)
 
     case 'CHANGE_QUANTITY': // 상품의 수량을 변경.
       return handleChangeQuantity(state, action.payload)
 
     case 'CALCULATE_TOTAL': // 장바구니에 담긴 상품의 총 가격을 계산.
-      return handleUpdateTotal(state)
+      return calculateTotalAmount(state)
 
     case 'SET_FLASH_SALE': // 플래시 세일 여부를 저장.
       return { ...state, isFlashSale: action.payload }

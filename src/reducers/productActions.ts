@@ -1,13 +1,13 @@
-import { CartState } from '../types'
+import { ProductState } from '../types'
 import { MESSAGE } from '../constants'
 
 /**
  * @description 새로운 상품을 장바구니에 추가.
- * @param {CartState} state
- * @returns {CartState}
+ * @param {ProductState} state
+ * @returns {ProductState}
  */
-export function handleAddToCart(state: CartState): CartState {
-  const selectedCart = state.products.find(({ id }) => id === state.selectedCartId)
+export function handleAddToCart(state: ProductState): ProductState {
+  const selectedCart = state.products.find(({ id }) => id === state.selectedProductId)
   if (!selectedCart) return state
 
   if (!selectedCart.quantity) {
@@ -36,11 +36,11 @@ export function handleAddToCart(state: CartState): CartState {
 
 /**
  * @description 장바구니에서 상품을 제거.
- * @param {CartState} state
+ * @param {ProductState} state
  * @param {string} itemId
- * @returns {CartState}
+ * @returns {ProductState}
  */
-export function handleRemoveFromCart(state: CartState, itemId: string): CartState {
+export function handleRemoveProduct(state: ProductState, itemId: string): ProductState {
   const removedCart = state.cart.find(({ id }) => id === itemId)
   if (!removedCart) return state
 
@@ -54,11 +54,11 @@ export function handleRemoveFromCart(state: CartState, itemId: string): CartStat
 
 /**
  * @description 상품의 수량을 변경.
- * @param {CartState} state
+ * @param {ProductState} state
  * @param {{ id: string; change: number }} payload
- * @returns {CartState}
+ * @returns {ProductState}
  */
-export function handleChangeQuantity(state: CartState, payload: { id: string; change: number }): CartState {
+export function handleChangeQuantity(state: ProductState, payload: { id: string; change: number }): ProductState {
   const { id, change } = payload
   const product = state.products.find((item) => item.id === id)
   const cartItem = state.cart.find((item) => item.id === id)
@@ -96,11 +96,11 @@ export function handleChangeQuantity(state: CartState, payload: { id: string; ch
 
 /**
  * @description 상품의 가격을 업데이트
- * @param {CartState} state
+ * @param {ProductState} state
  * @param {{ id: string; discount: number }} payload
- * @returns {CartState}
+ * @returns {ProductState}
  */
-export function handleUpdateProduct(state: CartState, payload: { id: string; discount: number }): CartState {
+export function handleUpdateProduct(state: ProductState, payload: { id: string; discount: number }): ProductState {
   const { id, discount } = payload
   const updatedProducts = state.products.map((product) =>
     product.id === id ? { ...product, price: Math.round(product.price * (1 - discount)) } : product,

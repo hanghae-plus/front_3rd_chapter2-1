@@ -7,10 +7,10 @@ export const DISCOUNT_RATE = { p1: 0.1, p2: 0.15, p3: 0.2, p4: 0.05, p5: 0.25 }
 export const MIN_FOR_DISCOUNT = 10
 export const BULK_LIMIT = 30
 export const TUESDAY = 2
-export const FLASH_SALE_DISCOUNT = 0.2
-export const RECOMMENDED_SALE_DISCOUNT = 0.05
-export const BULK_DISCOUNT = 0.25
-export const TUESDAY_DISCOUNT = 0.1
+export const FLASH_SALE_DISCOUNT = 20
+export const RECOMMENDED_SALE_DISCOUNT = 5
+export const BULK_DISCOUNT = 25
+export const TUESDAY_DISCOUNT = 10
 export const MESSAGE = {
   STOCK_STATUS: {
     EMPTY: '품절',
