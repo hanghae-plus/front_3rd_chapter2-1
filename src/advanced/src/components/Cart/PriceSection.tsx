@@ -19,7 +19,7 @@ export default function PriceSection({ totalPrice, discountRate }: PriceSectionP
         {`(포인트: ${point})`}
       </span>
       {Number.isNaN(discountRate) || discountRate === 0 ? null : (
-        <span className="text-green-500 ml-2">{`(${discountRate * 100}% 할인 적용)`}</span>
+        <span className="text-green-500 ml-2">{`(${(discountRate * 100).toFixed(1)}% 할인 적용)`}</span>
       )}
     </div>
   );
