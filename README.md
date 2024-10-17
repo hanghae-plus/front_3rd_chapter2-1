@@ -71,7 +71,9 @@
 2. tailwind.config.json을 만들고 config 설정, vite.config.js에 js에서 jsx도 읽을 수 있도록 플러그인 설정
 3. main.advanced.js에 App(root component)를 연결시킴.
 4. basic 과제에서 리팩토링한 코드를 보고 UI부터 구성하기 시작.
-5.
+5. UI 구성 후 비지니스 로직도 하나씩 옮기기 시작.
+6. 전역변수는 useState로 변환.
+7. main에서 실행된 순서대로 App 컴포넌트에 옮겨 구현.
 
 ### 리팩토링 체크리스트
 

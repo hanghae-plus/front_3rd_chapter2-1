@@ -4,9 +4,9 @@ import App from './src/App';
 
 function main() {
   ReactDOM.createRoot(document.getElementById('app')).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <App />,
+    // </React.StrictMode>,
   );
 }
 
