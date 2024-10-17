@@ -3,7 +3,7 @@ import ProductCart from "./product-cart";
 // import cartReducer from "../reducers/cartReducer";
 
 export interface ProductType {
-  id: string;
+  id: "p1" | "p2" | "p3" | "p4" | "p5";
   name: string;
   price: number;
   quantity: number;
@@ -46,15 +46,22 @@ const ProductContainer = () => {
 
   const remainedStock = () => {
     const MAX_PRODUCT_QUANTITY = 5;
-    const textContent = productList
-      .filter(product => product.quantity < MAX_PRODUCT_QUANTITY)
+    const soldedOutProduct = productList
+      .filter(product => product.quantity === 0)
+      .reduce((acc, product) => {
+        return `${acc}${product.name}: 품절\n`;
+      }, "");
+
+    const remainedProduct = cartProductList
+      .filter(product => product.quantity - product.count < MAX_PRODUCT_QUANTITY)
       .reduce((acc, product) => {
         const quantityStatus =
-          product.quantity > 0 ? `재고 부족 (${product.quantity}개 남음)` : "품절";
-        // eslint-disable-next-line prefer-template
-        return acc + `${product.name}: ${quantityStatus}\n`;
+          product.quantity - product.count > 0
+            ? `재고 부족 (${product.quantity - product.count}개 남음)`
+            : "품절";
+        return `${acc}${product.name}: ${quantityStatus}\n`;
       }, "");
-    return textContent;
+    return soldedOutProduct + remainedProduct;
   };
 
   return (
