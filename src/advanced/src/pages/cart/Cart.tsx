@@ -6,6 +6,8 @@ import OutOfStockItems from './component/OutOfStockItems';
 import { updateCartItemQuantity } from './module/updateCartItemQuantity';
 import AddCartItemButton from './component/AddCartItemButton';
 import ProductSelect from './component/ProductSelect';
+import { initSuggestedDiscount } from './module/applyDiscountToSuggestedItem';
+import { startLuckySale } from './module/applyLuckySale';
 
 export interface CartItem {
   price: number;
@@ -22,6 +24,9 @@ const findProductById = (productId: string) => {
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductId, setSelectedProductId] = useState('p1');
+
+  initSuggestedDiscount();
+  startLuckySale();
 
   const handleAddCartItem = () => {
     const selectedProductItem = findProductById(selectedProductId);
