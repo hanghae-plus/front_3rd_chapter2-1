@@ -89,7 +89,7 @@ const Layout = () => {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <CartProductList />
         <CartAmountInfo />
-        <div style={{ display: 'flex' }}>
+        <div className="flex">
           <ProductSelectList />
           <AddToCart />
         </div>
