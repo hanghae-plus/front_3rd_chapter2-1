@@ -1,8 +1,8 @@
 import BonusPoints from './components/BonusPoints.js';
 import Cart from './components/Cart.js';
-import CartItem from './components/CartItem.js';
+import CartProduct from './components/CartProduct.js';
 import DiscountInfo from './components/DiscountInfo.js';
-import ItemOption from './components/ItemOption.js';
+import ProductOption from './components/ProductOption.js';
 import { productList } from './shared/product.js';
 
 // shared/constants.js
@@ -13,11 +13,11 @@ const SUGGESTION_INTERVAL = 60000;
 const SUGGESTION_DISCOUNT = 0.95;
 
 // store/cartStore.js
-let $productSelect, $addButton, $cartItems, $cartTotal, $stockStatus;
+let $productSelect, $addButton, $cartProduct, $cartTotal, $stockStatus;
 let lastSelectedProductId;
 let bonusPoints = 0;
 let totalAmount = 0;
-let itemCount = 0;
+let productCount = 0;
 
 // services/discountService.js
 const getDiscount = (product, quantity) => {
@@ -48,8 +48,8 @@ const applyTuesdayDiscount = (totalAmount, discountRate) => {
   return discountRate;
 };
 
-const getDiscountRate = (itemCount, subtotal, totalAmount) => {
-  if (itemCount >= 30) {
+const getDiscountRate = (productCount, subtotal, totalAmount) => {
+  if (productCount >= 30) {
     const bulkDiscount = subtotal * 0.25;
     const itemDiscount = subtotal - totalAmount;
     if (bulkDiscount > itemDiscount) {
@@ -64,28 +64,28 @@ const getDiscountRate = (itemCount, subtotal, totalAmount) => {
 // services/cartService.js
 const calcCart = () => {
   totalAmount = 0;
-  itemCount = 0;
-  const cartItems = $cartItems.children;
+  productCount = 0;
+  const cartProduct = $cartProduct.children;
   let subTot = 0;
-  for (let i = 0; i < cartItems.length; i++) {
-    const cartItem = cartItems[i];
+  for (let i = 0; i < cartProduct.length; i++) {
+    const newProduct = cartProduct[i];
     const currentProduct = productList.find(
-      (product) => product.id === cartItem.id,
+      (product) => product.id === newProduct.id,
     );
 
     if (!currentProduct) return;
 
     const quantity = parseInt(
-      cartItems[i].querySelector('span').textContent.split('x ')[1],
+      cartProduct[i].querySelector('span').textContent.split('x ')[1],
     );
     const productTotalPrice = currentProduct.price * quantity;
     const discount = getDiscount(currentProduct, quantity);
 
-    itemCount += quantity;
+    productCount += quantity;
     subTot += productTotalPrice;
     totalAmount += productTotalPrice * (1 - discount);
   }
-  let discountRate = getDiscountRate(itemCount, subTot, totalAmount);
+  let discountRate = getDiscountRate(productCount, subTot, totalAmount);
   discountRate = applyTuesdayDiscount(totalAmount, discountRate);
 
   updateCartTotal(discountRate);
@@ -169,7 +169,7 @@ const handleTimerSuggestion = () => {
 const main = () => {
   const $root = document.getElementById('app');
   $root.innerHTML = Cart();
-  $cartItems = document.getElementById('cart-items');
+  $cartProduct = document.getElementById('cart-items');
   $cartTotal = document.getElementById('cart-total');
   $productSelect = document.getElementById('product-select');
   $addButton = document.getElementById('add-to-cart');
@@ -186,68 +186,68 @@ const main = () => {
 const updateProductOptions = () => {
   $productSelect.innerHTML = '';
   productList.forEach((product) => {
-    $productSelect.innerHTML += ItemOption(product);
+    $productSelect.innerHTML += ProductOption(product);
   });
 };
 
 const findProductById = (id) =>
   productList.find((product) => product.id === id);
 
-const updateItemQuantity = (button, cartItem, product) => {
+const updateProductQuantity = (button, cartProduct, product) => {
   const quantityChange = parseInt(button.dataset.change);
-  const currentQuantity = getCurrentQuantity(cartItem);
+  const currentQuantity = getCurrentQuantity(cartProduct);
   const newQuantity = currentQuantity + quantityChange;
   const isValidQuantityChange =
     newQuantity > 0 && newQuantity <= product.quantity + currentQuantity;
 
   if (isValidQuantityChange) {
-    updateCartItemQuantity(cartItem, product, newQuantity);
+    updateCartProductQuantity(cartProduct, product, newQuantity);
     product.quantity -= quantityChange;
   } else if (newQuantity <= 0) {
-    removeCartItem(cartItem);
+    removeCartProduct(cartProduct);
     product.quantity += currentQuantity;
   } else {
     alert('재고가 부족합니다.');
   }
 };
 
-const updateCartItemQuantity = (cartItem, product, newQuantity) => {
-  const spanElement = cartItem.querySelector('span');
+const updateCartProductQuantity = (cartProduct, product, newQuantity) => {
+  const spanElement = cartProduct.querySelector('span');
   spanElement.textContent = `${product.name} - ${product.price}원 x ${newQuantity}`;
 };
 
-const removeCartItem = (cartItem) => cartItem.remove();
+const removeCartProduct = (cartProduct) => cartProduct.remove();
 
-const removeItem = (cartItem, product) => {
-  const removedQuantity = getCurrentQuantity(cartItem);
+const removeProduct = (cartProduct, product) => {
+  const removedQuantity = getCurrentQuantity(cartProduct);
   product.quantity += removedQuantity;
-  removeCartItem(cartItem);
+  removeCartProduct(cartProduct);
 };
 
-const getCurrentQuantity = (cartItem) =>
-  parseInt(cartItem.querySelector('span').textContent.split('x ')[1]);
+const getCurrentQuantity = (cartProduct) =>
+  parseInt(cartProduct.querySelector('span').textContent.split('x ')[1]);
 
 // cartServices.js
 const handleClickAddToCart = () => {
   const selectedProductId = $productSelect.value;
-  const itemToAdd = findProductById(selectedProductId);
+  const productToAdd = findProductById(selectedProductId);
 
-  if (!itemToAdd || itemToAdd.quantity <= 0) return;
+  if (!productToAdd || productToAdd.quantity <= 0) return;
 
-  const existingCartItem = document.getElementById(itemToAdd.id);
+  const existingCartProduct = document.getElementById(productToAdd.id);
 
-  if (existingCartItem) {
-    updateExistingCartItem(existingCartItem, itemToAdd);
+  if (existingCartProduct) {
+    updateExistingCartProduct(existingCartProduct, productToAdd);
   } else {
-    addNewCartItem(itemToAdd);
+    addNewCartProduct(productToAdd);
   }
 
   calcCart();
   lastSelectedProductId = selectedProductId;
 };
 
-const updateExistingCartItem = (cartItem, product) => {
-  const quantitySpan = cartItem.querySelector('span');
+const updateExistingCartProduct = (cartProduct, product) => {
+  const quantitySpan = cartProduct.querySelector('span');
   const currentQuantity = parseInt(quantitySpan.textContent.split('x ')[1]);
   const newQuantity = currentQuantity + 1;
 
@@ -259,9 +259,9 @@ const updateExistingCartItem = (cartItem, product) => {
   }
 };
 
-const addNewCartItem = (product) => {
-  const newItem = CartItem(product);
-  $cartItems.innerHTML += newItem;
+const addNewCartProduct = (product) => {
+  const newItem = CartProduct(product);
+  $cartProduct.innerHTML += newItem;
   product.quantity--;
 };
 
@@ -271,13 +271,13 @@ const handleClickCartAction = (event) => {
   if (!isCartActionButton(eventTarget)) return;
 
   const productId = eventTarget.dataset.productId;
-  const cartItem = document.getElementById(productId);
+  const cartProduct = document.getElementById(productId);
   const product = findProductById(productId);
 
   if (eventTarget.classList.contains('quantity-change')) {
-    updateItemQuantity(eventTarget, cartItem, product);
+    updateProductQuantity(eventTarget, cartProduct, product);
   } else if (eventTarget.classList.contains('remove-item')) {
-    removeItem(cartItem, product);
+    removeProduct(cartProduct, product);
   }
 
   calcCart();
@@ -290,4 +290,4 @@ const isCartActionButton = (target) =>
 main();
 
 $addButton.addEventListener('click', handleClickAddToCart);
-$cartItems.addEventListener('click', handleClickCartAction);
+$cartProduct.addEventListener('click', handleClickCartAction);

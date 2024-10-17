@@ -1,4 +1,4 @@
-const CartItem = (product) => {
+const CartProduct = (product) => {
   return /* HTML */ `<div
     class="flex justify-between items-center mb-2"
     id="${product.id}"
@@ -29,4 +29,4 @@ const CartItem = (product) => {
   </div> `;
 };
 
-export default CartItem;
+export default CartProduct;
