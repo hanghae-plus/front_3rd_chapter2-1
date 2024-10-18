@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { StockListType } from '../model/product';
 import { UpdateStockPrice } from './useStockData';
 
@@ -10,7 +10,7 @@ type Props = {
 
 const SALE = {
   FLASH: {
-    CHANGE: 0.3,
+    CHANCE: 0.3,
     DISCOUNT: 0.2,
     INTERVAL: 30000, // 30초
     DELAY: 10000, // 10초 이내 랜덤
@@ -34,21 +34,42 @@ export const useInitializeSales = ({
   const flashSaleTimeoutRef = useRef<number | null>(null);
   const suggestionSaleTimeoutRef = useRef<number | null>(null);
 
-  const clearTimers = () => {
+  const clearTimers = useCallback(() => {
     if (flashSaleTimeoutRef.current) clearTimeout(flashSaleTimeoutRef.current);
     if (suggestionSaleTimeoutRef.current)
       clearTimeout(suggestionSaleTimeoutRef.current);
-  };
+  }, []);
+
+  /** 타이머와 인터벌을 설정하는 함수 */
+  const setTimedInterval = useCallback(
+    (
+      callback: TimerHandler,
+      {
+        ref,
+        delay,
+        intervalTime,
+      }: {
+        ref: MutableRefObject<number | null>;
+        delay: number;
+        intervalTime: number;
+      }
+    ) => {
+      ref.current = setTimeout(() => {
+        const interval = setInterval(callback, intervalTime);
+        return () => clearInterval(interval);
+      }, delay);
+    },
+    []
+  );
 
   /** 번개 세일 시작 */
   const startFlashSale = useCallback(
     (stockList: StockListType) => {
-      flashSaleTimeoutRef.current = setTimeout(() => {
-        const interval = setInterval(() => {
+      setTimedInterval(
+        () => {
           const discountItem =
             stockList[Math.floor(Math.random() * stockList.length)];
-
-          if (Math.random() < SALE.FLASH.CHANGE && discountItem.quantity > 0) {
+          if (Math.random() < SALE.FLASH.CHANCE && discountItem.quantity > 0) {
             alert(
               `번개세일! ${discountItem.name}이(가) ${SALE.FLASH.DISCOUNT * 100}% 할인 중입니다!`
             );
@@ -56,10 +77,13 @@ export const useInitializeSales = ({
               Math.round(discountItem.price * (1 - SALE.FLASH.DISCOUNT))
             );
           }
-        }, SALE.FLASH.INTERVAL);
-
-        return () => clearInterval(interval);
-      }, Math.random() * SALE.FLASH.DELAY);
+        },
+        {
+          delay: Math.random() * SALE.FLASH.DELAY,
+          intervalTime: SALE.FLASH.INTERVAL,
+          ref: flashSaleTimeoutRef,
+        }
+      );
     },
     [updateStockPrice]
   );
@@ -67,10 +91,9 @@ export const useInitializeSales = ({
   /** 추천 상품 세일 시작 */
   const startSuggestionSale = useCallback(
     (stockList: StockListType, lastSelectedId: string | undefined) => {
-      suggestionSaleTimeoutRef.current = setTimeout(() => {
-        const interval = setInterval(() => {
+      setTimedInterval(
+        () => {
           if (!lastSelectedId) return;
-
           const discountItem = stockList.find(
             (item) => item.id !== lastSelectedId && item.quantity > 0
           );
@@ -78,14 +101,17 @@ export const useInitializeSales = ({
             alert(
               `${discountItem.name}은(는) 어떠세요? 지금 구매하시면 ${SALE.SUGGESTION.DISCOUNT * 100}% 추가 할인!`
             );
-            updateStockPrice(lastSelectedId, () =>
+            updateStockPrice(discountItem.id, () =>
               Math.round(discountItem.price * (1 - SALE.SUGGESTION.DISCOUNT))
             );
           }
-        }, SALE.SUGGESTION.INTERVAL);
-
-        return () => clearInterval(interval);
-      }, Math.random() * SALE.SUGGESTION.DELAY);
+        },
+        {
+          delay: Math.random() * SALE.SUGGESTION.DELAY,
+          intervalTime: SALE.SUGGESTION.INTERVAL,
+          ref: suggestionSaleTimeoutRef,
+        }
+      );
     },
     [updateStockPrice]
   );
