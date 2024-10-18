@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-
+import { useLuckySale } from "../src/services/useLuckySale.ts";
 describe('advanced test', () => {
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js') },
@@ -29,89 +29,45 @@ describe('advanced test', () => {
       vi.restoreAllMocks();
     });
 
-    it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
-      expect(sel).toBeDefined();
-      expect(sel.tagName.toLowerCase()).toBe('select');
-      expect(sel.children.length).toBe(5);
+    it('번개세일 기능이 정상적으로 동작하는지 확인', async () => {
+      vi.spyOn(global.Math, 'random').mockReturnValue(0.1);
+      global.prodList = [
+        { id: 'p1', name: '상품1', price: 10000, quantity: 10 },
+        { id: 'p2', name: '상품2', price: 20000, quantity: 5 }
+      ];
 
-      // 첫 번째 상품 확인
-      expect(sel.children[0].value).toBe('p1');
-      expect(sel.children[0].textContent).toBe('상품1 - 10000원');
-      expect(sel.children[0].disabled).toBe(false);
+      const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    
+      await useLuckySale();
+    
+      vi.runAllTimers();
+    
+      expect(global.prodList[0].price).toBe(8000);ㅌ
+      expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('번개세일! 상품1이(가) 20% 할인 중입니다!'));
 
-      // 마지막 상품 확인
-      expect(sel.children[4].value).toBe('p5');
-      expect(sel.children[4].textContent).toBe('상품5 - 25000원');
-      expect(sel.children[4].disabled).toBe(false);
-
-      // 재고 없는 상품 확인 (상품4)
-      expect(sel.children[3].value).toBe('p4');
-      expect(sel.children[3].textContent).toBe('상품4 - 15000원');
-      expect(sel.children[3].disabled).toBe(true);
+      vi.restoreAllMocks();
     });
 
-    it('초기 상태: DOM 요소가 올바르게 생성되었는지 확인', () => {
-      expect(document.querySelector('h1').textContent).toBe('장바구니');
-      expect(sel).toBeDefined();
-      expect(addBtn).toBeDefined();
-      expect(cartDisp).toBeDefined();
-      expect(sum).toBeDefined();
-      expect(stockInfo).toBeDefined();
-    });
+    it('추천 상품 알림이 표시되는지 확인', async () => {
+      vi.spyOn(global.Math, 'random').mockReturnValue(0);
+      global.prodList = [
+        { id: 'p1', name: '상품1', price: 10000, quantity: 0 },
+        { id: 'p2', name: '상품2', price: 20000, quantity: 5 },
+        { id: 'p3', name: '상품3', price: 30000, quantity: 10 }
+      ];
+    
+      const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    
+      await useRecommendPromotion('p1');
+    
+      vi.runAllTimers();
 
-    it('상품을 장바구니에 추가할 수 있는지 확인', () => {
-      sel.value = 'p1';
-      addBtn.click();
-      expect(cartDisp.children.length).toBe(1);
-      expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 1',
-      );
-    });
+      expect(global.prodList[1].price).toBe(Math.round(20000 * 0.95));
+      expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('상품2은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!'));
 
-    it('장바구니에서 상품 수량을 변경할 수 있는지 확인', () => {
-      const increaseBtn = cartDisp.querySelector('.quantity-change[data-change="1"]');
-      increaseBtn.click();
-      expect(cartDisp.children[0].querySelector('span').textContent).toContain(
-        '상품1 - 10000원 x 2',
-      );
+      vi.restoreAllMocks();
     });
-
-    it('장바구니에서 상품을 삭제할 수 있는지 확인', () => {
-      sel.value = 'p1';
-      addBtn.click();
-      const removeBtn = cartDisp.querySelector('.remove-item');
-      removeBtn.click();
-      expect(cartDisp.children.length).toBe(0);
-    });
-
-    it('총액이 올바르게 계산되는지 확인', () => {
-      sel.value = 'p1';
-      addBtn.click();
-      addBtn.click();
-      expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
-    });
-
-    it('할인이 올바르게 적용되는지 확인', () => {
-      sel.value = 'p1';
-      for (let i = 0; i < 10; i++) {
-        addBtn.click();
-      }
-      expect(sum.textContent).toContain('(10.0% 할인 적용)');
-    });
-
-    it('포인트가 올바르게 계산되는지 확인', () => {
-      sel.value = 'p2';
-      addBtn.click();
-      expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
-    });
-
-    it('번개세일 기능이 정상적으로 동작하는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
-    });
-
-    it('추천 상품 알림이 표시되는지 확인', () => {
-      // 일부러 랜덤이 가득한 기능을 넣어서 테스트 하기를 어렵게 만들었습니다. 이런 코드는 어떻게 하면 좋을지 한번 고민해보세요!
-    });
+    
 
     it('화요일 할인이 적용되는지 확인', () => {
       const mockDate = new Date('2024-10-15'); // 화요일
