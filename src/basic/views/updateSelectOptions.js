@@ -9,7 +9,7 @@ import { prodList } from '../constants/prodList';
  */
 
 function updateSelectOptions(select) {
-  if (!select) return;
+  if (!select) {return;}
 
   select.innerHTML = '';
   prodList.forEach((item) => {

@@ -29,7 +29,7 @@ const CartPage = () => {
     const updatedCartItems = updateCartItemQuantity(
       cartItems,
       1,
-      findProductById(selectedProductId)
+      findProductById(selectedProductId),
     );
 
     setCartItems((prevState) => {
@@ -56,7 +56,7 @@ const CartPage = () => {
     const updatedCartItems = updateCartItemQuantity(
       cartItems,
       quantityChange,
-      findProductById(productId)
+      findProductById(productId),
     );
 
     setCartItems(updatedCartItems);

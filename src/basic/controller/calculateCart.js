@@ -22,7 +22,7 @@ export const updateStockInfo = (prodList, stockInfoDiv) => {
 export const updateCartDisplay = (sumDiv, totalPrice, discountRate) => {
   sumDiv.textContent = `총액: ${Math.round(totalPrice)}원`;
   if (discountRate > 0) {
-    let span = document.createElement('span');
+    const span = document.createElement('span');
     span.className = 'text-green-500 ml-2';
     span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
     sumDiv.appendChild(span);
@@ -36,7 +36,7 @@ export function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   const totalDiscountPrice = carts.reduce(
     (acc, item) =>
       acc + item.price * item.quantity * (FULL_PRICE_MULTIPLIER - getDiscountRate(item)),
-    NO_STOCK
+    NO_STOCK,
   );
 
   let rate = 0;
@@ -47,7 +47,7 @@ export function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   sumDiv.textContent = `총액: ${Math.round(totalPrice)}원`;
 
   if (rate > 0) {
-    let span = createSpan({
+    const span = createSpan({
       text: `(${(rate * 100).toFixed(1)}% 할인 적용)`,
       className: 'text-green-500 ml-2',
     });

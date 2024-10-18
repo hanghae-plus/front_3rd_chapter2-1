@@ -25,9 +25,9 @@ export const CartTotal: React.FC<{ cartItems: CartItem[] }> = ({ cartItems }) =>
       totalItems += item.selectQuantity;
     });
 
-    let discountRate = useApplyBulkDiscount(subtotal, total, totalItems);
-    let { updatedTotalPrice, updatedDiscountRate } = useSpecialDiscountRate(total, discountRate);
-    let rewardPoints = useRewardPoints(updatedTotalPrice);
+    const discountRate = useApplyBulkDiscount(subtotal, total, totalItems);
+    const { updatedTotalPrice, updatedDiscountRate } = useSpecialDiscountRate(total, discountRate);
+    const rewardPoints = useRewardPoints(updatedTotalPrice);
 
     setTotals({
       totalPrice: updatedTotalPrice,

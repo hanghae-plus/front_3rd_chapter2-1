@@ -6,10 +6,10 @@ import updateSelectOptions from './views/updateSelectOptions';
 import { addItemToCart, handleCartEvent } from './controller/handleCart';
 
 let select, addButton, cartsDiv, sumDiv, stockInfoDiv;
-let lastSelect = { current: null };
+const lastSelect = { current: null };
 
 function main() {
-  let root = document.getElementById('app');
+  const root = document.getElementById('app');
   root.appendChild(renderApp());
 
   select = document.getElementById('product-select');

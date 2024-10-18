@@ -6,7 +6,7 @@ export function addItemToCart(
   cartsDiv,
   sumDiv,
   stockInfoDiv,
-  lastSelRef
+  lastSelRef,
 ) {
   const selectedProduct = prodList.find((product) => product.id === selectedProductId);
 
@@ -14,7 +14,7 @@ export function addItemToCart(
     return alert('선택한 상품의 재고가 없습니다.');
   }
 
-  let existingCartItem = document.getElementById(selectedProduct.id);
+  const existingCartItem = document.getElementById(selectedProduct.id);
 
   if (existingCartItem) {
     handleExistingCartItem(existingCartItem, selectedProduct);
@@ -27,8 +27,8 @@ export function addItemToCart(
 }
 
 export function handleExistingCartItem(itemElement, product) {
-  let currentQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
-  let newQuantity = currentQuantity + 1;
+  const currentQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  const newQuantity = currentQuantity + 1;
 
   if (newQuantity <= product.quantity) {
     updateCartItem(itemElement, product.name, product.price, newQuantity);
@@ -39,7 +39,7 @@ export function handleExistingCartItem(itemElement, product) {
 }
 
 export function addNewItemToCart(product, cartsDiv) {
-  let newItem = document.createElement('div');
+  const newItem = document.createElement('div');
   newItem.id = product.id;
   newItem.className = 'flex justify-between items-center mb-2';
   newItem.innerHTML = `<span>${product.name} - ${product.price}원 x 1</span>
@@ -53,17 +53,17 @@ export function addNewItemToCart(product, cartsDiv) {
 }
 
 export function handleCartEvent(event, prodList, cartsDiv, sumDiv, stockInfoDiv) {
-  let target = event.target;
+  const target = event.target;
 
   if (!target.classList.contains('quantity-change') && !target.classList.contains('remove-item'))
-    return;
+  {return;}
 
-  let productId = target.dataset.productId;
-  let itemElement = document.getElementById(productId);
-  let product = prodList.find((prod) => prod.id === productId);
+  const productId = target.dataset.productId;
+  const itemElement = document.getElementById(productId);
+  const product = prodList.find((prod) => prod.id === productId);
 
   if (target.classList.contains('quantity-change')) {
-    let quantityChange = parseInt(target.dataset.change);
+    const quantityChange = parseInt(target.dataset.change);
     handleQuantityChange(itemElement, product, quantityChange);
   } else if (target.classList.contains('remove-item')) {
     handleRemoveItem(itemElement, product);
@@ -78,8 +78,8 @@ export function updateCartItem(itemElement, productName, productPrice, quantity)
 }
 
 export function handleQuantityChange(itemElem, prod, quantityChange) {
-  let currentQuantity = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
-  let newQuantity = currentQuantity + quantityChange;
+  const currentQuantity = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
+  const newQuantity = currentQuantity + quantityChange;
 
   if (newQuantity > 0 && newQuantity <= prod.quantity + currentQuantity) {
     itemElem.querySelector('span').textContent =
@@ -94,7 +94,7 @@ export function handleQuantityChange(itemElem, prod, quantityChange) {
 }
 
 export function handleRemoveItem(itemElement, product) {
-  let removedQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
+  const removedQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
   product.quantity += removedQuantity;
   itemElement.remove();
 }
