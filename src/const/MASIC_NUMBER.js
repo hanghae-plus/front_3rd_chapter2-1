@@ -12,3 +12,5 @@ export const BULK_PURCHASE_DISCOUNT_RATIO = 0.25;
 
 // 화요일 할인율
 export const TUESDAY_DISCOUNT_RATIO = 0.1;
+
+export const SURPRISE_SALE_RATIO = 0.8;
