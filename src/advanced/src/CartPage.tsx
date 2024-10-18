@@ -8,8 +8,8 @@ import {
 import {
   Layout,
   ProductSelect,
-  AddToCartButton
-} from './component/atoms'
+  AddToCartButton,
+} from './component/atoms';
 import { updateCartItemQuantity,useRecommendPromotion,useLuckySale } from './hooks';
 import { CartItem } from './types';
 
