@@ -1,4 +1,4 @@
-import { discountPrice, getRandomItem, probability, randomDelay } from './utils';
+import { createElement, discountPrice, getRandomItem, probability, randomDelay } from './utils';
 import {
   LUCKY_DRAW_DELAY,
   LOYALTY_POINT_PERCENTAGE,
@@ -46,15 +46,15 @@ function renderProductSelect(products) {
   $productSelect.innerHTML = '';
 
   products.forEach((product) => {
-    const opt = document.createElement('option');
-
-    opt.value = product.id;
-    opt.textContent = `${product.name} - ${product.price}원`;
+    const $option = createElement('option', {
+      value: product.id,
+      textContent: `${product.name} - ${product.price}원`,
+    });
 
     // 재고가 없을 경우 비활성화
-    if (product.stock === 0) opt.disabled = true;
+    if (product.stock === 0) $option.disabled = true;
 
-    $productSelect.appendChild(opt);
+    $productSelect.appendChild($option);
   });
 }
 
@@ -64,9 +64,10 @@ function renderProductSelect(products) {
 function renderLoyaltyPoints(points) {
   let $el = document.getElementById('loyalty-points');
   if (!$el) {
-    $el = document.createElement('span');
-    $el.id = 'loyalty-points';
-    $el.className = 'text-blue-500 ml-2';
+    $el = createElement('span', {
+      id: 'loyalty-points',
+      className: 'text-blue-500 ml-2',
+    });
     $cartTotal.appendChild($el);
   }
 
@@ -87,10 +88,12 @@ function renderCartTotal(price, discountRate) {
 
   // 할인 텍스트 렌더링
   if (discountRate > 0) {
-    const span = document.createElement('span');
-    span.className = 'text-green-500 ml-2';
-    span.textContent = `(${(discountRate * 100).toFixed(1)}% 할인 적용)`;
-    $cartTotal.appendChild(span);
+    const $discount = createElement('span', {
+      className: 'text-red-500 ml-2',
+      textContent: `(${(discountRate * 100).toFixed(1)}% 할인 적용)`,
+    });
+
+    $cartTotal.appendChild($discount);
   }
 }
 
@@ -218,47 +221,55 @@ function main() {
   const $root = document.getElementById('app');
 
   // 장바구니 페이지
-  const $cart = document.createElement('div');
-  $cart.id = 'cart';
-  $cart.className = 'bg-gray-100 p-8';
+  const $cart = createElement('div', {
+    id: 'cart',
+    className: 'bg-gray-100 p-8',
+  });
 
   // 장바구니 페이지 inner
-  const $cartInner = document.createElement('div');
-  $cartInner.id = 'cart-inner';
-  $cartInner.className = 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
+  const $cartInner = createElement('div', {
+    id: 'cart-inner',
+    className: 'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8',
+  });
 
   // 페이지 제목
-  const $title = document.createElement('h1');
-  $title.className = 'text-2xl font-bold mb-4';
-  $title.textContent = '장바구니';
+  const $title = createElement('h1', {
+    className: 'text-2xl font-bold mb-4',
+    textContent: '장바구니',
+  });
 
   // 장바구니 총액
-  $cartTotal = document.createElement('div');
-  $cartTotal.id = 'cart-total';
-  $cartTotal.className = 'text-xl font-bold my-4';
+  $cartTotal = createElement('div', {
+    id: 'cart-total',
+    className: 'text-xl font-bold my-4',
+  });
 
   // 상품 리스트
-  $productSelect = document.createElement('select');
-  $productSelect.id = 'product-select';
-  $productSelect.className = 'border rounded p-2 mr-2';
+  $productSelect = createElement('select', {
+    id: 'product-select',
+    className: 'border rounded p-2 mr-2',
+  });
 
   // 상품 추가 버튼
-  $addButton = document.createElement('button');
-  $addButton.id = 'add-to-cart';
-  $addButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  $addButton.textContent = '추가';
+  $addButton = createElement('button', {
+    id: 'add-to-cart',
+    className: 'bg-blue-500 text-white px-4 py-2 rounded',
+    textContent: '추가',
+  });
 
   // 장바구니에 담긴 상품 리스트
-  $cartItems = document.createElement('div');
-  $cartItems.id = 'cart-items';
+  $cartItems = createElement('div', {
+    id: 'cart-items',
+  });
 
   // 상품 추가 버튼 클릭 이벤트 핸들러
   $addButton.addEventListener('click', () => {
     // 장바구니에 새로운 상품을 추가
     const addCartItem = (product, count = 1) => {
-      const $el = document.createElement('div');
-      $el.id = product.id;
-      $el.className = 'flex justify-between items-center mb-2';
+      const $el = createElement('div', {
+        id: product.id,
+        className: 'flex justify-between items-center mb-2',
+      });
 
       $el.innerHTML =
         `<span>${product.name} - ${product.price}원 x ${count}</span><div>` +
@@ -350,9 +361,10 @@ function main() {
   });
 
   // 상품 재고 상태 문구
-  $stockStatus = document.createElement('div');
-  $stockStatus.id = 'stock-status';
-  $stockStatus.className = 'text-sm text-gray-500 mt-2';
+  $stockStatus = createElement('div', {
+    id: 'stock-status',
+    className: 'text-sm text-gray-500 mt-2',
+  });
 
   $cartInner.appendChild($title);
   $cartInner.appendChild($cartItems);
