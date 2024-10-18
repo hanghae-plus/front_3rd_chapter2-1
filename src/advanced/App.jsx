@@ -24,7 +24,7 @@ const App = () => {
   const [cartItems, setCartItems] = useState([]);
   const [gTotalAmt, setGTotalAmt] = useState(0);
   const [gBonusPts, setGBonusPts] = useState(0);
-  const [gLastSel, setGLastSel] = useState(null);
+  const [gLastSel, setGLastSel] = useState("");
 
   useEffect(() => {
     const interval = setInterval(showSaleAlert, 30000);
@@ -55,21 +55,81 @@ const App = () => {
 
   const handleAddCart = (selectedItemId) => {
     const targetItem = itemList.find((item) => item.id === selectedItemId);
-    if (targetItem && targetItem.stock > 0) {
-      setCartItems((prev) => {
-        const existingItem = prev.find((item) => item.id === selectedItemId);
-        if (existingItem) {
-          return prev.map((item) =>
-            item.id === selectedItemId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          );
-        }
-        return [...prev, { ...targetItem, quantity: 1 }];
-      });
-      targetItem.stock--;
-      setGLastSel(selectedItemId);
+    
+    if (targetItem) {
+      if (targetItem.stock > 0) {
+        setCartItems((prev) => {
+          const existingItem = prev.find((item) => item.id === selectedItemId);
+          if (existingItem) {
+            return prev.map((item) =>
+              item.id === selectedItemId
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+          }
+          return [...prev, { ...targetItem, quantity: 1 }];
+        });
+        targetItem.stock--;
+        setGLastSel(selectedItemId);
+      } else {
+        alert("재고가 부족합니다.");
+      }
     }
+  };
+
+  const handleQuantityChange = (itemId, change) => {
+    setCartItems((prev) => {
+      return prev.map((item) => {
+        if (item.id === itemId) {
+          const newQuantity = item.quantity + change;
+  
+          // 새로운 수량이 0 이하가 되면 삭제
+          if (newQuantity <= 0) {
+            return null;
+          }
+  
+          // 재고 체크
+          const stockItem = itemList.find((listItem) => listItem.id === itemId);
+          if (change == 1 && stockItem.stock == 0){
+            alert("재고가 부족합니다.");
+            return item; // 변경하지 않고 현재 item을 그대로 반환
+          }
+  
+          // 수량 업데이트
+          const updatedItem = { ...item, quantity: newQuantity };
+          const stockChange = change === 1 ? -1 : 1;
+  
+          // itemList의 재고 업데이트
+          setItemList((prevItems) =>
+            prevItems.map((listItem) =>
+              listItem.id === itemId
+                ? { ...listItem, stock: listItem.stock + stockChange }
+                : listItem
+            )
+          );
+  
+          return updatedItem;
+        }
+        return item;
+      }).filter(Boolean); // null 제거
+    });
+  };
+
+  const handleRemoveItem = (itemId) => {
+    setCartItems((prev) => {
+      const itemToRemove = prev.find(item => item.id === itemId);
+      if (itemToRemove) {
+        // 재고 업데이트
+        setItemList((prevItems) =>
+          prevItems.map((listItem) =>
+            listItem.id === itemId
+              ? { ...listItem, stock: listItem.stock + itemToRemove.quantity }
+              : listItem
+          )
+        );
+      }
+      return prev.filter((item) => item.id !== itemId);
+    });
   };
 
   const calcCart = () => {
@@ -95,13 +155,36 @@ const App = () => {
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
         <div id="cart-items">
           {cartItems.map((item) => (
-            <div key={item.id}>
-              {item.name} - {item.price}원 x {item.quantity}
+            <div key={item.id} className="flex justify-between items-center mb-2">
+              <span>
+                {item.name} - {item.price}원 x {item.quantity}
+              </span>
+              <div>
+                <button
+                  className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+                  onClick={() => handleQuantityChange(item.id, -1)}
+                >
+                  -
+                </button>
+                <button
+                  className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+                  onClick={() => handleQuantityChange(item.id, 1)}
+                >
+                  +
+                </button>
+                <button
+                  className="remove-item bg-red-500 text-white px-2 py-1 rounded"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  삭제
+                </button>
+              </div>
             </div>
           ))}
         </div>
         <div id="cart-total" className="text-xl font-bold my-4">
-          총액: {Math.round(gTotalAmt)}원 (포인트: {gBonusPts})
+          총액: {Math.round(gTotalAmt)}원
+          <span id="loyalty-points" className="text-blue-500 ml-2">(포인트: {gBonusPts})</span>
         </div>
         <select
           id="product-select"
@@ -124,7 +207,9 @@ const App = () => {
           추가
         </button>
         <div id="stock-status" className="text-sm text-gray-500 mt-2">
-          {itemList.map((item) => (
+          {itemList
+           .filter((item) => item.stock === 0) // 품절인 상품만 필터링
+          .map((item) => (
             <div key={item.id}>
               {item.name}: {item.stock > 0 ? `${item.stock}개 남음` : "품절"}
             </div>
