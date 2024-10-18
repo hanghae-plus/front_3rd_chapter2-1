@@ -10,11 +10,14 @@ const DISCOUNTS = {
   p5: 0.25,
 } as const;
 
+/**
+ * 장바구니의 가격 합계와 할인율 계산하는 훅입니다.
+ */
 export const useCartSummary = (cartList: CartListType) => {
-  const [cartTotal, setCartTotal] =
+  const [cartSummary, setCartSummary] =
     useState<CartSummaryType>(DEFAULT_CART_TOTAL);
 
-  /** 할인율 계산 */
+  /** 상품의 할인율 계산 */
   const calculateDiscountRate = useCallback(
     (id: keyof typeof DISCOUNTS, quantity: number) => {
       return quantity >= 10 ? DISCOUNTS[id] || 0 : 0;
@@ -22,7 +25,7 @@ export const useCartSummary = (cartList: CartListType) => {
     []
   );
 
-  /** 개별 상품 가격 계산 */
+  /** 개별 장바구니 항목의 최종 가격 계산 */
   const calculateCartItemPrice = useCallback(
     (item: CartItemType) => {
       const discountRate = calculateDiscountRate(
@@ -34,7 +37,7 @@ export const useCartSummary = (cartList: CartListType) => {
     [calculateDiscountRate]
   );
 
-  /** 카트 전체 합계 계산 */
+  /** 장바구니 내 모든 항목의 합계를 계산 */
   const calculateTotals = useCallback(() => {
     return cartList.reduce(
       (totals, cartItem) => {
@@ -51,7 +54,7 @@ export const useCartSummary = (cartList: CartListType) => {
     );
   }, [cartList, calculateCartItemPrice]);
 
-  /** 할인 적용 로직 */
+  /** 장바구니에 할인 적용 */
   const applyDiscounts = useCallback(
     (subTotal: number, totalPrice: number, totalQuantity: number) => {
       const bulkDiscount = totalQuantity >= 30 ? 0.25 : 0;
@@ -80,12 +83,12 @@ export const useCartSummary = (cartList: CartListType) => {
       totalQuantity
     );
 
-    setCartTotal((prevCartTotal) => ({
+    setCartSummary((prevCartTotal) => ({
       discountRate: finalDiscountRate,
       totalPrice: finalPrice,
       point: prevCartTotal.point + Math.floor(finalPrice / 1000),
     }));
   }, [cartList, calculateTotals, applyDiscounts]);
 
-  return cartTotal;
+  return cartSummary;
 };

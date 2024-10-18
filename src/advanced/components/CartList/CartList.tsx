@@ -1,11 +1,11 @@
-import { HandleDeleteCart, HandleUpsertCart } from '../../App';
+import { DeleteCart, UpsertCart } from '../../hooks/useCart';
 import { CartListType } from '../../model/product';
 import { Button } from '../Shared/Button';
 
 interface CartListProps {
   cartList: CartListType;
-  handleUpsertCart: HandleUpsertCart;
-  handleDeleteCart: HandleDeleteCart;
+  handleUpsertCart: UpsertCart;
+  handleDeleteCart: DeleteCart;
 }
 
 export const CartList = ({

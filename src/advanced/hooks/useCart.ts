@@ -2,20 +2,34 @@ import { useCallback, useState } from 'react';
 import { CartItemType, CartListType, StockItemType } from '../model/product';
 import { useStockData } from './useStockData';
 
-export type HandleUpsertCart = (
+type AddCart = (targetStockItem: StockItemType, quantityToAdd: number) => void;
+
+type UpdateCart = (
+  targetStockItem: StockItemType,
+  targetCartItem: CartItemType,
+  quantityToUpdate: number
+) => void;
+
+export type UpsertCart = (
   selectedId: string | undefined,
   quantity?: number
 ) => void;
 
-export type HandleDeleteCart = (targetCartItem: CartItemType) => void;
+export type DeleteCart = (targetCartItem: CartItemType) => void;
 
+/**
+ * 장바구니와 관련된 로직을 관리하는 훅
+ * - 상품 추가, 삭제, 업데이트
+ * - 장바구니의 총합 계산
+ * - 재고 정보 업데이트
+ */
 export const useCart = () => {
   const [lastSelectedId, setLastSelectedId] = useState('');
   const [cartList, setCartList] = useState<CartListType>([]);
   const { stockList, updateStockQuantity, updateStockPrice } = useStockData();
 
-  const addCart = useCallback(
-    (targetStockItem: StockItemType, quantityToAdd = 1) => {
+  const addCart = useCallback<AddCart>(
+    (targetStockItem, quantityToAdd = 1) => {
       updateStockQuantity(targetStockItem.id, -quantityToAdd);
       setCartList((prevCartList) => [
         ...prevCartList,
@@ -25,7 +39,7 @@ export const useCart = () => {
     [updateStockQuantity]
   );
 
-  const deleteCart = useCallback<HandleDeleteCart>(
+  const deleteCart = useCallback<DeleteCart>(
     (targetCartItem: CartItemType) => {
       updateStockQuantity(targetCartItem.id, targetCartItem.quantity);
       setCartList((prevCartList) =>
@@ -35,12 +49,8 @@ export const useCart = () => {
     [updateStockQuantity]
   );
 
-  const updateCart = useCallback(
-    (
-      targetStockItem: StockItemType,
-      targetCartItem: CartItemType,
-      quantityToUpdate = 1
-    ) => {
+  const updateCart = useCallback<UpdateCart>(
+    (targetStockItem, targetCartItem, quantityToUpdate = 1) => {
       const stockQuantity = targetStockItem?.quantity ?? 0;
       const newQuantity = targetCartItem.quantity + quantityToUpdate;
 
@@ -67,7 +77,7 @@ export const useCart = () => {
     [deleteCart, updateStockQuantity]
   );
 
-  const upsertCart: HandleUpsertCart = useCallback(
+  const upsertCart = useCallback<UpsertCart>(
     (selectedId, quantity = 1) => {
       if (!selectedId) return;
 

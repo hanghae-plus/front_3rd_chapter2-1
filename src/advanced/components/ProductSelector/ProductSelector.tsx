@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { UpsertCart } from '../../hooks/useCart';
 import { Button } from '../Shared/Button';
 
 type Option = {
@@ -10,7 +11,7 @@ type Option = {
 interface ProductSelectorProps {
   defaultValue?: string;
   options: Option[];
-  handleUpsertCart: (selectedId?: string) => void;
+  handleUpsertCart: UpsertCart;
 }
 
 export const ProductSelector = ({
