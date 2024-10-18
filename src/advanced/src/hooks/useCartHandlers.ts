@@ -1,6 +1,4 @@
-// hooks/useCartHandlers.js
-import { findProductById } from '../utils/findProductById';
-import { updateCartItemQuantity } from '../utils/updateCartItemQuantity';
+import { findProductById, updateCartItemQuantity } from '../utils';
 
 export const useCartHandlers = (cartItems, setCartItems) => {
   const handleAddCartItem = (selectedProductId) => {
