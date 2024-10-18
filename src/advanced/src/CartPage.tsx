@@ -1,76 +1,12 @@
 import React, { useState } from 'react';
-import { prodList } from './constant/productList';
-import {
-  CartItems,
-  CartTotal,
-  StockStatus,
-} from './component/organisms';
-import {
-  Layout,
-  ProductSelect,
-  AddToCartButton,
-} from './component/atoms';
-import { findProductById } from "./utils/findProductById";
-import { updateCartItemQuantity } from "./utils/updateCartItemQuantity";
-import { useLuckySale, useRecommendPromotion } from "./hooks";
-import { CartItem } from './types';
-
-useLuckySale();
+import { Layout, ProductSelect, AddToCartButton } from './component/atoms';
+import { CartItems, CartTotal, StockStatus } from './component/organisms';
+import { useCartHandlers } from './hooks/useCartHandlers';
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('p1');
-
-  const handleAddCartItem = () => {
-    const selectedProductItem = findProductById(selectedProductId);
-
-    if (selectedProductItem.quantity === 0) {
-      return;
-    }
-
-    const updatedCartItems = updateCartItemQuantity(
-      cartItems,
-      1,
-      findProductById(selectedProductId),
-    );
-
-    setCartItems((prevState) => {
-      const existingCartItem = prevState.find((cartItem) => cartItem.id === selectedProductItem.id);
-
-      if (existingCartItem) {
-        return updatedCartItems;
-      }
-
-      useRecommendPromotion(findProductById(selectedProductId));
-
-      return [
-        ...prevState,
-        {
-          ...selectedProductItem,
-          selectQuantity: 1,
-          quantity: selectedProductItem.quantity - 1,
-        },
-      ];
-    });
-  };
-
-  const handleQuantityUpdate = (productId: string, changeDirection: 'increase' | 'decrease') => {
-    const quantityChange = changeDirection === 'increase' ? 1 : -1;
-
-    const updatedCartItems = updateCartItemQuantity(
-      cartItems,
-      quantityChange,
-      findProductById(productId),
-    );
-
-    setCartItems(updatedCartItems);
-  };
-
-  const handleRemoveCartItem = (productId: string) => {
-    setCartItems((prevState) => {
-      return prevState.filter((cartItem) => cartItem.id !== productId);
-    });
-  };
+  const { handleAddCartItem, handleQuantityUpdate, handleRemoveCartItem } = useCartHandlers(cartItems, setCartItems);
 
   const handleSelectChange = (event) => {
     setSelectedProductId(event.target.value);
@@ -79,14 +15,10 @@ const CartPage = () => {
   return (
     <Layout>
       <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-      <CartItems
-        cartItems={cartItems}
-        handleQuantityUpdate={handleQuantityUpdate}
-        handleRemoveCartItem={handleRemoveCartItem}
-      />
+      <CartItems cartItems={cartItems} handleQuantityUpdate={handleQuantityUpdate} handleRemoveCartItem={handleRemoveCartItem} />
       <CartTotal cartItems={cartItems} />
       <ProductSelect handleSelectChange={handleSelectChange} />
-      <AddToCartButton handleAddCartItem={handleAddCartItem} />
+      <AddToCartButton handleAddCartItem={() => handleAddCartItem(selectedProductId)} />
       <StockStatus cartItems={cartItems} />
     </Layout>
   );
