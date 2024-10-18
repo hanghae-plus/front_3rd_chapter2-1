@@ -1,10 +1,10 @@
-import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe('advanced test', () => {
 
   describe.each([
     { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js'), },
+    { type: 'advanced', loadFile: () => import('../main.advanced.tsx'), },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
@@ -24,6 +24,11 @@ describe('advanced test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      // 테스트가 실제 화요일에 실행될 경우, 요일 할인이 적용되어 실패할 수 있으므로
+      // 이를 방지하기 위해 수요일 날짜로 시스템 시간을 고정
+      const mockDate = new Date('2024-10-16'); // 수요일
+      vi.setSystemTime(mockDate);
     });
 
     afterEach(() => {
