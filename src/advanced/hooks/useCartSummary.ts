@@ -2,16 +2,29 @@ import { useCallback, useEffect, useState } from 'react';
 import { CartSummaryType, DEFAULT_CART_TOTAL } from '../model/cartSummary';
 import { CartItemType, CartListType } from '../model/product';
 
-const DISCOUNTS = {
-  p1: 0.1,
-  p2: 0.15,
-  p3: 0.2,
-  p4: 0.05,
-  p5: 0.25,
+// 수량 할인
+const QUANTITY_DISCOUNT = {
+  THRESHOLD: 10,
+  RATE: {
+    p1: 0.1,
+    p2: 0.15,
+    p3: 0.2,
+    p4: 0.05,
+    p5: 0.25,
+  },
 } as const;
 
+// 대량 구매 할인
+const BULK_DISCOUNT = {
+  THRESHOLD: 30,
+  RATE: 0.25,
+};
+
+const TUESDAY_DISCOUNT_RATE = 0.1; // 화요일 특별 할인율
+const LOYALTY_POINT_CONVERSION = 1000; // 포인트 환산 기준 금액
+
 /**
- * 장바구니의 가격 합계와 할인율 계산하는 훅입니다.
+ * 장바구니의 가격 합계와 할인율 계산하는 훅
  */
 export const useCartSummary = (cartList: CartListType) => {
   const [cartSummary, setCartSummary] =
@@ -19,8 +32,10 @@ export const useCartSummary = (cartList: CartListType) => {
 
   /** 상품의 할인율 계산 */
   const calculateDiscountRate = useCallback(
-    (id: keyof typeof DISCOUNTS, quantity: number) => {
-      return quantity >= 10 ? DISCOUNTS[id] || 0 : 0;
+    (id: keyof typeof QUANTITY_DISCOUNT.RATE, quantity: number) => {
+      return quantity >= QUANTITY_DISCOUNT.THRESHOLD
+        ? QUANTITY_DISCOUNT.RATE[id] || 0
+        : 0;
     },
     []
   );
@@ -29,7 +44,7 @@ export const useCartSummary = (cartList: CartListType) => {
   const calculateCartItemPrice = useCallback(
     (item: CartItemType) => {
       const discountRate = calculateDiscountRate(
-        item.id as keyof typeof DISCOUNTS,
+        item.id as keyof typeof QUANTITY_DISCOUNT.RATE,
         item.quantity
       );
       return item.price * item.quantity * (1 - discountRate);
@@ -57,7 +72,8 @@ export const useCartSummary = (cartList: CartListType) => {
   /** 장바구니에 할인 적용 */
   const applyDiscounts = useCallback(
     (subTotal: number, totalPrice: number, totalQuantity: number) => {
-      const bulkDiscount = totalQuantity >= 30 ? 0.25 : 0;
+      const bulkDiscount =
+        totalQuantity >= BULK_DISCOUNT.THRESHOLD ? BULK_DISCOUNT.RATE : 0;
       const calculatedDiscountRate =
         bulkDiscount > 0 ? bulkDiscount : (subTotal - totalPrice) / subTotal;
 
@@ -66,8 +82,8 @@ export const useCartSummary = (cartList: CartListType) => {
 
       // 화요일 특별 할인 적용
       if (new Date().getDay() === 2) {
-        finalPrice *= 0.9; // 10% 할인 적용
-        finalDiscountRate = Math.max(finalDiscountRate, 0.1);
+        finalPrice *= 1 - TUESDAY_DISCOUNT_RATE; // 10% 할인 적용
+        finalDiscountRate = Math.max(finalDiscountRate, TUESDAY_DISCOUNT_RATE);
       }
 
       return { finalPrice, finalDiscountRate };
@@ -86,7 +102,8 @@ export const useCartSummary = (cartList: CartListType) => {
     setCartSummary((prevCartTotal) => ({
       discountRate: finalDiscountRate,
       totalPrice: finalPrice,
-      point: prevCartTotal.point + Math.floor(finalPrice / 1000),
+      point:
+        prevCartTotal.point + Math.floor(finalPrice / LOYALTY_POINT_CONVERSION),
     }));
   }, [cartList, calculateTotals, applyDiscounts]);
 

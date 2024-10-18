@@ -20,14 +20,13 @@ export type DeleteCart = (targetCartItem: CartItemType) => void;
 /**
  * 장바구니와 관련된 로직을 관리하는 훅
  * - 상품 추가, 삭제, 업데이트
- * - 장바구니의 총합 계산
- * - 재고 정보 업데이트
  */
 export const useCart = () => {
   const [lastSelectedId, setLastSelectedId] = useState('');
   const [cartList, setCartList] = useState<CartListType>([]);
   const { stockList, updateStockQuantity, updateStockPrice } = useStockData();
 
+  /** 장바구니 추가 */
   const addCart = useCallback<AddCart>(
     (targetStockItem, quantityToAdd = 1) => {
       updateStockQuantity(targetStockItem.id, -quantityToAdd);
@@ -39,6 +38,7 @@ export const useCart = () => {
     [updateStockQuantity]
   );
 
+  /** 장바구니 삭제 */
   const deleteCart = useCallback<DeleteCart>(
     (targetCartItem: CartItemType) => {
       updateStockQuantity(targetCartItem.id, targetCartItem.quantity);
@@ -49,6 +49,7 @@ export const useCart = () => {
     [updateStockQuantity]
   );
 
+  /** 장바구니 업데이트 */
   const updateCart = useCallback<UpdateCart>(
     (targetStockItem, targetCartItem, quantityToUpdate = 1) => {
       const stockQuantity = targetStockItem?.quantity ?? 0;
@@ -77,6 +78,7 @@ export const useCart = () => {
     [deleteCart, updateStockQuantity]
   );
 
+  /** 상품이 장바구니에 이미 있으면 수량을 업데이트하고, 없으면 새로 추가 */
   const upsertCart = useCallback<UpsertCart>(
     (selectedId, quantity = 1) => {
       if (!selectedId) return;

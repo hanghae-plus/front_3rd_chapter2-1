@@ -15,6 +15,7 @@ const SALE = {
     INTERVAL: 30000, // 30초
     DELAY: 10000, // 10초 이내 랜덤
   },
+
   SUGGESTION: {
     DISCOUNT: 0.05,
     INTERVAL: 60000, // 60초

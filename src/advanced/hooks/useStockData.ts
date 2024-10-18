@@ -5,20 +5,26 @@ import {
   StockListType,
 } from '../model/product';
 
+type UpdateStockQuantity = (
+  productId: StockItemType['id'],
+  quantityToUpdate: StockItemType['quantity']
+) => void;
+
 export type UpdateStockPrice = (
   productId: StockItemType['id'],
   priceUpdater: () => StockItemType['price']
 ) => void;
 
+/**
+ * 재고 데이터를 관리하는 훅
+ * */
 export const useStockData = () => {
   const [stockList, setStockList] =
     useState<StockListType>(DEFAULT_PRODUCT_LIST);
 
-  const updateStockQuantity = useCallback(
-    (
-      productId: StockItemType['id'],
-      quantityToUpdate: StockItemType['quantity']
-    ) => {
+  /** 재고 수량 업데이트 */
+  const updateStockQuantity = useCallback<UpdateStockQuantity>(
+    (productId, quantityToUpdate) => {
       setStockList((prevStockList) =>
         prevStockList.map((stockItem) =>
           stockItem.id === productId
@@ -30,6 +36,7 @@ export const useStockData = () => {
     []
   );
 
+  /** 재고 가격 업데이트 */
   const updateStockPrice = useCallback<UpdateStockPrice>(
     (productId, priceUpdater) => {
       setStockList((prevStockList) =>
