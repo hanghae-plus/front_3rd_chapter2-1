@@ -1,16 +1,25 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import React from 'react';
 
 describe('advanced test', () => {
   describe.each([
-    { type: 'origin', loadFile: () => import('../../main.js') },
-    { type: 'advanced', loadFile: () => import('../main.advanced.js') },
+    { type: 'origin', loadFile: () => Promise.resolve({ init: () => import('../../main.js') }) },
+    { type: 'advanced', loadFile: () => import('../App.tsx') },
   ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
     beforeAll(async () => {
-      // DOM 초기화
-      document.body.innerHTML = '<div id="app"></div>';
-      await loadFile();
+      const module = await loadFile();
+
+      if (module.default) {
+        render(<module.default />);
+      } else {
+        // DOM 초기화
+        document.body.innerHTML = '<div id="app"></div>';
+        await module.init();
+      }
 
       // 전역 변수 참조
       sel = document.getElementById('product-select');
@@ -27,6 +36,7 @@ describe('advanced test', () => {
 
     afterEach(() => {
       vi.restoreAllMocks();
+      vi.useRealTimers();
     });
 
     it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
@@ -61,7 +71,14 @@ describe('advanced test', () => {
 
     it('상품을 장바구니에 추가할 수 있는지 확인', () => {
       sel.value = 'p1';
+      console.log(sel.value);
       addBtn.click();
+      console.log(cartDisp.textContent);
+      if (cartDisp.children.length > 0) {
+        Array.from(cartDisp.children).forEach((element) => {
+          console.log(element.textContent);
+        });
+      }
       expect(cartDisp.children.length).toBe(1);
       expect(cartDisp.children[0].querySelector('span').textContent).toContain('상품1 - 10000원 x 1');
     });
