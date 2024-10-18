@@ -58,16 +58,22 @@ const App = () => (
 export default App;
 
 const CartItemList = () => {
-  const [selectedProductId, setSelectedProductId] = useState<string>("p1");
   const [cartItemList, setCartItemList] = useState<CartItemType[]>([]);
   const lastSelectedItemRef = useRef<string | null>(null);
+  const selectRef = useRef<HTMLSelectElement>(null);
 
-  const handleChangeProduct = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    lastSelectedItemRef.current = selectedProductId; // 이전 선택된 상품 ID 저장
-    setSelectedProductId(e.target.value);
+  const handleChangeProduct = () => {
+    if (selectRef.current) {
+      lastSelectedItemRef.current = selectRef.current.value;
+    }
   };
 
-  const handleClickAddToCart = (productId: string) => {
+  const handleClickAddToCart = () => {
+    if (!selectRef.current) {
+      return;
+    }
+
+    const productId = selectRef.current.value;
     const hasCartItem = cartItemList.some(item => item.id === productId);
 
     if (hasCartItem) {
@@ -81,36 +87,33 @@ const CartItemList = () => {
     }
   };
 
-  const BONUS_POINT_RATE = 0.05;
+  const calculateDiscount = (cartItemList: CartItemType[]) => {
+    const subAmount = cartItemList.reduce((acc, item) => acc + item.price * item.itemCount, 0);
+    let discountedAmount = subAmount;
 
-  const totalAmount = cartItemList.reduce((acc, item) => {
-    const itemDiscountRate =
-      item.itemCount >= DISCOUNT_START_QUANTITY ? PRODUCT_DISCOUNT_RATE[item.id] || 0 : 0;
-    return acc + item.price * item.itemCount * (1 - itemDiscountRate);
-  }, 0);
+    discountedAmount = cartItemList.reduce((acc, item) => {
+      const itemDiscountRate =
+        item.itemCount >= DISCOUNT_START_QUANTITY ? PRODUCT_DISCOUNT_RATE[item.id] || 0 : 0;
+      return acc + item.price * item.itemCount * (1 - itemDiscountRate);
+    }, 0);
 
-  const subAmount = cartItemList.reduce((acc, item) => acc + item.price * item.itemCount, 0);
-
-  let discountRate = 0;
-
-  if (subAmount > 0) {
-    discountRate = (subAmount - totalAmount) / subAmount;
-  }
-
-  if (cartItemList.reduce((acc, item) => acc + item.itemCount, 0) >= BULK_DISCOUNT_START_QUANTITY) {
-    const bulkDiscount = totalAmount * BULK_DISCOUNT_RATE;
-    const itemDiscount = subAmount - totalAmount;
-
-    if (bulkDiscount > itemDiscount) {
-      discountRate = BULK_DISCOUNT_RATE;
+    const totalQuantity = cartItemList.reduce((acc, item) => acc + item.itemCount, 0);
+    if (totalQuantity >= BULK_DISCOUNT_START_QUANTITY) {
+      const bulkDiscountAmount = discountedAmount * BULK_DISCOUNT_RATE;
+      discountedAmount = Math.min(discountedAmount, discountedAmount - bulkDiscountAmount);
     }
-  }
 
-  if (new Date().getDay() === DATE_TO_TUESDAY) {
-    discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_RATE);
-  }
+    if (new Date().getDay() === DATE_TO_TUESDAY) {
+      const tuesdayDiscountAmount = discountedAmount * TUESDAY_DISCOUNT_RATE;
+      discountedAmount = Math.min(discountedAmount, discountedAmount - tuesdayDiscountAmount);
+    }
 
-  const bonusPoint = totalAmount * BONUS_POINT_RATE;
+    const discountRate = (subAmount - discountedAmount) / subAmount;
+    return { discountedAmount, discountRate };
+  };
+
+  const { discountedAmount, discountRate } = calculateDiscount(cartItemList);
+  const bonusPoint = Math.floor(discountedAmount / POINT_PER_AMOUNT);
 
   useEffect(() => {
     let luckySaleInterval: NodeJS.Timeout;
@@ -118,7 +121,7 @@ const CartItemList = () => {
 
     const startLuckySale = () => {
       luckySaleInterval = setInterval(() => {
-        const luckyItem = PRODUCT_LIST[Math.floor(Math.random() * PRODUCT_LIST.length)];
+        const luckyItem = cartItemList[Math.floor(Math.random() * cartItemList.length)];
 
         if (Math.random() < LUCKY_SALE_SUCCESS_RATE && luckyItem.quantity > 0) {
           const discountedPrice = Math.round(luckyItem.price * LUCKY_SALE_DISCOUNT_RATE);
@@ -136,7 +139,7 @@ const CartItemList = () => {
     const startSuggest = () => {
       suggestInterval = setInterval(() => {
         if (lastSelectedItemRef.current) {
-          const suggest = PRODUCT_LIST.find(
+          const suggest = cartItemList.find(
             item => item.id !== lastSelectedItemRef.current && item.quantity > 0,
           );
 
@@ -163,18 +166,23 @@ const CartItemList = () => {
       clearInterval(luckySaleInterval);
       clearInterval(suggestInterval);
     };
-  }, []);
+  }, [cartItemList]);
 
   return (
     <>
       <div id="cart-items">
         {cartItemList?.map(cartItem => (
-          <CartItem key={cartItem.id} cartItem={cartItem} setCartItemList={setCartItemList} />
+          <CartItem
+            key={cartItem.id}
+            cartItem={cartItem}
+            setCartItemList={setCartItemList}
+            cartItemList={cartItemList}
+          />
         ))}
       </div>
 
       <div id="cart-total" className="text-xl font-bold my-4">
-        총액: {totalAmount.toLocaleString()}원
+        총액: {discountedAmount.toLocaleString()}원
         {discountRate > 0 && (
           <span id="discount-info" className="text-green-500 ml-2">
             ({(discountRate * RATE_TO_PERCENT).toFixed(1)}% 할인 적용)
@@ -185,13 +193,13 @@ const CartItemList = () => {
         </span>
       </div>
 
-      {/* FIXME: select에서 가능하면 상태 걷어내기 */}
       <select
         name="productSelect"
         id="product-select"
         className="border rounded p-2 mr-2"
-        value={selectedProductId}
         onChange={handleChangeProduct}
+        ref={selectRef}
+        defaultValue="p1"
       >
         {PRODUCT_LIST.map(product => (
           <option key={product.id} value={product.id} disabled={product.quantity === 0}>
@@ -202,26 +210,29 @@ const CartItemList = () => {
       <button
         id="add-to-cart"
         className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => handleClickAddToCart(selectedProductId)}
+        onClick={handleClickAddToCart}
       >
         추가
       </button>
       <div id="stock-status" className="text-sm text-gray-500 mt-2">
+        {PRODUCT_LIST.map(product => {
+          const hasStock = product.quantity > 0;
+          return !hasStock && <div key={product.id}>{`${product.name}: 품절`}</div>;
+        })}
         {cartItemList?.map(cartItem => {
-          const currentProduct = PRODUCT_LIST.find(product => product.id === cartItem.id);
+          const currentProduct = cartItemList.find(product => product.id === cartItem.id);
 
           if (currentProduct === undefined) {
             return null;
           }
 
-          const CRITICAL_STOCK_QUANTITY = 5;
-          const stockCritical =
-            currentProduct.quantity - cartItem.itemCount <= CRITICAL_STOCK_QUANTITY;
+          const stock = cartItem.quantity - cartItem.itemCount;
+          const isStockCritical = stock <= STOCK_QUANTITY_TO_INFO;
 
           return (
-            stockCritical && (
+            isStockCritical && (
               <div key={cartItem.id}>
-                {`${cartItem.name}: ${cartItem.quantity > 0 ? `재고 부족 (${cartItem.quantity - cartItem.itemCount}개 남음)` : "품절"}`}
+                {`${cartItem.name}: ${stock > 0 ? `재고 부족 (${cartItem.quantity - cartItem.itemCount}개 남음)` : "품절"}`}
               </div>
             )
           );
@@ -234,14 +245,20 @@ const CartItemList = () => {
 interface CartItemPropsType {
   cartItem: CartItemType;
   setCartItemList: React.Dispatch<React.SetStateAction<CartItemType[]>>;
+  cartItemList: CartItemType[];
 }
 
 const CartItem = (props: CartItemPropsType) => {
-  const { cartItem, setCartItemList } = props;
+  const { cartItem, setCartItemList, cartItemList } = props;
   const { id, name, price, itemCount } = cartItem;
 
-  const itemDiscountRate = PRODUCT_DISCOUNT_RATE[id] || 0;
+  const itemDiscountRate =
+    itemCount >= DISCOUNT_START_QUANTITY ? PRODUCT_DISCOUNT_RATE[id] || 0 : 0;
   const discountedPrice = price * (1 - itemDiscountRate);
+
+  const totalQuantity = cartItemList.reduce((acc, item) => acc + item.itemCount, 0);
+  const isBulkDiscount = totalQuantity >= BULK_DISCOUNT_START_QUANTITY;
+  const finalPrice = isBulkDiscount ? discountedPrice * (1 - BULK_DISCOUNT_RATE) : discountedPrice;
 
   const currentProduct = PRODUCT_LIST.find(product => product.id === id);
 
@@ -273,7 +290,12 @@ const CartItem = (props: CartItemPropsType) => {
   return (
     <div id={id} className="flex justify-between items-center mb-2">
       <span>
-        {name} - {discountedPrice.toLocaleString()}원 x {itemCount}
+        {name} - {finalPrice.toLocaleString()}원 x {itemCount}
+        {(itemDiscountRate > 0 || isBulkDiscount) && (
+          <span className="text-green-500 ml-2">
+            ({((1 - finalPrice / price) * RATE_TO_PERCENT).toFixed(1)}% 할인)
+          </span>
+        )}
       </span>
       <div>
         <button
