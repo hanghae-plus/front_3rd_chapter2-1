@@ -10,14 +10,12 @@ import {
   ProductSelect,
   AddToCartButton,
 } from './component/atoms';
-import { updateCartItemQuantity,useRecommendPromotion,useLuckySale } from './hooks';
+import { findProductById } from "./utils/findProductById";
+import { updateCartItemQuantity } from "./utils/updateCartItemQuantity";
+import { useLuckySale, useRecommendPromotion } from "./hooks";
 import { CartItem } from './types';
 
 useLuckySale();
-
-const findProductById = (productId: string) => {
-  return prodList.find((product) => product.id === productId);
-};
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
