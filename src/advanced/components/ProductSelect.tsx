@@ -1,5 +1,6 @@
 import { FC, memo } from 'react'
 import { Product } from '../types'
+import { formatNumber } from '../utils'
 
 type SelectFieldProps = {
   price: string
@@ -16,8 +17,8 @@ const SelectField: FC<SelectFieldProps> = ({ price, onChange, options }) => {
       className="border rounded p-2 mr-2"
     >
       {options.map(({ id, quantity, name, price }) => (
-        <option key={id} value={id} disabled={quantity === 0}>
-          {name} ({price.toLocaleString()}원)
+        <option key={id} value={id} disabled={!quantity}>
+          {name} ({formatNumber(price)}원)
         </option>
       ))}
     </select>
