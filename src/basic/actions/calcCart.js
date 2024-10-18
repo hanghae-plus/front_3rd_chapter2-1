@@ -1,7 +1,7 @@
 import { appendChildren, createElement, getElementById } from '../../util/element.js';
 import { CART_VIEW_ID, POINT_VIEW_ID, STOCK_VIEW_ID, SUM_VIEW_ID } from '../../const/VIEW_ID.js';
 import { PROD_LIST } from '../../const/PROD_LIST.js';
-import plusPurchaseCount from '../../util/plusPurchaseCount.js';
+import { parseQuantity } from '../../util/plusPurchaseCount.js';
 import {
   BULK_PURCHASE_DISCOUNT_RATIO,
   PROD_FIFTH_DISCOUNT_RATIO,
@@ -18,7 +18,6 @@ export default function calcCart() {
 
   const { totalItemsPrice, paymentPrice, itemCount } = calculatePrices(itemViewsInCart);
   const discountRatio = calculateDiscountRatio(totalItemsPrice, paymentPrice, itemCount);
-
   const { finalPaymentPrice, highestDiscountRatio } = applyTuesdayDiscount(paymentPrice, discountRatio);
   updateSumView(finalPaymentPrice, highestDiscountRatio);
 
@@ -33,7 +32,7 @@ function calculatePrices(itemViewsInCart) {
 
   for (let i = 0; i < itemViewsInCart.length; i++) {
     const currentItem = findProductById(itemViewsInCart[i].id);
-    const quantity = plusPurchaseCount(itemViewsInCart[i]);
+    const quantity = parseQuantity(itemViewsInCart[i]);
     const totalItemPrice = currentItem.price * quantity;
     const discountRatio = getDiscountRatio(currentItem, quantity);
 
@@ -87,7 +86,7 @@ function applyTuesdayDiscount(paymentPrice, discountRatio) {
     paymentPrice *= (1 - TUESDAY_DISCOUNT_RATIO);
     discountRatio = Math.max(discountRatio, TUESDAY_DISCOUNT_RATIO);
   }
-  return { paymentPrice, discountRatio };
+  return { finalPaymentPrice: paymentPrice, highestDiscountRatio: discountRatio };
 }
 
 function updateSumView(paymentPrice, discountRatio) {

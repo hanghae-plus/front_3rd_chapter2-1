@@ -1,11 +1,17 @@
 import { appendChildren, createElement, getElementById } from '../../util/element.js';
-import { CART_VIEW_ID, SELECT_VIEW_ID } from '../../const/VIEW_ID.js';
+import { ADD_BTN_VIEW_ID, CART_VIEW_ID, SELECT_VIEW_ID } from '../../const/VIEW_ID.js';
 import { PROD_LIST } from '../../const/PROD_LIST.js';
 import { SOLD_OUT } from '../../const/MASIC_NUMBER.js';
 import calcCart from './calcCart.js';
 import plusPurchaseCount from '../../util/plusPurchaseCount.js';
 
 export default function addBtnEvent() {
+  const addBtnView = getElementById(ADD_BTN_VIEW_ID);
+
+  addBtnView.addEventListener('click', handleClickButton);
+}
+
+function handleClickButton() {
   const selectView = getElementById(SELECT_VIEW_ID);
   const selectedOptionId = selectView.value;
   const selectedProduct = findProductById(selectedOptionId);
@@ -19,8 +25,8 @@ export default function addBtnEvent() {
       addNewProductToCart(selectedProduct);
     }
     calcCart();
-
-    return selectedOptionId;
+    
+    localStorage.setItem('selectedOptionId', selectedOptionId);
   }
 }
 
