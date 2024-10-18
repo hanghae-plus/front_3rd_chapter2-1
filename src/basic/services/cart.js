@@ -11,23 +11,6 @@ import {
   getProductBulkDiscountRate,
 } from './discount';
 
-const updateCartInfos = (bonusPoints) => {
-  const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
-
-  const updatedTotalPriceAndDiscountRate = calculateTotalProductsBulkDiscount(
-    totalItems,
-    totalPrice,
-    discountedTotalPrice,
-  );
-  const { updatedTotalPrice, discountRate } = calculateDayDiscount(updatedTotalPriceAndDiscountRate);
-
-  renderCartTotalInfo(updatedTotalPrice, discountRate);
-  bonusPoints = updateBonusPoints(bonusPoints, updatedTotalPrice);
-  renderProductsStockInfo();
-
-  return bonusPoints;
-};
-
 const calculateCartTotals = () => {
   let totalItems = 0;
   let totalPrice = 0;
@@ -58,4 +41,21 @@ const updateBonusPoints = (bonusPoints, totalPrice) => {
   return updatedBonusPoints;
 };
 
-export { updateCartInfos, updateBonusPoints };
+const updateCartTotalText = (bonusPoints) => {
+  const { totalItems, totalPrice, discountedTotalPrice } = calculateCartTotals();
+  const updatedTotalPriceAndDiscountRate = calculateTotalProductsBulkDiscount(
+    totalItems,
+    totalPrice,
+    discountedTotalPrice,
+  );
+  const { updatedTotalPrice, discountRate } = calculateDayDiscount(updatedTotalPriceAndDiscountRate);
+
+  renderCartTotalInfo(updatedTotalPrice, discountRate);
+  renderProductsStockInfo();
+
+  bonusPoints = updateBonusPoints(bonusPoints, updatedTotalPrice);
+
+  return bonusPoints;
+};
+
+export { updateBonusPoints, updateCartTotalText };
