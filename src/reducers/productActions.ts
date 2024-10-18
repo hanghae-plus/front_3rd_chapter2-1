@@ -59,9 +59,9 @@ export function handleRemoveProduct(state: ProductState, itemId: string): Produc
  * @returns {ProductState}
  */
 export function handleChangeQuantity(state: ProductState, payload: { id: string; change: number }): ProductState {
-  const { id, change } = payload
-  const product = state.products.find((item) => item.id === id)
-  const cartItem = state.cart.find((item) => item.id === id)
+  const { id: selectedProductId, change } = payload
+  const product = state.products.find(({ id }) => id === selectedProductId)
+  const cartItem = state.cart.find(({ id }) => id === selectedProductId)
 
   if (!product || !cartItem) return state
 
@@ -76,7 +76,7 @@ export function handleChangeQuantity(state: ProductState, payload: { id: string;
   // 장바구니에서 상품의 수량을 변경
   const updatedCart = state.cart
     .map((item) => {
-      if (item.id === id) {
+      if (item.id === selectedProductId) {
         return { ...item, quantity: newCartQuantity }
       }
       return item
@@ -85,7 +85,7 @@ export function handleChangeQuantity(state: ProductState, payload: { id: string;
 
   // 상품의 재고를 변경
   const updatedProducts = state.products.map((item) => {
-    if (item.id === id) {
+    if (item.id === selectedProductId) {
       return { ...item, quantity: availableStock - newCartQuantity }
     }
     return item
@@ -101,13 +101,13 @@ export function handleChangeQuantity(state: ProductState, payload: { id: string;
  * @returns {ProductState}
  */
 export function handleUpdateProduct(state: ProductState, payload: { id: string; discount: number }): ProductState {
-  const { id, discount } = payload
+  const { id: selectedProductId, discount } = payload
   const updatedProducts = state.products.map((product) =>
-    product.id === id ? { ...product, price: Math.round(product.price * (1 - discount)) } : product,
+    product.id === selectedProductId ? { ...product, price: Math.round(product.price * (1 - discount)) } : product,
   )
 
   const updatedCart = state.cart.map((item) =>
-    item.id === id ? { ...item, price: Math.round(item.price * (1 - discount)) } : item,
+    item.id === selectedProductId ? { ...item, price: Math.round(item.price * (1 - discount)) } : item,
   )
 
   return { ...state, products: updatedProducts, cart: updatedCart }
