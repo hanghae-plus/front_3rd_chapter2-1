@@ -48,7 +48,7 @@ export const useCartHandlers = (cartItems, setCartItems) => {
   const handleQuantityUpdate = (productId, changeDirection) => {
     const quantityChange = changeDirection === 'increase' ? 1 : -1;
     setCartItems((prevState) =>
-      updateCartItemQuantity(prevState, quantityChange, findProductById(productId)),
+      updateCartItemQuantity(prevState, quantityChange, findProductById(productId))
     );
   };
 

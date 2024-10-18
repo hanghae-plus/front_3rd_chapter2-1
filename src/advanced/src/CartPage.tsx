@@ -16,7 +16,7 @@ const CartPage = () => {
 
   const { handleAddCartItem, handleQuantityUpdate, handleRemoveCartItem } = useCartHandlers(
     cartItems,
-    setCartItems,
+    setCartItems
   );
 
   useEffect(() => {

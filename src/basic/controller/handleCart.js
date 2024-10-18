@@ -17,7 +17,7 @@ export function addItemToCart(
   cartsDiv,
   sumDiv,
   stockInfoDiv,
-  lastSelRef,
+  lastSelRef
 ) {
   const selectedProduct = prodList.find((product) => product.id === selectedProductId);
 
