@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useCart from '../hooks/useCart';
 
 const CartItem = () => {
@@ -9,7 +9,7 @@ const CartItem = () => {
       {Object.entries(cart).map(([productId, quantity]) => {
         const product = productList.find((item) => item.id === productId);
         return (
-          <div key={productId} className="flex justify-between items-center mb-2">
+          <div key={quantity} className="flex justify-between items-center mb-2">
             <span>
               {product?.name} - {product?.price}원 x {quantity}
             </span>
