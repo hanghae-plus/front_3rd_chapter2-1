@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react'
+import { FC } from 'react'
 import { useProduct } from './hooks'
 import { Button, ProductLayout, ProductList, OtherSummary, SelectField, StockStatus } from './components'
 import { useProductActions } from './hooks/useProductActions'

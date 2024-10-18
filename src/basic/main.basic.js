@@ -8,9 +8,9 @@ import {
   MESSAGE,
   MIN_FOR_DISCOUNT,
   BULK_LIMIT,
-} from '../constants'
-import { ProductStore } from '../stores'
-import { HomePage, CartItem, CustomOption } from '../components/basic'
+} from '../advanced/constants'
+import { ProductStore } from '../advanced/stores'
+import { HomePage, CartItem, CustomOption } from '../advanced/components/basic'
 
 /**
  * @description 홈렌더링 함수

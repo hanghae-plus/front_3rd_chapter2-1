@@ -1,6 +1,5 @@
 import { ProductState } from '../types'
 import {
-  DISCOUNT_RATE,
   MIN_FOR_DISCOUNT,
   BULK_LIMIT,
   BULK_DISCOUNT,
