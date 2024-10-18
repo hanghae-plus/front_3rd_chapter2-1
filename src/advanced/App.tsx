@@ -3,7 +3,7 @@ import { CartSummary } from './components/CartTotal/CartTotal';
 import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { useCart } from './hooks/useCart';
 import { useCartSummary } from './hooks/useCartSummary';
-import { useInitSales } from './hooks/useInitSales';
+import { useInitializeSales } from './hooks/useInitializeSales';
 
 export const App = () => {
   const {
@@ -16,7 +16,7 @@ export const App = () => {
   } = useCart();
   const cartSummary = useCartSummary(cartList);
 
-  useInitSales({ lastSelectedId, stockList, updateStockPrice });
+  useInitializeSales({ lastSelectedId, stockList, updateStockPrice });
 
   return (
     <div className="bg-gray-100 p-8">
