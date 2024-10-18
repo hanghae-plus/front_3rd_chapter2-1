@@ -38,7 +38,6 @@ const setSuggestDiscount = (lastAddedProductId) => {
         if (suggest) {
           alert(`${suggest.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
           suggest.price = Math.round(suggest.price * SUGGEST_DISCOUNT_RATE);
-          console.log(suggest.price, SUGGEST_DISCOUNT_RATE);
           renderProductOptions();
         }
       }
