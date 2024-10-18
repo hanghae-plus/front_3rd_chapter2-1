@@ -60,7 +60,7 @@ const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     setProducts(prevProducts =>
       prevProducts.map(product =>
         product.id === productId
-          ? { ...product, stock: Math.max(0, product.stock - change) }
+          ? { ...product, stock: Math.max(0, product.stock + change) }
           : product
       )
     );
@@ -140,7 +140,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       }
     });
 
-    updateProductStock(productId, 1);
+    updateProductStock(productId, -1);
   }, [products, updateProductStock]);
 
   const updateCartItemQuantity = useCallback((productId: string, change: number) => {
@@ -162,7 +162,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setCart(prevCart => {
       const item = prevCart.find(item => item.id === productId);
       if (item) {
-        updateProductStock(productId, -item.quantity);
+        updateProductStock(productId, item.quantity);
       }
       return prevCart.filter(item => item.id !== productId);
     });
@@ -244,10 +244,10 @@ const ProductSelect: React.FC = () => {
         value={selectedProductId}
         onChange={(e) => setSelectedProductId(e.target.value)}
       >
-        <option value="">상품을 선택하세요</option>
+        {/* <option value="">상품을 선택하세요</option> */}
         {products.map((product) => (
           <option key={product.id} value={product.id} disabled={product.stock === 0}>
-            {product.name} - {product.price}원 (재고: {product.stock})
+            {product.name} - {product.price}원
           </option>
         ))}
       </select>
