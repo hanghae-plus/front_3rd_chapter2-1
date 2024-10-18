@@ -1,13 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/appContext';
-import { useCart } from '../hooks/useCart';
-import CartProductList from './CartProductList';
-import CartAmountInfo from './CartAmountInfo';
-import StockInfo from './StockInfo';
-import AddToCart from './AddToCart';
-import { useRender } from '../hooks/useRender';
-import ProductSelectList from './ProductSelectList';
-import { useInterval } from '../hooks/useInterval';
+import { CartProductList, CartAmountInfo, StockInfo, AddToCart, ProductSelectList } from './index';
+import { useCart, useRender, useInterval } from '../hooks/index';
 
 const Layout = () => {
   const { setProductSelectDropDown, cartProductList, setSelectedProductId } = useAppContext();

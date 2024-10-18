@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppContext } from '../context/appContext';
 import { ALERT_SHORT_STOCK, PRODUCT_LIST } from '../ts/constants/constants';
 
-const CartProductList = () => {
+export const CartProductList = () => {
   const { cartProductList, productList, setCartProductList, setProductList } = useAppContext();
 
   const updateCartProductInfo = (productId: string, change: number) => {
@@ -97,5 +97,3 @@ const CartProductList = () => {
     </div>
   );
 };
-
-export default CartProductList;

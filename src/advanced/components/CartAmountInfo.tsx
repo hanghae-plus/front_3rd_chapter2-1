@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/appContext';
 
-const CartAmountInfo = () => {
+export const CartAmountInfo = () => {
   const { productSum, discountSpan, bonusPointsSpan } = useAppContext();
   return (
     <div>
@@ -15,5 +15,3 @@ const CartAmountInfo = () => {
     </div>
   );
 };
-
-export default CartAmountInfo;

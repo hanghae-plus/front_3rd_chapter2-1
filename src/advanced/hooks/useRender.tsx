@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/appContext';
 
-const useRender = () => {
+export const useRender = () => {
   const { productList, setBonusPointsSpan } = useAppContext();
 
   //select 상품 리스트 렌더링
@@ -20,5 +20,3 @@ const useRender = () => {
 
   return { renderProductList, renderBonusPoints };
 };
-
-export { useRender };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/appContext';
 
-const ProductSelectList = () => {
+export const ProductSelectList = () => {
   const { setSelectedProductId, productSelectDropDown } = useAppContext();
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProductId(event.target.value);
@@ -15,5 +15,3 @@ const ProductSelectList = () => {
     </div>
   );
 };
-
-export default ProductSelectList;

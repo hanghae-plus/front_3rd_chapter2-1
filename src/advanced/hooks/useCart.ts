@@ -7,7 +7,7 @@ import {
   DISCOUNT_25_PERCENT_PRODUCT_COUNT,
 } from '../ts/constants/constants';
 
-const useCart = () => {
+export const useCart = () => {
   const { productList, setStockInfo, cartProductList, setProductSum, setDiscountSpan, setBonusPointsSpan } =
     useAppContext();
 
@@ -70,5 +70,3 @@ const useCart = () => {
   };
   return { calcCart };
 };
-
-export { useCart };

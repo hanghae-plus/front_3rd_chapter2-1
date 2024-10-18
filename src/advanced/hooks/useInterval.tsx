@@ -2,13 +2,12 @@ import React from 'react';
 import { useAppContext } from '../context/appContext';
 import { useRender } from './useRender';
 
-const useInterval = () => {
-  const { productList, setProductList,setProductSelectDropDown,cartProductList } = useAppContext();
+export const useInterval = () => {
+  const { productList, setProductList, setProductSelectDropDown, cartProductList } = useAppContext();
 
-  const { renderProductList } = useRender(); 
-  const options =  renderProductList()
+  const { renderProductList } = useRender();
+  const options = renderProductList();
   const timeSaleProductRenderer = () => {
-    
     if (productList.length > 0) {
       const timeSaleProduct = productList[Math.floor(Math.random() * productList.length)];
 
@@ -23,7 +22,7 @@ const useInterval = () => {
           return product;
         });
         setProductList(updateProductList);
-        setProductSelectDropDown(<>{options}</>)
+        setProductSelectDropDown(<>{options}</>);
       }
     }
   };
@@ -44,7 +43,7 @@ const useInterval = () => {
     }
   };
 
-const timeSaleInterval = setInterval(() => {
+  const timeSaleInterval = setInterval(() => {
     timeSaleProductRenderer();
   }, 30000);
 
@@ -52,12 +51,5 @@ const timeSaleInterval = setInterval(() => {
     productSuggestRender();
   }, 60000);
 
-
-
-  return { renderProductList,timeSaleInterval,suggestInterval };
+  return { renderProductList, timeSaleInterval, suggestInterval };
 };
-
-export { useInterval };
-
-
-

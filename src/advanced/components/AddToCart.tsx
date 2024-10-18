@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppContext } from '../context/appContext';
 import { ALERT_SHORT_STOCK } from '../ts/constants/constants';
 
-const AddToCart = () => {
+export const AddToCart = () => {
   const { productList, selectedProductId, setCartProductList, setProductList } = useAppContext();
 
   const handleAddToCart = () => {
@@ -50,5 +50,3 @@ const AddToCart = () => {
     </div>
   );
 };
-
-export default AddToCart;

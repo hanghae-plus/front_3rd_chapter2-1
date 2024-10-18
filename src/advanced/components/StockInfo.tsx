@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../context/appContext';
 
-const StockInfo = () => {
+export const StockInfo = () => {
   const { stockInfo } = useAppContext();
   return (
     <div>
@@ -11,5 +11,3 @@ const StockInfo = () => {
     </div>
   );
 };
-
-export default StockInfo;
