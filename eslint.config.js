@@ -35,6 +35,8 @@ export default [
       'no-promise-executor-return': 'off',
       'no-plusplus': 'off',
       'no-shadow': 'off',
+      'import/no-cycle': 'error',
+      'import/prefer-default-export': 'off',
     },
   },
 ];
