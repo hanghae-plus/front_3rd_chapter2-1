@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, ProductSelect, AddToCartButton } from './component/atoms';
 import { CartItems, CartTotal, StockStatus } from './component/organisms';
-import { useCartHandlers } from './services/useCartHandlers';
+import { useCartHandlers, useRecommendPromotion, useLuckySale } from './services';
 
 /**
  * @function CartPage
@@ -19,7 +19,16 @@ const CartPage = () => {
     setCartItems,
   );
 
-  // 상품 선택 드롭다운의 변경을 처리
+  useEffect(() => {
+    if (selectedProductId) {
+      useRecommendPromotion(selectedProductId);
+    }
+  }, [selectedProductId]);
+
+  useEffect(() => {
+    useLuckySale();
+  }, []);
+
   const handleSelectChange = (event) => {
     setSelectedProductId(event.target.value);
   };
