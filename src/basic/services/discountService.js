@@ -2,6 +2,7 @@ import {
   BULK_PURCHASE_THRESHOLD,
   BULK_DISCOUNT_RATE,
   TUESDAY_DISCOUNT_RATE,
+  VOLUME_DISCOUNT_MINIMUM,
 } from '../shared/constants.js';
 
 const getDiscount = (product, quantity) => {
@@ -25,7 +26,7 @@ const applyTuesdayDiscount = (totalAmount, discountRate) => {
 };
 
 const getDiscountRate = (productCount, subtotal, totalAmount) => {
-  if (productCount >= 30) {
+  if (productCount >= VOLUME_DISCOUNT_MINIMUM) {
     const bulkDiscount = subtotal * BULK_DISCOUNT_RATE;
     const productDiscount = subtotal - totalAmount;
 

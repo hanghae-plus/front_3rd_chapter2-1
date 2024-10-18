@@ -53,7 +53,9 @@ const removeProduct = (cartProduct, product) => {
 };
 
 const isProductAvailable = (product) => {
-  if (!product || product.quantity <= 0) {
+  const isProductUnavailable = !product || product.quantity <= 0;
+
+  if (isProductUnavailable) {
     alert('선택한 상품은 현재 구매할 수 없습니다.');
     return false;
   }
@@ -64,8 +66,10 @@ const updateExistingCartProduct = (cartProduct, product) => {
   const quantitySpan = cartProduct.querySelector('span');
   const currentQuantity = getCurrentQuantity(quantitySpan);
   const newQuantity = currentQuantity + 1;
+  const isQuantityValid =
+    newQuantity <= Math.min(product.quantity, MAX_QUANTITY);
 
-  if (newQuantity <= Math.min(product.quantity, MAX_QUANTITY)) {
+  if (isQuantityValid) {
     updateCartProductQuantity(quantitySpan, product, newQuantity);
     product.quantity--;
   } else {
