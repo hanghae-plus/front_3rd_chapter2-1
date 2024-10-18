@@ -3,7 +3,7 @@ import { useAppContext } from '../context/appContext';
 import { CartProductList, CartAmountInfo, StockInfo, AddToCart, ProductSelectList } from './index';
 import { useCart, useRender, useInterval } from '../hooks/index';
 
-const Layout = () => {
+export const Layout = () => {
   const { setProductSelectDropDown, cartProductList, setSelectedProductId } = useAppContext();
 
   const { calcCart } = useCart();
@@ -44,5 +44,3 @@ const Layout = () => {
     </div>
   );
 };
-
-export default Layout;
