@@ -10,9 +10,9 @@ import {
   MIN_DISCOUNT_QUANTITY,
   MIN_FLASH_SALE_QUANTITY,
   POINT_BASE,
-  SUGGESTION_SALE_DELAY_TIME,
-  SUGGESTION_SALE_DISCOUNT,
-  SUGGESTION_SALE_INTERVAL_TIME,
+  BUNDLE_SALE_DELAY_TIME,
+  BUNDLE_SALE_DISCOUNT,
+  BUNDLE_SALE_INTERVAL_TIME,
   TUESDAY_DISCOUNT
 } from '../constants/index.js';
 import Cart from '../components/Cart.js';
@@ -22,11 +22,6 @@ import Points from '../components/Points.js';
 
 let points,
   products,
-  $productSelect,
-  $addToCartButton,
-  $cartProducts,
-  $cartTotal,
-  $stockStatus,
   selectedProduct,
   total = 0,
   productCount = 0;
@@ -39,48 +34,6 @@ function renderElement(id, html) {
   }
 
   return $el;
-}
-
-function main() {
-  products = [
-    { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
-    { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
-    { id: 'p3', name: '상품3', price: 30000, quantity: 20 },
-    { id: 'p4', name: '상품4', price: 15000, quantity: 0 },
-    { id: 'p5', name: '상품5', price: 25000, quantity: 10 }
-  ];
-
-  renderElement('app', Cart());
-  renderItemSelectOptions();
-  calcCart();
-  setTimeout(function () {
-    setInterval(function () {
-      let saleProduct = products[Math.floor(Math.random() * products.length)];
-      if (Math.random() < FLASH_SALE_PROBABILITY && saleProduct.quantity > 0) {
-        saleProduct.price = Math.round(saleProduct.price * FLASH_SALE_DISCOUNT);
-        alert(`번개세일! ${saleProduct.name}이(가) 20% 할인 중입니다!`);
-        renderItemSelectOptions();
-      }
-    }, FLASH_SALE_INTERVAL_TIME);
-  }, Math.random() * FLASH_SALE_DELAY_TIME);
-  setTimeout(function () {
-    setInterval(function () {
-      if (selectedProduct) {
-        let suggestedProduct = products.find(function (product) {
-          return product.id !== selectedProduct && product.quantity > 0;
-        });
-        if (suggestedProduct) {
-          alert(
-            `${suggestedProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
-          );
-          suggestedProduct.price = Math.round(
-            suggestedProduct.price * SUGGESTION_SALE_DISCOUNT
-          );
-          renderItemSelectOptions();
-        }
-      }
-    }, SUGGESTION_SALE_INTERVAL_TIME);
-  }, Math.random() * SUGGESTION_SALE_DELAY_TIME);
 }
 
 function renderItemSelectOptions() {
@@ -246,3 +199,61 @@ $cartProducts.addEventListener('click', function (event) {
     calcCart();
   }
 });
+
+function applyFlashSale() {
+  const saleProduct = products[Math.floor(Math.random() * products.length)];
+  const isQualified =
+    Math.random() < FLASH_SALE_PROBABILITY && saleProduct.quantity > 0;
+
+  if (isQualified) {
+    saleProduct.price = Math.round(saleProduct.price * FLASH_SALE_DISCOUNT);
+
+    alert(`번개세일! ${saleProduct.name}이(가) 20% 할인 중입니다!`);
+
+    renderItemSelectOptions();
+  }
+}
+
+function applyBundleSale() {
+  if (!selectedProduct) return;
+
+  const saleProduct = products.find(
+    (product) => product.id !== selectedProduct && product.quantity > 0
+  );
+
+  if (saleProduct) {
+    alert(`${saleProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`);
+
+    saleProduct.price = Math.round(saleProduct.price * BUNDLE_SALE_DISCOUNT);
+
+    renderItemSelectOptions();
+  }
+}
+
+function schedulePromotion() {
+  setTimeout(
+    () => setInterval(applyFlashSale, FLASH_SALE_INTERVAL_TIME),
+    Math.random() * FLASH_SALE_DELAY_TIME
+  );
+  setTimeout(
+    () => setInterval(applyBundleSale, BUNDLE_SALE_INTERVAL_TIME),
+    Math.random() * BUNDLE_SALE_DELAY_TIME
+  );
+}
+
+function main() {
+  products = [
+    { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
+    { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
+    { id: 'p3', name: '상품3', price: 30000, quantity: 20 },
+    { id: 'p4', name: '상품4', price: 15000, quantity: 0 },
+    { id: 'p5', name: '상품5', price: 25000, quantity: 10 }
+  ];
+
+  renderElement('app', Cart());
+  renderItemSelectOptions();
+  calcCart();
+  schedulePromotion();
+}
+
+main();
