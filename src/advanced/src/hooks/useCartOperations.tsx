@@ -22,6 +22,7 @@ const useCartOperations = () => {
     });
     updateStoreCartItems(updatedCartItems);
   };
+
   const handleCartItemQuantity = (event: MouseEvent<HTMLButtonElement>, cartItem: CartItemModel) => {
     const targetProduct = storeProducts.find((product) => product.id === cartItem.id)!;
     const changeAmount = Number((event.target as HTMLButtonElement).value);
