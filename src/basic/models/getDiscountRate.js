@@ -19,7 +19,9 @@ export const discountRates = {
 
 export const getDiscountRate = (cart) => {
   const { id, quantity } = cart;
-  if (quantity < MIN_QUANTITY_FOR_DISCOUNT) {return 0;}
+  if (quantity < MIN_QUANTITY_FOR_DISCOUNT) {
+    return 0;
+  }
 
   return discountRates[id] || 0;
 };

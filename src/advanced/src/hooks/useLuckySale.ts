@@ -16,7 +16,9 @@ function applyLuckySalePromotion() {
   if (Math.random() < PROMOTION_CHANCE && productForPromotion.quantity > 0) {
     const newPrice = Math.round(productForPromotion.price * (1 - PROMOTION_DISCOUNT));
     productForPromotion.price = newPrice;
-    alert(`번개세일! ${productForPromotion.name}이(가) ${PROMOTION_DISCOUNT * 100}% 할인 중입니다!`);
+    alert(
+      `번개세일! ${productForPromotion.name}이(가) ${PROMOTION_DISCOUNT * 100}% 할인 중입니다!`
+    );
   }
 }
 

@@ -17,7 +17,7 @@ export function addItemToCart(
   cartsDiv,
   sumDiv,
   stockInfoDiv,
-  lastSelRef,
+  lastSelRef
 ) {
   const selectedProduct = prodList.find((product) => product.id === selectedProductId);
 
@@ -90,8 +90,9 @@ export function addNewItemToCart(product, cartsDiv) {
 export function handleCartEvent(event, prodList, cartsDiv, sumDiv, stockInfoDiv) {
   const target = event.target;
 
-  if (!target.classList.contains('quantity-change') && !target.classList.contains('remove-item'))
-  {return;}
+  if (!target.classList.contains('quantity-change') && !target.classList.contains('remove-item')) {
+    return;
+  }
 
   const productId = target.dataset.productId;
   const itemElement = document.getElementById(productId);

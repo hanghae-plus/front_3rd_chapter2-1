@@ -9,7 +9,6 @@ const LOW_STOCK_THRESHOLD = 5;
 const NO_STOCK = 0;
 const FULL_PRICE_MULTIPLIER = 1;
 
-
 /**
  * @function updateStockInfo
  * @description 상품 목록에서 재고 정보를 확인하고, 재고가 낮거나 품절된 상품에 대한 메시지를 업데이트
@@ -45,7 +44,6 @@ export const updateCartDisplay = (sumDiv, totalPrice, discountRate) => {
   }
 };
 
-
 /**
  * @function calculateCart
  * @description 장바구니의 총액을 계산하고, 적용된 할인율, 재고 정보, 적립 포인트를 업데이트
@@ -63,7 +61,7 @@ export function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   const totalDiscountPrice = carts.reduce(
     (acc, item) =>
       acc + item.price * item.quantity * (FULL_PRICE_MULTIPLIER - getDiscountRate(item)),
-    NO_STOCK,
+    NO_STOCK
   );
 
   let rate = 0;

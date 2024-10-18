@@ -13,19 +13,25 @@ import { useCartHandlers } from './hooks/useCartHandlers';
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('p1');
-  
-  const { handleAddCartItem, handleQuantityUpdate, handleRemoveCartItem } = useCartHandlers(cartItems, setCartItems);
+
+  const { handleAddCartItem, handleQuantityUpdate, handleRemoveCartItem } = useCartHandlers(
+    cartItems,
+    setCartItems
+  );
 
   // 상품 선택 드롭다운의 변경을 처리
   const handleSelectChange = (event) => {
     setSelectedProductId(event.target.value);
   };
 
-
   return (
     <Layout>
       <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-      <CartItems cartItems={cartItems} handleQuantityUpdate={handleQuantityUpdate} handleRemoveCartItem={handleRemoveCartItem} />
+      <CartItems
+        cartItems={cartItems}
+        handleQuantityUpdate={handleQuantityUpdate}
+        handleRemoveCartItem={handleRemoveCartItem}
+      />
       <CartTotal cartItems={cartItems} />
       <ProductSelect handleSelectChange={handleSelectChange} />
       <AddToCartButton handleAddCartItem={() => handleAddCartItem(selectedProductId)} />

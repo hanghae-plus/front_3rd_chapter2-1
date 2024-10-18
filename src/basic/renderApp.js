@@ -34,7 +34,7 @@ const renderApp = () => {
     cartTotalDiv,
     productSelect,
     addToCartButton,
-    stockStatusDiv,
+    stockStatusDiv
   );
   container.appendChild(wrapper);
   return container;

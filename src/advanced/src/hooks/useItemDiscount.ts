@@ -9,7 +9,7 @@ export const DISCOUNT_RATES = {
 /**
  * @function useItemDiscount
  * @description 주어진 상품과 수량에 따라 할인율을 적용하는 훅
- * 
+ *
  * @param {object} curItem - 현재 선택된 상품 객체
  * @param {number} quantity - 선택된 상품의 수량
  * @returns {number} 적용된 할인율을 반환

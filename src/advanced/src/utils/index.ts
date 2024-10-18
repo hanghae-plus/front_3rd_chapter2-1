@@ -1,2 +1,2 @@
-export {findProductById} from  './findProductById';
-export {updateCartItemQuantity} from './updateCartItemQuantity';
+export { findProductById } from './findProductById';
+export { updateCartItemQuantity } from './updateCartItemQuantity';
