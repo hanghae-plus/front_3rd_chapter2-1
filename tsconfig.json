@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6", // ECMAScript 버전
+    "module": "CommonJS", // 모듈 시스템
+    "jsx": "react", // JSX 변환 방식
+    "strict": true, // 엄격한 타입 검사를 사용
+    "esModuleInterop": true, // ES 모듈 호환성
+    "skipLibCheck": true, // 라이브러리 타입 검사를 건너뜀
+    "forceConsistentCasingInFileNames": true // 파일 이름 대소문자 일관성
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"], // 포함할 파일 경로
+  "exclude": ["node_modules", "**/*.spec.ts"] // 제외할 파일 경로
+}
