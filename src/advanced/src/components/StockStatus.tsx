@@ -1,10 +1,7 @@
-import useCart from '../hooks/useCart';
 import { QUANTITY } from '../constants';
 import { Product } from '../types';
 
-const StockStatus = () => {
-  const { productList } = useCart();
-
+const StockStatus = ({ productList }) => {
   return (
     <div id="stock-status" className="text-sm text-gray-500 mt-2">
       {productList

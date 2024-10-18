@@ -1,15 +1,12 @@
-import React, { useEffect } from 'react';
-import useCart from '../hooks/useCart';
+import React from 'react';
 
-const CartItem = () => {
-  const { cart, productList, changeQuantity: handleChangeQuantity } = useCart();
-
+const CartItem = ({ cart, productList, handleChangeQuantity }) => {
   return (
     <div id="cart-items">
       {Object.entries(cart).map(([productId, quantity]) => {
         const product = productList.find((item) => item.id === productId);
         return (
-          <div key={quantity} className="flex justify-between items-center mb-2">
+          <div key={productId} className="flex justify-between items-center mb-2">
             <span>
               {product?.name} - {product?.price}원 x {quantity}
             </span>

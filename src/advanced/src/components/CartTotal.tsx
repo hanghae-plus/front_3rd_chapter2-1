@@ -1,9 +1,6 @@
 import React from 'react';
-import useCart from '../hooks/useCart';
 
-const CartTotal = () => {
-  const { totalAmount, discountRate, bonusPoint } = useCart();
-
+const CartTotal = ({ totalAmount, discountRate, bonusPoint }) => {
   return (
     <div id="cart-total" className="text-xl font-bold my-4">
       총액 {Math.round(totalAmount)}원{' '}
