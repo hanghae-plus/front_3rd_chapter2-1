@@ -27,6 +27,11 @@ var selectedProduct,
   total = 0,
   productCount = 0;
 
+function renderElement(id, html) {
+  const $el = document.getElementById(id);
+  $el.innerHTML = html;
+}
+
 function main() {
   products = [
     { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
