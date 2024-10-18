@@ -2,7 +2,6 @@ import { appendChildren, createElement, getElementById, setClassName, setId, set
 import { PROD_LIST } from '../const/PROD_LIST.js';
 import { ADD_BTN_VIEW_ID, CART_VIEW_ID, SELECT_VIEW_ID, STOCK_VIEW_ID, SUM_VIEW_ID } from '../const/VIEW_ID.js';
 
-// TODO: 기능별로 나누는 것이 좋을까? 아니면 노드별로 나누는 것이 좋을까?
 export default function initView() {
   // 기본 뷰 생성
   const root = getElementById('app');
