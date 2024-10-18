@@ -4,12 +4,16 @@ import {
   CartItems,
   CartTotal,
   StockStatus,
-  AddToCartButton,
-  ProductSelect,
+} from './component/organisms';
+import {
   Layout,
-} from './component';
-import { updateCartItemQuantity } from './hooks/updateCartItemQuantity';
+  ProductSelect,
+  AddToCartButton
+} from './component/atoms'
+import { updateCartItemQuantity,useRecommendPromotion,useLuckySale } from './hooks';
 import { CartItem } from './types';
+
+useLuckySale();
 
 const findProductById = (productId: string) => {
   return prodList.find((product) => product.id === productId);
@@ -38,6 +42,8 @@ const CartPage = () => {
       if (existingCartItem) {
         return updatedCartItems;
       }
+
+      useRecommendPromotion(findProductById(selectedProductId));
 
       return [
         ...prevState,
