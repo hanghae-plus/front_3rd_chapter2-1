@@ -1,6 +1,6 @@
 import { CartList } from './components/CartList';
-import { CartSummary } from './components/CartTotal/CartTotal';
-import { ProductSelector } from './components/ProductSelector/ProductSelector';
+import { CartSummary } from './components/CartSummary';
+import { ProductSelector } from './components/ProductSelector';
 import { useCart } from './hooks/useCart';
 import { useCartSummary } from './hooks/useCartSummary';
 import { useInitializeSales } from './hooks/useInitializeSales';

@@ -1,4 +1,4 @@
-import { CartSummaryType } from '../../model/cartSummary';
+import { CartSummaryType } from '../model/cartSummary';
 
 interface CartSummaryProps {
   cartSummary: CartSummaryType;

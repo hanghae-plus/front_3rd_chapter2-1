@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { UpsertCart } from '../../hooks/useCart';
-import { Button } from '../Shared/Button';
+import { UpsertCart } from '../hooks/useCart';
+import { Button } from './Shared/Button';
 
 type Option = {
   value: string;

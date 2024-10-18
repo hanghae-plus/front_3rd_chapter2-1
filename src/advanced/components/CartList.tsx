@@ -1,6 +1,6 @@
-import { DeleteCart, UpsertCart } from '../../hooks/useCart';
-import { CartListType } from '../../model/product';
-import { Button } from '../Shared/Button';
+import { DeleteCart, UpsertCart } from '../hooks/useCart';
+import { CartListType } from '../model/product';
+import { Button } from './Shared/Button';
 
 interface CartListProps {
   cartList: CartListType;
