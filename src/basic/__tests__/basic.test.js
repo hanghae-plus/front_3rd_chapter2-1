@@ -20,7 +20,8 @@ describe('basic test', () => {
       stockInfo,
       globalState,
       setLuckyVickyItem,
-      fishHogu;
+      fishHogu,
+      setRollBackCost;
 
     beforeAll(async () => {
       // DOM 초기화
@@ -31,6 +32,7 @@ describe('basic test', () => {
       globalState = module.globalState;
       setLuckyVickyItem = module.setLuckyVickyItem;
       fishHogu = module.fishHogu;
+      setRollBackCost = module.setRollBackCost;
       sel = document.getElementById('product-select');
       addBtn = document.getElementById('add-to-cart');
       cartDisp = document.getElementById('cart-items');
@@ -142,13 +144,8 @@ describe('basic test', () => {
 
       vi.spyOn(Math, 'random').mockReturnValue(1);
 
-      // 롤백 로직은 어떻게 테스트하지?? 멘토링 때 물오바야징
-      // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      // await delay(60000);
-      // vi.useRealTimers();
-      // vi.useFakeTimers();
-      // vi.advanceTimersByTimeAsync(60000);
-      // expect(luckyVickyItem.cost).toBe(20000);
+      setRollBackCost(luckyVickyItem, 20000);
+      expect(luckyVickyItem.cost).toBe(20000);
     });
 
     it('추천 상품 알림이 표시되는지 확인', () => {
@@ -162,6 +159,9 @@ describe('basic test', () => {
         `${mikkiProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
       );
       expect(mikkiProduct.cost).toBe(9500);
+
+      setRollBackCost(mikkiProduct, 10000);
+      expect(mikkiProduct.cost).toBe(10000);
     });
 
     it('화요일 할인이 적용되는지 확인', () => {

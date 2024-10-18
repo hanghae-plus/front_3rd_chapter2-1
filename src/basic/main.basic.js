@@ -146,11 +146,9 @@ function isLuckyVicky() {
   return Math.random() < 0.3;
 }
 
-function setRollBackCost(inSaleItem, originalCost, duration) {
-  setTimeout(() => {
-    inSaleItem.cost = originalCost;
-    updateProducts();
-  }, duration);
+export function setRollBackCost(inSaleItem, originalCost) {
+  inSaleItem.cost = originalCost;
+  updateProducts();
 }
 
 export function setLuckyVickyItem() {
@@ -166,7 +164,7 @@ export function setLuckyVickyItem() {
     luckyVickyItem.cost = discountedCost;
     updateProducts();
     alert(`번개세일! ${luckyVickyItem.name}이(가) 20% 할인 중입니다!`);
-    setRollBackCost(luckyVickyItem, originalCost, ONE_MINUTE);
+    setTimeout(() => setRollBackCost(luckyVickyItem, originalCost), ONE_MINUTE);
   }
 }
 
@@ -185,7 +183,7 @@ export function fishHogu() {
       );
       mikkiProduct.cost = discountedCost;
       updateProducts();
-      setRollBackCost(mikkiProduct, originalCost, ONE_MINUTE);
+      setTimeout(() => setRollBackCost(mikkiProduct, originalCost), ONE_MINUTE);
     }
   }
 }
