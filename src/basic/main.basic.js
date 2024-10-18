@@ -23,7 +23,7 @@ let $stockStatus;
 let recentlyAddedProductId = null;
 let loyaltyPoints = 0;
 
-const productList = [
+const products = [
   { id: 'p1', name: '상품1', price: 10000, stock: 50, bulkDiscountPercentage: 10 },
   { id: 'p2', name: '상품2', price: 20000, stock: 30, bulkDiscountPercentage: 15 },
   { id: 'p3', name: '상품3', price: 30000, stock: 20, bulkDiscountPercentage: 20 },
@@ -42,10 +42,10 @@ function discountProduct(product, percentage, round = false) {
 /**
  * 상품 선택 셀렉트박스를 렌더링
  */
-function renderProductSelect(productList) {
+function renderProductSelect(products) {
   $productSelect.innerHTML = '';
 
-  productList.forEach((product) => {
+  products.forEach((product) => {
     const opt = document.createElement('option');
 
     opt.value = product.id;
@@ -73,8 +73,8 @@ function renderLoyaltyPoints(points) {
   $el.textContent = `(포인트: ${points})`;
 }
 
-function renderStockStatus(productList) {
-  $stockStatus.textContent = productList
+function renderStockStatus(products) {
+  $stockStatus.textContent = products
     .filter(({ stock }) => stock < 5)
     .map(({ stock, name }) => {
       return `${name}: ${stock > 0 ? `재고 부족 (${stock}개 남음)` : '품절'}`;
@@ -112,7 +112,7 @@ function calculateCart() {
   // 장바구니 아이템 계산
   const cartItems = Array.from($cartItems.children).map(($cartItem) => {
     const productId = $cartItem.id;
-    const product = productList.find((p) => p.id === productId);
+    const product = products.find((p) => p.id === productId);
     const count = parseInt($cartItem.querySelector('span').textContent.split('x ')[1]);
     const itemPrice = product.price * count;
 
@@ -165,7 +165,7 @@ function updateCart() {
   const { cartTotalPrice, discountRate, loyaltyPoints } = calculateCart();
 
   renderCartTotal(cartTotalPrice, discountRate);
-  renderStockStatus(productList);
+  renderStockStatus(products);
   renderLoyaltyPoints(loyaltyPoints);
 }
 
@@ -174,14 +174,14 @@ function startLuckyDrawInterval() {
   setInterval(() => {
     const isCanLuckyDraw = probability(LUCKY_DRAW_PERCENTAGE);
     if (isCanLuckyDraw) {
-      const luckyProduct = getRandomItem(productList);
+      const luckyProduct = getRandomItem(products);
 
       if (luckyProduct.stock > 0) {
         discountProduct(luckyProduct, LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE);
 
         alert(`번개세일! ${luckyProduct.name}이(가) ${LUCKY_DRAW_PRODUCT_DISCOUNT_PERCENTAGE}% 할인 중입니다!`);
 
-        renderProductSelect(productList);
+        renderProductSelect(products);
       }
     }
   }, LUCKY_DRAW_INTERVAL);
@@ -197,7 +197,7 @@ function startSuggestedProductInterval() {
     }
 
     // 장바구니에 최근 추가된 상품은 추첨 대상에서 제외됩니다.
-    const suggestedProduct = productList.find((item) => {
+    const suggestedProduct = products.find((item) => {
       return item.id !== recentlyAddedProductId && item.stock > 0;
     });
 
@@ -208,7 +208,7 @@ function startSuggestedProductInterval() {
 
       discountProduct(suggestedProduct, SUGGESTED_PRODUCT_DISCOUNT_PERCENTAGE);
 
-      renderProductSelect(productList);
+      renderProductSelect(products);
     }
   }, SUGGESTED_PRODUCT_INTERVAL);
 }
@@ -283,7 +283,7 @@ function main() {
 
     // 현재 선택된 상품
     const selectedProductId = $productSelect.value;
-    const productToAdd = productList.find((p) => p.id === selectedProductId);
+    const productToAdd = products.find((p) => p.id === selectedProductId);
 
     if (!productToAdd || productToAdd.stock === 0) {
       return;
@@ -319,7 +319,7 @@ function main() {
     if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
       const { productId } = target.dataset;
       const $item = document.getElementById(productId);
-      const targetProduct = productList.find((product) => product.id === productId);
+      const targetProduct = products.find((product) => product.id === productId);
       const [title, count] = $item.querySelector('span').textContent.split('x ');
       const currentCount = parseInt(count);
 
@@ -365,7 +365,7 @@ function main() {
 
   $root.appendChild($cart);
 
-  renderProductSelect(productList);
+  renderProductSelect(products);
   updateCart();
 
   randomDelay(LUCKY_DRAW_DELAY).then(() => {
