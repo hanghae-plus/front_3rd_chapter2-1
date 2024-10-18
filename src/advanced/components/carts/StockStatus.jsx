@@ -1,8 +1,6 @@
 import React from 'react'
 
 export const StockStatus = ({ productInventory }) => {
-  console.log(productInventory)
-
   return (
     <div id="stock-status" className="mt-2 text-sm text-gray-500">
       {productInventory.map((product) => {

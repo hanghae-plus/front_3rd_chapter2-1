@@ -1,7 +1,6 @@
 import React from 'react'
 
 export const CartItems = ({ cartList }) => {
-  console.log(cartList[0])
   return (
     <div id="cart-items">
       {cartList.map((cartItem) => {
