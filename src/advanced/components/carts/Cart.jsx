@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { BoxTitle } from '../templates/BoxTitle';
-import { CartItems } from './CartItems';
-import { CartTotal } from './CartTotal';
-import { ProductSelector } from './ProductSelector';
-import { StockStatus } from './StockStatus';
-import { initialProductInventory } from '../../datas/productInventory';
+import { useState } from 'react'
+import { BoxTitle } from '../templates/BoxTitle'
+import { CartItems } from './CartItems'
+import { CartTotal } from './CartTotal'
+import { ProductSelector } from './ProductSelector'
+import { StockStatus } from './StockStatus'
+import { initialProductInventory } from '../../datas/productInventory'
 
 export const Cart = () => {
-  const [productInventory, setProductInventory] = useState(initialProductInventory);
-  const [selectedProduct, setSelectedProduct] = useState(initialProductInventory[0]);
-  const [cartList, setCartList] = useState([]);
+  const [productInventory, setProductInventory] = useState(initialProductInventory)
+  const [selectedProduct, setSelectedProduct] = useState(initialProductInventory[0])
+  const [cartList, setCartList] = useState([])
 
   return (
     <div className="bg-gray-100 p-8">
@@ -21,5 +21,5 @@ export const Cart = () => {
         <StockStatus productInventory={productInventory} />
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
-import { Cart } from "./components/carts/Cart";
+import { Cart } from './components/carts/Cart'
 
 function App() {
-    return <Cart />;
+  return <Cart />
 }
 
-export default App;
+export default App

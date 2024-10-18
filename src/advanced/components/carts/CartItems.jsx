@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
 export const CartItems = ({ cartList }) => {
-  console.log(cartList[0]);
+  console.log(cartList[0])
   return (
     <div id="cart-items">
       {cartList.map((cartItem) => {
@@ -20,8 +20,8 @@ export const CartItems = ({ cartList }) => {
               </button>
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}

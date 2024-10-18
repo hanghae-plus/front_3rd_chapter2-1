@@ -1,26 +1,21 @@
 export const ProductSelector = ({ productInventory, setProductInventory, cartList, setCartList, selectedProduct, setSelectedProduct }) => {
   const handleOptionChange = (lastSelectedProductId) => {
     if (Array.isArray(productInventory) === true) {
-      const cartItem = productInventory.find((product) => product.id === lastSelectedProductId);
-      setSelectedProduct(cartItem);
+      const cartItem = productInventory.find((product) => product.id === lastSelectedProductId)
+      setSelectedProduct(cartItem)
     }
-  };
+  }
 
   const handleAddCartButton = () => {
-    const newCartList = cartList.slice();
+    const newCartList = cartList.slice()
 
-    const isNewCartItemIndex = cartList.findIndex((item) => item.id === selectedProduct.id) === -1;
+    const isNewCartItemIndex = cartList.findIndex((item) => item.id === selectedProduct.id) === -1
 
     if (isNewCartItemIndex === true) {
-      newCartList.push(selectedProduct);
-      setCartList(newCartList);
-
-      // const newProductInventory = productInventory.slice()
-      // newProductInventory[]
-
-      // setProductInventory(Object.assign({}, productInventory, ))
+      newCartList.push(selectedProduct)
+      setCartList(newCartList)
     }
-  };
+  }
 
   return (
     <>
@@ -33,5 +28,5 @@ export const ProductSelector = ({ productInventory, setProductInventory, cartLis
         추가
       </button>
     </>
-  );
-};
+  )
+}
