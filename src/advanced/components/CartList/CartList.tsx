@@ -1,9 +1,9 @@
 import { HandleDeleteCart, HandleUpsertCart } from '../../App';
-import { TCartList } from '../../model/product';
+import { CartListType } from '../../model/product';
 import { Button } from '../Shared/Button';
 
 interface CartListProps {
-  cartList: TCartList;
+  cartList: CartListType;
   handleUpsertCart: HandleUpsertCart;
   handleDeleteCart: HandleDeleteCart;
 }

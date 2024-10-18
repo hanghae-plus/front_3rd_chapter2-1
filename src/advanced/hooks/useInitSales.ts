@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { StockList } from '../model/product';
-import { UpdateStockPrice } from './useStock';
+import { StockListType } from '../model/product';
+import { UpdateStockPrice } from './useStockData';
 
 type Props = {
-  stockList: StockList;
+  stockList: StockListType;
   lastSelectedId: string | undefined;
   updateStockPrice: UpdateStockPrice;
 };
@@ -24,7 +24,7 @@ export const useInitSales = ({
 
   /** 번개 세일 시작 */
   const startFlashSale = useCallback(
-    (stockList: StockList) => {
+    (stockList: StockListType) => {
       flashSaleTimeoutRef.current = setTimeout(() => {
         const interval = setInterval(() => {
           const discountItem =
@@ -47,7 +47,7 @@ export const useInitSales = ({
 
   /** 추천 상품 세일 시작 */
   const startSuggestionSale = useCallback(
-    (stockList: StockList, lastSelectedId: string | undefined) => {
+    (stockList: StockListType, lastSelectedId: string | undefined) => {
       suggestionSaleTimeoutRef.current = setTimeout(() => {
         const interval = setInterval(() => {
           if (!lastSelectedId) return;

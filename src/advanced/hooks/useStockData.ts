@@ -1,16 +1,24 @@
 import { useCallback, useState } from 'react';
-import { DEFAULT_PRODUCT_LIST, StockItem, StockList } from '../model/product';
+import {
+  DEFAULT_PRODUCT_LIST,
+  StockItemType,
+  StockListType,
+} from '../model/product';
 
 export type UpdateStockPrice = (
-  productId: StockItem['id'],
-  priceUpdater: () => StockItem['price']
+  productId: StockItemType['id'],
+  priceUpdater: () => StockItemType['price']
 ) => void;
 
-export const useStock = () => {
-  const [stockList, setStockList] = useState<StockList>(DEFAULT_PRODUCT_LIST);
+export const useStockData = () => {
+  const [stockList, setStockList] =
+    useState<StockListType>(DEFAULT_PRODUCT_LIST);
 
   const updateStockQuantity = useCallback(
-    (productId: StockItem['id'], quantityToUpdate: StockItem['quantity']) => {
+    (
+      productId: StockItemType['id'],
+      quantityToUpdate: StockItemType['quantity']
+    ) => {
       setStockList((prevStockList) =>
         prevStockList.map((stockItem) =>
           stockItem.id === productId

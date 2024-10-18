@@ -1,8 +1,8 @@
 import { CartList } from './components/CartList';
-import { CartTotal } from './components/CartTotal/CartTotal';
+import { CartSummary } from './components/CartTotal/CartTotal';
 import { ProductSelector } from './components/ProductSelector/ProductSelector';
 import { useCart } from './hooks/useCart';
-import { useCartTotal } from './hooks/useCartTotal';
+import { useCartSummary } from './hooks/useCartSummary';
 import { useInitSales } from './hooks/useInitSales';
 
 export const App = () => {
@@ -14,7 +14,7 @@ export const App = () => {
     stockList,
     updateStockPrice,
   } = useCart();
-  const cartTotal = useCartTotal(cartList);
+  const cartSummary = useCartSummary(cartList);
 
   useInitSales({ lastSelectedId, stockList, updateStockPrice });
 
@@ -23,7 +23,7 @@ export const App = () => {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
 
-        <CartTotal cartTotal={cartTotal} />
+        <CartSummary cartSummary={cartSummary} />
         <CartList
           cartList={cartList}
           handleUpsertCart={handleUpsertCart}

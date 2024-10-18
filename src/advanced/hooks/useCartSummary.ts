@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { DEFAULT_CART_TOTAL, TCartTotal } from '../model/cartTotal';
-import { TCartItem, TCartList } from '../model/product';
+import { CartSummaryType, DEFAULT_CART_TOTAL } from '../model/cartSummary';
+import { CartItemType, CartListType } from '../model/product';
 
 const DISCOUNTS = {
   p1: 0.1,
@@ -10,8 +10,9 @@ const DISCOUNTS = {
   p5: 0.25,
 } as const;
 
-export const useCartTotal = (cartList: TCartList) => {
-  const [cartTotal, setCartTotal] = useState<TCartTotal>(DEFAULT_CART_TOTAL);
+export const useCartSummary = (cartList: CartListType) => {
+  const [cartTotal, setCartTotal] =
+    useState<CartSummaryType>(DEFAULT_CART_TOTAL);
 
   /** 할인율 계산 */
   const calculateDiscountRate = useCallback(
@@ -23,7 +24,7 @@ export const useCartTotal = (cartList: TCartList) => {
 
   /** 개별 상품 가격 계산 */
   const calculateCartItemPrice = useCallback(
-    (item: TCartItem) => {
+    (item: CartItemType) => {
       const discountRate = calculateDiscountRate(
         item.id as keyof typeof DISCOUNTS,
         item.quantity

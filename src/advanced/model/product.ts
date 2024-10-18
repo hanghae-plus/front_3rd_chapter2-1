@@ -1,17 +1,17 @@
-type ProductItem = {
+type ProductItemType = {
   id: string;
   name: string;
   price: number;
   quantity: number;
 };
 
-export type StockItem = ProductItem;
-export type StockList = ProductItem[];
+export type StockItemType = ProductItemType;
+export type StockListType = ProductItemType[];
 
-export type TCartItem = ProductItem;
-export type TCartList = ProductItem[];
+export type CartItemType = ProductItemType;
+export type CartListType = ProductItemType[];
 
-export const DEFAULT_PRODUCT_LIST: StockList = [
+export const DEFAULT_PRODUCT_LIST: StockListType = [
   { id: 'p1', name: '상품1', price: 10000, quantity: 50 },
   { id: 'p2', name: '상품2', price: 20000, quantity: 30 },
   { id: 'p3', name: '상품3', price: 30000, quantity: 20 },

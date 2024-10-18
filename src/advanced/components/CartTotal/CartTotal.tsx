@@ -1,11 +1,11 @@
-import { TCartTotal } from '../../model/cartTotal';
+import { CartSummaryType } from '../../model/cartSummary';
 
-interface CartTotalProps {
-  cartTotal: TCartTotal;
+interface CartSummaryProps {
+  cartSummary: CartSummaryType;
 }
 
-export const CartTotal = ({ cartTotal }: CartTotalProps) => {
-  const { totalPrice, discountRate, point } = cartTotal;
+export const CartSummary = ({ cartSummary }: CartSummaryProps) => {
+  const { totalPrice, discountRate, point } = cartSummary;
 
   return (
     <div className="text-xl font-bold my-4">

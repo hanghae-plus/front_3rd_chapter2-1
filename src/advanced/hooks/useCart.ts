@@ -1,21 +1,21 @@
 import { useCallback, useState } from 'react';
-import { StockItem, TCartItem, TCartList } from '../model/product';
-import { useStock } from './useStock';
+import { CartItemType, CartListType, StockItemType } from '../model/product';
+import { useStockData } from './useStockData';
 
 export type HandleUpsertCart = (
   selectedId: string | undefined,
   quantity?: number
 ) => void;
 
-export type HandleDeleteCart = (targetCartItem: TCartItem) => void;
+export type HandleDeleteCart = (targetCartItem: CartItemType) => void;
 
 export const useCart = () => {
   const [lastSelectedId, setLastSelectedId] = useState('');
-  const [cartList, setCartList] = useState<TCartList>([]);
-  const { stockList, updateStockQuantity, updateStockPrice } = useStock();
+  const [cartList, setCartList] = useState<CartListType>([]);
+  const { stockList, updateStockQuantity, updateStockPrice } = useStockData();
 
   const addCart = useCallback(
-    (targetStockItem: StockItem, quantityToAdd = 1) => {
+    (targetStockItem: StockItemType, quantityToAdd = 1) => {
       updateStockQuantity(targetStockItem.id, -quantityToAdd);
       setCartList((prevCartList) => [
         ...prevCartList,
@@ -26,7 +26,7 @@ export const useCart = () => {
   );
 
   const deleteCart = useCallback<HandleDeleteCart>(
-    (targetCartItem: TCartItem) => {
+    (targetCartItem: CartItemType) => {
       updateStockQuantity(targetCartItem.id, targetCartItem.quantity);
       setCartList((prevCartList) =>
         prevCartList.filter((item) => item.id !== targetCartItem.id)
@@ -37,8 +37,8 @@ export const useCart = () => {
 
   const updateCart = useCallback(
     (
-      targetStockItem: StockItem,
-      targetCartItem: TCartItem,
+      targetStockItem: StockItemType,
+      targetCartItem: CartItemType,
       quantityToUpdate = 1
     ) => {
       const stockQuantity = targetStockItem?.quantity ?? 0;
@@ -67,7 +67,7 @@ export const useCart = () => {
     [deleteCart, updateStockQuantity]
   );
 
-  const handleUpsertCart: HandleUpsertCart = useCallback(
+  const upsertCart: HandleUpsertCart = useCallback(
     (selectedId, quantity = 1) => {
       if (!selectedId) return;
 
@@ -89,7 +89,7 @@ export const useCart = () => {
     stockList,
     cartList,
     lastSelectedId,
-    handleUpsertCart,
+    handleUpsertCart: upsertCart,
     deleteCart,
     updateStockPrice,
   };
