@@ -1,0 +1,1 @@
+export { assembleComponents } from './assembleComponents';
