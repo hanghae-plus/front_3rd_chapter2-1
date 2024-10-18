@@ -5,7 +5,7 @@ import {
   useItemDiscount,
   useRewardPoints,
   useSpecialDiscountRate,
-} from '../../hooks';
+} from '../../services';
 import { CartTotalPricePoints } from '../atoms';
 
 /**

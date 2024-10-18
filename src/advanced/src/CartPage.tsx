@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, ProductSelect, AddToCartButton } from './component/atoms';
 import { CartItems, CartTotal, StockStatus } from './component/organisms';
-import { useCartHandlers } from './hooks/useCartHandlers';
+import { useCartHandlers } from './services/useCartHandlers';
 
 /**
  * @function CartPage
