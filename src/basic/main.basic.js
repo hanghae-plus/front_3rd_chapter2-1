@@ -17,6 +17,8 @@ import {
 } from '../constants/index.js';
 import Cart from '../components/Cart.js';
 import ItemSelectOption from '../components/ItemSelectOption.js';
+import CartItem from '../components/CartItem.js';
+import Points from '../components/Points.js';
 
 let products,
   $productSelect,
@@ -138,19 +140,12 @@ function calcCart() {
     $cartTotal.appendChild(span);
   }
   updateStockStatusMessage();
-  renderbonusPoints();
+  renderPoints();
 }
-const renderbonusPoints = () => {
-  bonusPoints += Math.floor(total / POINT_BASE);
-  let $pointsTag = document.getElementById('loyalty-points');
-  if (!$pointsTag) {
-    $pointsTag = document.createElement('span');
-    $pointsTag.id = 'loyalty-points';
-    $pointsTag.className = 'text-blue-500 ml-2';
-    $cartTotal.appendChild($pointsTag);
-  }
-  $pointsTag.textContent = `(포인트: ${bonusPoints})`;
-};
+function renderPoints() {
+  points = +Math.floor(total / POINT_BASE);
+  renderElement('loyalty-points', Points(points));
+}
 
 function updateStockStatusMessage() {
   let message = '';
