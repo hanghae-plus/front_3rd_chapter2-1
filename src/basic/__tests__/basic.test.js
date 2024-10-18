@@ -87,7 +87,7 @@ describe('basic test', () => {
       sel.value='p1';
       addBtn.click();
       addBtn.click();
-      expect(sum.textContent).toContain('총액: 20000원(포인트: 90)');
+      expect(sum.textContent).toContain('총액: 20000원(포인트: 20)');
     });
 
     it('할인이 올바르게 적용되는지 확인', () => {
@@ -101,7 +101,7 @@ describe('basic test', () => {
     it('포인트가 올바르게 계산되는지 확인', () => {
       sel.value='p2';
       addBtn.click();
-      expect(document.getElementById('loyalty-points').textContent).toContain('(포인트: 935)');
+      expect(document.getElementById("loyalty-points").textContent).toContain("(포인트: 128)");
     });
 
     it('번개세일 기능이 정상적으로 동작하는지 확인', () => {

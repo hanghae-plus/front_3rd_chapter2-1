@@ -262,7 +262,7 @@ class ShopApplication {
 
   // 포인트를 적용합니다.
   applyBonusPoints() {
-    bonusPoints += Math.floor(totalAmount / 1000);
+    bonusPoints = Math.floor(totalAmount / 1000);
   }
 
   // 장바구니 요약 정보를 화면에 표시합니다.
