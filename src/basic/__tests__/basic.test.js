@@ -24,9 +24,16 @@ describe('basic test', () => {
     beforeEach(() => {
       vi.useFakeTimers();
       vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      const isTuesday = new Date().getDay() === 2
+      if (isTuesday) {
+        const mockDate=new Date('2024-10-14'); // 월요일
+        vi.setSystemTime(mockDate);
+      }
     });
 
     afterEach(() => {
+      vi.clearAllTimers();
       vi.restoreAllMocks();
     });
 
@@ -111,7 +118,7 @@ describe('basic test', () => {
     });
 
     it('화요일 할인이 적용되는지 확인', () => {
-      const mockDate=new Date('2024-10-15'); // 화요일
+      const mockDate=new Date('2024-10-15'); // 토요일
       vi.setSystemTime(mockDate);
       sel.value='p1';
       addBtn.click();
