@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import useCartStore from '../store/useCartStore';
 import Button from './common/Button';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  count: number;
-}
+import { Product } from '../types/productType';
 
 const CartSelectForm: React.FC = () => {
   const { productList } = useCartStore();

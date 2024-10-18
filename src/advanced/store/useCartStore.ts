@@ -1,11 +1,5 @@
 import { create } from 'zustand';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  count: number;
-}
+import { Product } from '../types/productType';
 
 interface CartState {
   productList: Product[];
