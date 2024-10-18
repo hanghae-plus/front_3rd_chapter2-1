@@ -8,6 +8,16 @@ interface Props {
   handleRemoveCartItem: (productId: string) => void;
 }
 
+/**
+ * @function CartItems
+ * @description 장바구니 상품 목록 표시하고, 각 상품의 수량 조정 및 제거 기능을 제공하는 컴포넌트
+ * 
+ * @param {CartItem[]} cartItems - 장바구니에 있는 상품들의 배열
+ * @param {function} handleQuantityUpdate - 상품의 수량을 업데이트하는 함수
+ * @param {function} handleRemoveCartItem - 상품을 장바구니에서 제거하는 함수
+ * @returns {JSX.Element} 상품 목록과 각 상품의 수량 조정 및 제거 버튼을 포함한 JSX 요소를 반환
+ */
+
 export const CartItems: React.FC<Props> = ({
   cartItems,
   handleQuantityUpdate,
