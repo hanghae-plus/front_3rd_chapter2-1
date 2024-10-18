@@ -15,6 +15,7 @@ import {
   SUGGESTION_SALE_INTERVAL_TIME,
   TUESDAY_DISCOUNT
 } from '../constants/index.js';
+import Cart from '../components/Cart.js';
 
 let products,
   $productSelect,
@@ -41,31 +42,7 @@ function main() {
     { id: 'p5', name: '상품5', price: 25000, quantity: 10 }
   ];
 
-  var $root = document.getElementById('app');
-  let $container = document.createElement('div');
-  var $cart = document.createElement('div');
-  let $title = document.createElement('h1');
-  $cartProducts = document.createElement('div');
-  $cartTotal = document.createElement('div');
-  $productSelect = document.createElement('select');
-  $addToCartButton = document.createElement('button');
-  $stockStatus = document.createElement('div');
-  $cartProducts.id = 'cart-items';
-  $cartTotal.id = 'cart-total';
-  $productSelect.id = 'product-select';
-  $addToCartButton.id = 'add-to-cart';
-
-  $stockStatus.id = 'stock-status';
-  $container.className = 'bg-gray-100 p-8';
-  $cart.className =
-    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
-  $title.className = 'text-2xl font-bold mb-4';
-  $cartTotal.className = 'text-xl font-bold my-4';
-  $productSelect.className = 'border rounded p-2 mr-2';
-  $addToCartButton.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  $stockStatus.className = 'text-sm text-gray-500 mt-2';
-  $title.textContent = '장바구니';
-  $addToCartButton.textContent = '추가';
+  renderElement('app', Cart());
   addProductSelectOptions();
   calcCart();
   setTimeout(function () {
