@@ -14,7 +14,7 @@ import { CartItem } from '../types';
 export const updateCartItemQuantity = (
   cartItems: CartItem[],
   quantityChange: number,
-  selectedProductItem: Omit<CartItem, 'selectQuantity'>
+  selectedProductItem: Omit<CartItem, 'selectQuantity'>,
 ) => {
   return cartItems
     .map((cartItem) => {

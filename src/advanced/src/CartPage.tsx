@@ -16,7 +16,7 @@ const CartPage = () => {
 
   const { handleAddCartItem, handleQuantityUpdate, handleRemoveCartItem } = useCartHandlers(
     cartItems,
-    setCartItems
+    setCartItems,
   );
 
   // 상품 선택 드롭다운의 변경을 처리

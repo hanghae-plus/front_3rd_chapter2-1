@@ -12,7 +12,7 @@ const RECOMMENDATION_INTERVAL_MS = 60000;
 
 function applyDiscountDifferentProduct(excludedProductId) {
   const recommendedProduct = prodList.find(
-    (product) => product.id !== excludedProductId && product.quantity > 0
+    (product) => product.id !== excludedProductId && product.quantity > 0,
   );
 
   if (recommendedProduct) {
@@ -33,7 +33,7 @@ export function useRecommendPromotion(selectedProductId) {
   setTimeout(() => {
     const intervalId = setInterval(
       () => applyDiscountDifferentProduct(selectedProductId),
-      RECOMMENDATION_INTERVAL_MS
+      RECOMMENDATION_INTERVAL_MS,
     );
     return () => clearInterval(intervalId);
   }, Math.random() * 20000);

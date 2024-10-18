@@ -61,7 +61,7 @@ export function calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv }) {
   const totalDiscountPrice = carts.reduce(
     (acc, item) =>
       acc + item.price * item.quantity * (FULL_PRICE_MULTIPLIER - getDiscountRate(item)),
-    NO_STOCK
+    NO_STOCK,
   );
 
   let rate = 0;
