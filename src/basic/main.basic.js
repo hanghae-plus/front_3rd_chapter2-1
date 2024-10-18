@@ -1,5 +1,5 @@
 import { products } from './data/products';
-import { updateCartInfos } from './services/cart';
+import { updateCartTotalText } from './services/cart';
 import { addToCart, changeCartItemQuantity, removeCartItem } from './services/cartOperations';
 import { setSuggestDiscount, setSurpriseDiscount } from './services/discount';
 import { getTargetItemElementQuantity } from './utils/cart';
@@ -12,7 +12,7 @@ let lastAddedProductId,
 const main = () => {
   renderCartUI();
   renderProductOptions();
-  bonusPoints = updateCartInfos(bonusPoints);
+  updateCartTotalText(bonusPoints);
 
   scheduleRandomDiscount();
   setEventListeners();
@@ -75,7 +75,7 @@ const handleAddToCart = () => {
     const $targetCartItem = document.getElementById(targetProduct.id);
 
     addToCart($targetCartItem, targetProduct);
-    bonusPoints = updateCartInfos(bonusPoints);
+    bonusPoints = updateCartTotalText(bonusPoints);
     lastAddedProductId = selectedProductId;
   }
 };
@@ -99,7 +99,7 @@ const handleCartItemsDisplay = (event) => {
     removeCartItem(targetProduct, $itemElement, currentItemQuantity);
   }
 
-  bonusPoints = updateCartInfos(bonusPoints);
+  bonusPoints = updateCartTotalText(bonusPoints);
 };
 
 main();
