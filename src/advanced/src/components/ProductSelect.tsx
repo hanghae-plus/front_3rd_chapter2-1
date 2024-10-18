@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { Product } from '../types';
 
-const ProductSelect = ({ handleAddToCart, productList }) => {
+interface ProductSelect {
+  handleAddToCart: (id: string) => void;
+  productList: Product[];
+}
+
+const ProductSelect = ({ handleAddToCart, productList }: ProductSelect) => {
   const [selectedValue, setSelectedValue] = useState<string>('p1');
 
   return (

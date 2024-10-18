@@ -1,6 +1,13 @@
 import React from 'react';
+import { Cart, Product } from '../types';
 
-const CartItem = ({ cart, productList, handleChangeQuantity }) => {
+interface CartItemProps {
+  cart: Cart;
+  productList: Product[];
+  handleChangeQuantity: (id: string, change: number) => void;
+}
+
+const CartItem = ({ cart, productList, handleChangeQuantity }: CartItemProps) => {
   return (
     <div id="cart-items">
       {Object.entries(cart).map(([productId, quantity]) => {

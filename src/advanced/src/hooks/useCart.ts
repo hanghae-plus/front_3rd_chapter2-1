@@ -18,9 +18,8 @@ const useCart = () => {
   );
 
   const addToCart = (productId: string) => {
-    console.log(productId);
     const product = findProductById(productId);
-    console.log(product);
+
     if (!product) {
       console.error('상품이 존재하지 않습니다.');
       return;
@@ -38,8 +37,6 @@ const useCart = () => {
 
       return newCart;
     });
-
-    console.log(cart, 'in useCart');
 
     setProductList((prevList: Product[]) =>
       prevList.map((prev: Product) => (prev.id === productId ? { ...prev, quantity: prev.quantity - 1 } : prev)),

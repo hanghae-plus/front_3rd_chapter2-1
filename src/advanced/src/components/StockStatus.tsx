@@ -1,7 +1,11 @@
 import { QUANTITY } from '../constants';
 import { Product } from '../types';
 
-const StockStatus = ({ productList }) => {
+interface StockStatusProps {
+  productList: Product[];
+}
+
+const StockStatus = ({ productList }: StockStatusProps) => {
   return (
     <div id="stock-status" className="text-sm text-gray-500 mt-2">
       {productList

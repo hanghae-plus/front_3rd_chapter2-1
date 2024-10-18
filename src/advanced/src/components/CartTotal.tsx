@@ -1,6 +1,12 @@
 import React from 'react';
 
-const CartTotal = ({ totalAmount, discountRate, bonusPoint }) => {
+interface CartTotalProps {
+  totalAmount: number;
+  discountRate: number;
+  bonusPoint: number;
+}
+
+const CartTotal = ({ totalAmount, discountRate, bonusPoint }: CartTotalProps) => {
   return (
     <div id="cart-total" className="text-xl font-bold my-4">
       총액 {Math.round(totalAmount)}원{' '}
