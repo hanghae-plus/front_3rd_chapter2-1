@@ -1,0 +1,2 @@
+export const AMOUNT_PER_LOYALTY_POINT = 1000;
+export const LOW_STOCK_THRESHOLD = 5;
