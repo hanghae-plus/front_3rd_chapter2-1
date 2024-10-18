@@ -31,6 +31,12 @@ function notifySuggestion(product, discountRate) {
   alert(`${product.name}은(는) 어떠세요? 지금 구매하시면 ${discountPercentage}% 추가 할인!`);
 }
 
+/**
+ * @function initiateLuckySale
+ * @description 무작위로 선택된 상품에 번개세일 할인을 적용하고, UI를 업데이트
+ * @param {HTMLSelectElement} select - 할인 적용 후 업데이트할 HTML select 요소
+ */
+
 export function initiateLuckySale(select) {
   const randomDelay = Math.random() * RANDOM_DELAY;
   setTimeout(() => {
@@ -48,6 +54,13 @@ export function initiateLuckySale(select) {
     return () => clearInterval(intervalId);
   }, randomDelay);
 }
+
+/**
+ * @function initiateSuggestSale
+ * @description 마지막으로 선택된 상품을 제외하고, 다른 상품에 제안 할인을 적용
+ * @param {HTMLSelectElement} select - 할인 적용 후 업데이트할 HTML select 요소
+ * @param {string} lastSelect - 마지막으로 선택된 상품의 ID
+ */
 
 export function initiateSuggestSale(select, lastSelect) {
   const randomDelay = Math.random() * SUGGESTION_RANDOM_DELAY;

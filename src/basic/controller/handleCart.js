@@ -1,5 +1,16 @@
 import { calculateCart } from './calculateCart';
 
+/**
+ * @function addItemToCart
+ * @description 선택된 상품을 장바구니에 추가하거나, 이미 추가된 상품의 수량을 업데이트하고 재고 없을 때 경고 표시
+ * @param {string} selectedProductId - 선택된 상품의 ID
+ * @param {Array} prodList - 상품 목록 배열
+ * @param {HTMLElement} cartsDiv - 장바구니 목록을 보여주는 HTML 요소
+ * @param {HTMLElement} sumDiv - 총합계를 보여주는 HTML 요소
+ * @param {HTMLElement} stockInfoDiv - 재고 정보를 보여주는 HTML 요소
+ * @param {React.RefObject} lastSelRef - 마지막으로 선택된 상품의 ID를 저장하는 ref
+ */
+
 export function addItemToCart(
   selectedProductId,
   prodList,
@@ -26,6 +37,13 @@ export function addItemToCart(
   lastSelRef.current = selectedProductId;
 }
 
+/**
+ * @function handleExistingCartItem
+ * @description 이미 장바구니에 추가된 상품의 수량을 업데이트
+ * @param {HTMLElement} itemElement - 장바구니에 있는 상품의 HTML 요소
+ * @param {Object} product - 상품 객체
+ */
+
 export function handleExistingCartItem(itemElement, product) {
   const currentQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
   const newQuantity = currentQuantity + 1;
@@ -37,6 +55,13 @@ export function handleExistingCartItem(itemElement, product) {
     alert('재고가 부족합니다.');
   }
 }
+
+/**
+ * @function addNewItemToCart
+ * @description 새로운 상품을 장바구니에 추가
+ * @param {Object} product - 추가할 상품 객체
+ * @param {HTMLElement} cartsDiv - 장바구니 목록을 보여주는 HTML 요소
+ */
 
 export function addNewItemToCart(product, cartsDiv) {
   const newItem = document.createElement('div');
@@ -51,6 +76,16 @@ export function addNewItemToCart(product, cartsDiv) {
   cartsDiv.appendChild(newItem);
   product.quantity--;
 }
+
+/**
+ * @function handleCartEvent
+ * @description 장바구니에서 발생한 이벤트를 처리 수량 변경이나 상품 제거 등의 동작을 수행
+ * @param {Event} event - 발생한 이벤트 객체
+ * @param {Array} prodList - 상품 목록 배열
+ * @param {HTMLElement} cartsDiv - 장바구니 목록을 보여주는 HTML 요소
+ * @param {HTMLElement} sumDiv - 총합계를 보여주는 HTML 요소
+ * @param {HTMLElement} stockInfoDiv - 재고 정보를 보여주는 HTML 요소
+ */
 
 export function handleCartEvent(event, prodList, cartsDiv, sumDiv, stockInfoDiv) {
   const target = event.target;
@@ -72,10 +107,27 @@ export function handleCartEvent(event, prodList, cartsDiv, sumDiv, stockInfoDiv)
   calculateCart({ prodList, sumDiv, cartsDiv, stockInfoDiv });
 }
 
+/**
+ * @function updateCartItem
+ * @description 장바구니 내 상품의 HTML 요소를 업데이트
+ * @param {HTMLElement} itemElement - 업데이트할 상품의 HTML 요소
+ * @param {string} productName - 상품의 이름
+ * @param {number} productPrice - 상품의 가격
+ * @param {number} quantity - 업데이트할 수량
+ */
+
 export function updateCartItem(itemElement, productName, productPrice, quantity) {
   itemElement.querySelector('span').textContent =
     `${productName} - ${productPrice}원 x ${quantity}`;
 }
+
+/**
+ * @function handleQuantityChange
+ * @description 장바구니 내 특정 상품의 수량을 변경, 수량이 0 이하가 되면 상품을 제거
+ * @param {HTMLElement} itemElem - 수량을 변경할 상품의 HTML 요소
+ * @param {Object} prod - 상품 객체
+ * @param {number} quantityChange - 변경할 수량
+ */
 
 export function handleQuantityChange(itemElem, prod, quantityChange) {
   const currentQuantity = parseInt(itemElem.querySelector('span').textContent.split('x ')[1]);
@@ -92,6 +144,13 @@ export function handleQuantityChange(itemElem, prod, quantityChange) {
     alert('재고가 부족합니다.');
   }
 }
+
+/**
+ * @function handleRemoveItem
+ * @description 장바구니에서 특정 상품을 제거
+ * @param {HTMLElement} itemElement - 제거할 상품의 HTML 요소
+ * @param {Object} product - 제거할 상품 객체
+ */
 
 export function handleRemoveItem(itemElement, product) {
   const removedQuantity = parseInt(itemElement.querySelector('span').textContent.split('x ')[1]);
