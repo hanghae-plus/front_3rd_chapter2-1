@@ -103,7 +103,7 @@ const useProduct = () => {
 // Cart Context
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (productId: string) => void;
+  addToCart: (product: Product) => void;
   updateCartItemQuantity: (productId: string, change: number) => void;
   removeFromCart: (productId: string) => void;
   calculateTotal: () => { totalAmount: number; itemCount: number; newBonusPoints: number };
@@ -116,57 +116,33 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [bonusPoints, setBonusPoints] = useState(0);
-  const { products, updateProductStock } = useProduct();
 
-  const addToCart = useCallback((productId: string) => {
-    const product = products.find(p => p.id === productId);
-    if (!product) {
-      alert(MESSAGES.PRODUCT_NOT_FOUND);
-      return;
-    }
-    if (product.stock === 0) {
-      alert(MESSAGES.OUT_OF_STOCK);
-      return;
-    }
-
+  const addToCart = useCallback((product: Product) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === productId);
+      const existingItem = prevCart.find(item => item.id === product.id);
       if (existingItem) {
         return prevCart.map(item =>
-          item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
-
-    updateProductStock(productId, -1);
-  }, [products, updateProductStock]);
+  }, []);
 
   const updateCartItemQuantity = useCallback((productId: string, change: number) => {
     setCart(prevCart => {
-      const updatedCart = prevCart.map(item => {
-        if (item.id === productId) {
-          const newQuantity = item.quantity + change;
-          return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
-        }
-        return item;
-      }).filter((item): item is CartItem => item !== null);
-      return updatedCart;
+      return prevCart.map(item =>
+        item.id === productId
+          ? { ...item, quantity: Math.max(0, item.quantity + change) }
+          : item
+      ).filter(item => item.quantity > 0);
     });
-
-    updateProductStock(productId, -change);
-  }, [updateProductStock]);
+  }, []);
 
   const removeFromCart = useCallback((productId: string) => {
-    setCart(prevCart => {
-      const item = prevCart.find(item => item.id === productId);
-      if (item) {
-        updateProductStock(productId, item.quantity);
-      }
-      return prevCart.filter(item => item.id !== productId);
-    });
-  }, [updateProductStock]);
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  }, []);
 
   const calculateTotal = useCallback(() => {
     let subTotal = 0;
@@ -226,15 +202,21 @@ const useCart = () => {
 
 // Components
 const ProductSelect: React.FC = () => {
-  const { products } = useProduct();
+  const { products, updateProductStock } = useProduct();
   const { addToCart } = useCart();
   const [selectedProductId, setSelectedProductId] = useState<string>('');
 
   const handleAddToCart = useCallback(() => {
     if (selectedProductId) {
-      addToCart(selectedProductId);
+      const product = products.find(p => p.id === selectedProductId);
+      if (product && product.stock > 0) {
+        addToCart(product);
+        updateProductStock(selectedProductId, -1);
+      } else {
+        alert(product ? MESSAGES.OUT_OF_STOCK : MESSAGES.PRODUCT_NOT_FOUND);
+      }
     }
-  }, [selectedProductId, addToCart]);
+  }, [selectedProductId, products, addToCart, updateProductStock]);
 
   return (
     <div className="flex items-center space-x-2">
@@ -244,10 +226,10 @@ const ProductSelect: React.FC = () => {
         value={selectedProductId}
         onChange={(e) => setSelectedProductId(e.target.value)}
       >
-        {/* <option value="">상품을 선택하세요</option> */}
+        <option value="">상품을 선택하세요</option>
         {products.map((product) => (
           <option key={product.id} value={product.id} disabled={product.stock === 0}>
-            {product.name} - {product.price}원
+            {product.name} - {product.price}원 (재고: {product.stock})
           </option>
         ))}
       </select>
@@ -265,7 +247,7 @@ const ProductSelect: React.FC = () => {
 const CartItem: React.FC<{
   item: CartItem;
   onUpdateQuantity: (productId: string, change: number) => void;
-  onRemove: (productId: string) => void;
+  onRemove: (productId: string, quantity: number) => void;
 }> = React.memo(({ item, onUpdateQuantity, onRemove }) => {
   return (
     <div id={item.id} className="flex justify-between items-center mb-2">
@@ -287,7 +269,7 @@ const CartItem: React.FC<{
         </button>
         <button
           className="bg-red-500 text-white px-2 py-1 rounded"
-          onClick={() => onRemove(item.id)}
+          onClick={() => onRemove(item.id, item.quantity)}
         >
           삭제
         </button>
@@ -332,8 +314,19 @@ const StockInfo: React.FC = React.memo(() => {
 });
 
 const CartContent: React.FC = () => {
+  const { updateProductStock } = useProduct();
   const { cart, updateCartItemQuantity, removeFromCart, calculateTotal, bonusPoints, setBonusPoints } = useCart();
   const { totalAmount, itemCount, newBonusPoints } = calculateTotal();
+
+  const handleUpdateQuantity = useCallback((productId: string, change: number) => {
+    updateCartItemQuantity(productId, change);
+    updateProductStock(productId, -change);
+  }, [updateCartItemQuantity, updateProductStock]);
+
+  const handleRemove = useCallback((productId: string, quantity: number) => {
+    removeFromCart(productId);
+    updateProductStock(productId, quantity);
+  }, [removeFromCart, updateProductStock]);
 
   useEffect(() => {
     if (newBonusPoints !== bonusPoints) {
@@ -348,8 +341,8 @@ const CartContent: React.FC = () => {
           <CartItem
             key={item.id}
             item={item}
-            onUpdateQuantity={updateCartItemQuantity}
-            onRemove={removeFromCart}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemove={handleRemove}
           />
         ))}
       </div>
